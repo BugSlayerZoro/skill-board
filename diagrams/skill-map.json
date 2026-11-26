@@ -1596,7 +1596,7 @@
       "when": "Only when you run **/security-audit** or ask to security audit or pen-test a codebase. ==No lane runs it==; super-review may point you at it for a whole-repo pass, and a focused security question uses guidance mode and writes nothing.",
       "how": "Recon agents map the code into a coverage ledger, isolated hunters work through it with critics after each wave, and a **fresh verifier** ==tries to disprove every candidate==. Findings land in findings.json, checked by two Node validators and re-checked by fresh agents before the three reports are written. get.sh and onboard's Checks install it with `npx skills add cloudflare/security-audit-skill --skill security-audit`; it is optional in the skills-ready registry, so a missing copy never halts a run.",
       "source": [
-        "https://bugslayerzoro.github.io/super-board/security-audit/",
+        "https://bugslayerzoro.github.io/skill-board/security-audit/",
         "https://github.com/cloudflare/security-audit-skill/blob/c1c8a8c1471069fb0e188eeaff69b8e8db6564a8/README.md",
         "https://github.com/cloudflare/security-audit-skill/blob/c1c8a8c1471069fb0e188eeaff69b8e8db6564a8/skills/security-audit/SKILL.md"
       ],
