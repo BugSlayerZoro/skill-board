@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Tests scripts/super-board-readme-sync.py and hooks/pre-commit-readme.sh against
+# Tests scripts/skill-board-readme-sync.py and hooks/pre-commit-readme.sh against
 # a throwaway copy of the pack, so the real README is never touched.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -8,15 +8,15 @@ fail() { echo "FAIL: $1" >&2; exit 1; }
 N=0; ok() { N=$((N + 1)); }
 
 # 0 — the committed README is in sync.
-python3 scripts/super-board-readme-sync.py --check || fail "the committed README.md is stale — run scripts/super-board-readme-sync.py"
+python3 scripts/skill-board-readme-sync.py --check || fail "the committed README.md is stale — run scripts/skill-board-readme-sync.py"
 ok
 
 copy() {
   T=$(mktemp -d)
   mkdir -p "$T/scripts" "$T/hooks"
   cp -R skills "$T/"; cp README.md "$T/"
-  cp scripts/super-board-readme-sync.py "$T/scripts/"; cp hooks/pre-commit-readme.sh "$T/hooks/"
-  SYNC="$T/scripts/super-board-readme-sync.py"
+  cp scripts/skill-board-readme-sync.py "$T/scripts/"; cp hooks/pre-commit-readme.sh "$T/hooks/"
+  SYNC="$T/scripts/skill-board-readme-sync.py"
 }
 fam() {  # python edit of families.json: $1 = statement on `d`
   python3 - "$T/skills/families.json" "$1" <<'PY'

@@ -2,7 +2,7 @@
 
 route  — /to-spec and /to-tickets installed → planning; either missing → backlog + why
 doc    — one findings doc, verified findings grouped, drops listed; dry-run writes nothing
-fork   — 1–5 tickets → /implement-spec, 6+ → super-board Backlog, 0 → refused
+fork   — 1–5 tickets → /implement-spec, 6+ → skill-board Backlog, 0 → refused
 
 Offline: a temp project and a temp home; the real skills-ready resolver decides "installed".
 
@@ -55,7 +55,7 @@ class Handoff(unittest.TestCase):
 
     def run_cli(self, *args, expected=0):
         p = subprocess.run([sys.executable, str(CLI), *args], cwd=self.root, text=True, capture_output=True,
-                           env=dict(os.environ, SUPER_BOARD_SKILLS_HOME=str(self.home)))
+                           env=dict(os.environ, SKILL_BOARD_SKILLS_HOME=str(self.home)))
         self.assertEqual(p.returncode, expected, p.stderr)
         return p
 
@@ -85,8 +85,8 @@ class Handoff(unittest.TestCase):
     # doc -----------------------------------------------------------------
     def test_doc_groups_verified_findings_and_lists_drops(self):
         p = self.run_cli("doc", "--findings", str(self.findings), "--since", "14d", "--date", "2026-10-27", "--yes")
-        path = self.root / "docs/super-board/findings/collect-2026-10-27.md"
-        self.assertEqual(p.stdout.strip(), "docs/super-board/findings/collect-2026-10-27.md")
+        path = self.root / "docs/skill-board/findings/collect-2026-10-27.md"
+        self.assertEqual(p.stdout.strip(), "docs/skill-board/findings/collect-2026-10-27.md")
         text = path.read_text()
         self.assertTrue(text.startswith("# Findings · 2026-10-27"))
         self.assertIn("## checkout", text)
@@ -104,13 +104,13 @@ class Handoff(unittest.TestCase):
     def test_doc_dry_run_prints_and_writes_nothing(self):
         p = self.run_cli("doc", "--findings", str(self.findings), "--date", "2026-10-27")
         self.assertIn("## checkout", p.stdout)
-        self.assertIn("would write docs/super-board/findings/collect-2026-10-27.md", p.stderr)
+        self.assertIn("would write docs/skill-board/findings/collect-2026-10-27.md", p.stderr)
         self.assertFalse((self.root / "docs").exists())
 
     def test_doc_never_overwrites_an_earlier_run(self):
         self.run_cli("doc", "--findings", str(self.findings), "--date", "2026-10-27", "--yes")
         p = self.run_cli("doc", "--findings", str(self.findings), "--date", "2026-10-27", "--yes")
-        self.assertEqual(p.stdout.strip(), "docs/super-board/findings/collect-2026-10-27-2.md")
+        self.assertEqual(p.stdout.strip(), "docs/skill-board/findings/collect-2026-10-27-2.md")
 
     def test_doc_with_nothing_verified_is_refused(self):
         self.findings.write_text(json.dumps([f for f in FINDINGS if f["verdict"].startswith("drop")]))
@@ -119,21 +119,21 @@ class Handoff(unittest.TestCase):
 
     # fork ----------------------------------------------------------------
     def test_fork_boundaries(self):
-        for n, build in ((1, "implement-spec"), (5, "implement-spec"), (6, "super-board"), (40, "super-board")):
+        for n, build in ((1, "implement-spec"), (5, "implement-spec"), (6, "skill-board"), (40, "skill-board")):
             out = json.loads(self.run_cli("fork", "--tickets", str(n)).stdout)
             self.assertEqual(out["build"], build, n)
         self.run_cli("fork", "--tickets", "0", expected=64)
 
     def test_fork_without_implement_spec_goes_to_the_board(self):
         out = json.loads(self.run_cli("fork", "--tickets", "3", "--no-implement-spec").stdout)
-        self.assertEqual(out["build"], "super-board")
+        self.assertEqual(out["build"], "skill-board")
         self.assertIn("implement-spec", out["why"])
 
     # SKILL.md names the chain exactly --------------------------------------
     def test_skill_names_the_chain_and_the_doc_path(self):
         text = SKILL.read_text()
         for needle in ("/to-spec", "/to-tickets", "/implement-spec", "collect_handoff.py",
-                       "docs/super-board/findings/collect-<YYYY-MM-DD>.md", "1–5 tickets", "6+ tickets"):
+                       "docs/skill-board/findings/collect-<YYYY-MM-DD>.md", "1–5 tickets", "6+ tickets"):
             self.assertIn(needle, text)
 
 

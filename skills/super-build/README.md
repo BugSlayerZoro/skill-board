@@ -13,7 +13,7 @@ The Builder: turns a `Ready` card into a branch, the smallest safe change, tests
 
 ## When To Use It
 
-- Inside a super-board run (the Building lane). This is the normal path.
+- Inside a skill-board run (the Building lane). This is the normal path.
 - Standalone, as `/super-build` (legacy, opt-in), to drain the `Ready` column of a project with headless `claude -p` workers (3 at a time unless `max_workers` is set); each finished branch becomes a PR and its card moves to `QA`.
 
 ## Standalone flags
@@ -26,4 +26,4 @@ The Builder: turns a `Ready` card into a branch, the smallest safe change, tests
 
 ## Install
 
-Part of the super-board pack: `./install.sh /path/to/project`. Lane details: `skills/super-board/references/run.md` → Builder.
+Part of the skill-board pack: `./install.sh /path/to/project`. Lane details: `skills/skill-board/references/run.md` → Builder.

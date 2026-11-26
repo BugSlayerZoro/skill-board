@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# super-collect-file.sh — file one collected item onto the super-board project,
+# super-collect-file.sh — file one collected item onto the skill-board project,
 # into the holding column only. Dry-run unless --yes.
 #
 # This is a router, not a third filer. Bugs, features and recurring-problem fixes go
@@ -85,7 +85,7 @@ REMOTE=$(jq -r '.repo.remote // empty' "$CONFIG")
 REPO_FLAG=()
 [ -z "$REMOTE" ] || REPO_FLAG=(-R "$(echo "$REMOTE" | sed -E 's#(git@github\.com:|https://github\.com/)##; s#\.git$##')")
 
-BIN="${SUPER_BOARD_BIN:-}"
+BIN="${SKILL_BOARD_BIN:-}"
 if [ -z "$BIN" ]; then
   # Installed: .claude/skills/super-collect/scripts → .claude/bin. Pack: skills/… → scripts/.
   ROOT3=$(cd "$(dirname "$0")/../../.." 2>/dev/null && pwd)
@@ -93,17 +93,17 @@ if [ -z "$BIN" ]; then
     [ -x "$d/super-qa-file-bug.sh" ] && { BIN="$d"; break; }
   done
 fi
-[ -n "$BIN" ] || die "cannot find super-qa-file-bug.sh — set SUPER_BOARD_BIN or run install.sh" 70
+[ -n "$BIN" ] || die "cannot find super-qa-file-bug.sh — set SKILL_BOARD_BIN or run install.sh" 70
 
 # Router-owned duplicate/adopt writes share the same halt as the child filers.
-GITHUB_READ="$BIN/super-board-github-read.py"
+GITHUB_READ="$BIN/skill-board-github-read.py"
 python3 "$GITHUB_READ" --check || exit $?
 REPO_NAME="${REPO_FLAG[1]:-}"
 if [ -z "$REPO_NAME" ]; then
   REPO_NAME=$(python3 "$GITHUB_READ" --kind scalar -- repo view --json nameWithOwner --jq .nameWithOwner) || exit $?
 fi
 case "$REPO_NAME" in */*) ;; *) die "cannot resolve owner/name for collector" 70;; esac
-STATE="$BIN/super-board-collect-state.py"
+STATE="$BIN/skill-board-collect-state.py"
 LOCK_KEY=$(printf '%s' "$REPO_NAME" | python3 -c 'import hashlib,sys; print(hashlib.sha256(sys.stdin.read().lower().encode()).hexdigest())')
 if [ "${SB_COLLECT_LOCK_HELD:-}" != "$LOCK_KEY" ]; then
   exec python3 "$STATE" --repo "$REPO_NAME" --lock -- "$0" "${ORIGINAL_ARGS[@]}"

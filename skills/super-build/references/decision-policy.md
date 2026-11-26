@@ -1,4 +1,4 @@
-# Decision policy for super-board workers
+# Decision policy for skill-board workers
 
 Workers run unattended. When the issue forces a judgment call the issue body
 does not settle, the worker resolves it with the **decision ladder** below and
@@ -13,12 +13,12 @@ worker that is forbidden to ask the user anything — and `grilling`'s own
 contract is "put each question to them and wait." A worker either stalled on
 it or answered its own questions, which is inline reasoning wearing a costume.
 Ticket ambiguity is now caught upstream, where a human is actually present:
-`super-board lint` routes vague and multi-interpretation issues through
-`mattpocock-skills:grilling` before the loop ever starts. See `../../super-board/references/lint.md`.
+`skill-board lint` routes vague and multi-interpretation issues through
+`mattpocock-skills:grilling` before the loop ever starts. See `../../skill-board/references/lint.md`.
 
 ## Skill map
 
-The vocabulary every super-board worker uses. Left column is the intent; right
+The vocabulary every skill-board worker uses. Left column is the intent; right
 column is the skill to invoke.
 
 | Intent | Skill |
@@ -46,9 +46,9 @@ and belong to the `lint` verb, not to a lane:
 
 | Intent | Skill | Runs in |
 | --- | --- | --- |
-| Stress-test a vague or ambiguous ticket | `mattpocock-skills:grilling` | `super-board lint` |
-| Feature ticket with undefined UX | `shape` | `super-board lint` |
-| Copy / microcopy / error-message wording | `clarify` | `super-board lint` |
+| Stress-test a vague or ambiguous ticket | `mattpocock-skills:grilling` | `skill-board lint` |
+| Feature ticket with undefined UX | `shape` | `skill-board lint` |
+| Copy / microcopy / error-message wording | `clarify` | `skill-board lint` |
 
 If a worker reaches for one of these, that is the signal the ticket should have
 been caught by `lint`. Take the human gate instead — see below.
@@ -75,7 +75,7 @@ harness, not the bug), and it must **survive a refactor** that leaves behaviour
 unchanged.
 
 
-**Before worker writes or worktree creation:** follow [skill readiness](../../super-board/references/skills-readiness.md).
+**Before worker writes or worktree creation:** follow [skill readiness](../../skill-board/references/skills-readiness.md).
 Resolve this lane for the actual host, load the report's files/fallbacks, halt
 on missing requirements and recheck each conditional helper before use.
 
@@ -168,7 +168,7 @@ already constrains.
 
 For an authorized, unsettled technical rung-3 fork that introduces a new ownership boundary,
 new/changed public interface, or architecture expensive to reverse, follow
-[design preflight](../../super-board/references/design-preflight.md). An applicable supplied
+[design preflight](../../skill-board/references/design-preflight.md). An applicable supplied
 design/spec/ADR answers the question at an earlier rung; follow it. Labels alone, ordinary
 bugs and mechanical refactors do not trigger a comparison. Recheck conditional helper
 readiness before use. Record the choice in the existing decision trailer below.

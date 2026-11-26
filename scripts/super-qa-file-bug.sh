@@ -12,7 +12,7 @@
 # leave a future headless session re-discovering the bug from scratch: the body
 # needs Problem · Context (lettered steps under Where) · Evidence (the folded
 # 12-row table) · Fix · Acceptance Criteria (a checklist) · Risk — the ticket
-# format in skills/super-board/references/writing-standard.md § 3.
+# format in skills/skill-board/references/writing-standard.md § 3.
 #
 # Usage:
 #   super-qa-file-bug.sh --title "<one-line>" --body-file <path.md> \
@@ -144,7 +144,7 @@ if [ -z "$FINGERPRINT" ]; then
     | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-|-$//g')"
 fi
 
-GITHUB_READ="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/super-board-github-read.py"
+GITHUB_READ="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/skill-board-github-read.py"
 python3 "$GITHUB_READ" --check || exit $?
 
 # --- project resolution -----------------------------------------------------

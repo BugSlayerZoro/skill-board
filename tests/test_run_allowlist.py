@@ -9,17 +9,17 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-RUN_WORKFLOW = ROOT / "skills/super-board/references/run-workflow.md"
+RUN_WORKFLOW = ROOT / "skills/skill-board/references/run-workflow.md"
 CALLERS = [
     RUN_WORKFLOW,
-    ROOT / "workflows/super-board-wave.js",
+    ROOT / "workflows/skill-board-wave.js",
     ROOT / "skills/super-build/SKILL.md",
     ROOT / "skills/super-qa/SKILL.md",
     ROOT / "skills/super-review/SKILL.md",
 ]
 # Not on the base list on purpose: the legacy dispatcher is spawned by the user, and the
 # merge gate is offered with the merge lines (onboard -> Permissions), listed below the base.
-EXEMPT = {"super-board-run.sh"}
+EXEMPT = {"skill-board-run.sh"}
 REF = re.compile(r"(?:(bash|python3|source) )?\.claude/bin/([A-Za-z0-9_-]+\.(?:sh|py))")
 RULE = re.compile(r'"(Bash\([^"]*\))"')
 
@@ -51,19 +51,19 @@ for path in CALLERS:
     for form, script in set(REF.findall(path.read_text())):
         if script in EXEMPT:
             continue
-        pool = rules if script == "super-board-merge-gate.sh" else base_rules
+        pool = rules if script == "skill-board-merge-gate.sh" else base_rules
         check(covered(script, form or None, pool),
               f"{path.relative_to(ROOT)} calls {(form + ' ') if form else ''}.claude/bin/{script}"
               " but the run allowlist has no rule for it")
 
-for rule in ("Bash(python3 .claude/bin/super-board-github-read.py:*)",
-             "Bash(.claude/bin/super-board-github-read.py:*)"):
+for rule in ("Bash(python3 .claude/bin/skill-board-github-read.py:*)",
+             "Bash(.claude/bin/skill-board-github-read.py:*)"):
     check(rule in base_rules, f"base allowlist misses {rule}")
 
-check(re.search(r'claude -p "/super-board run"', section) is not None,
-      "run-workflow.md must say whether claude -p \"/super-board run\" is supported")
-check(".claude/super-board/" in section and ".claude/worktrees/" in section,
-      "run-workflow.md must say how a headless run writes .claude/super-board/ and .claude/worktrees/")
+check(re.search(r'claude -p "/skill-board run"', section) is not None,
+      "run-workflow.md must say whether claude -p \"/skill-board run\" is supported")
+check(".claude/skill-board/" in section and ".claude/worktrees/" in section,
+      "run-workflow.md must say how a headless run writes .claude/skill-board/ and .claude/worktrees/")
 
 if failures:
     for f in failures:

@@ -1,4 +1,4 @@
-# Releasing super-board
+# Releasing skill-board
 
 Push a version tag to run the release workflow. GitHub creates the release only after
 all safety suites pass on Linux and macOS, and the status-reader checks pass on Windows,

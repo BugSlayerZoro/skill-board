@@ -1,6 +1,6 @@
 ---
 name: super-collect
-description: Find problems in one project, verify each, write one findings doc and hand it to Matt Pocock's /to-spec then /to-tickets; 1–5 tickets go to /implement-spec, 6+ to the super-board Backlog (no /to-spec or /to-tickets installed → files straight into Backlog). Source plug-ins - sentry (app errors), posthog (exceptions, rage/dead clicks, failure events, web vitals, tracking gaps), github (issues not on the board), prs (recurring problems in merged PRs and their review comments), architecture (refactor findings), plus any custom source added in onboard (an MCP server, HTTP API, CLI command or app). Each candidate is checked by one fresh verifier first. Dry-run by default. Use when the user says "super-collect", "/super-collect", "/super-collect sentry", "collect tickets", "triage errors onto the board", "what keeps breaking", or "find refactors".
+description: Find problems in one project, verify each, write one findings doc and hand it to Matt Pocock's /to-spec then /to-tickets; 1–5 tickets go to /implement-spec, 6+ to the skill-board Backlog (no /to-spec or /to-tickets installed → files straight into Backlog). Source plug-ins - sentry (app errors), posthog (exceptions, rage/dead clicks, failure events, web vitals, tracking gaps), github (issues not on the board), prs (recurring problems in merged PRs and their review comments), architecture (refactor findings), plus any custom source added in onboard (an MCP server, HTTP API, CLI command or app). Each candidate is checked by one fresh verifier first. Dry-run by default. Use when the user says "super-collect", "/super-collect", "/super-collect sentry", "collect tickets", "triage errors onto the board", "what keeps breaking", or "find refactors".
 ---
 
 # super-collect — find problems, hand them to the planning chain
@@ -9,17 +9,17 @@ One job: find problems and turn them into tickets. The flow:
 
 1. Collect candidates from the sources.
 2. One fresh verifier checks each candidate.
-3. Write ONE findings doc that groups what survived: `docs/super-board/findings/collect-<YYYY-MM-DD>.md`.
+3. Write ONE findings doc that groups what survived: `docs/skill-board/findings/collect-<YYYY-MM-DD>.md`.
 4. `/to-spec` turns the findings doc into a spec.
 5. `/to-tickets` turns the spec into tickets.
 6. Build fork: **1–5 tickets → `/implement-spec`** (one session, no QA lane). **6+ tickets →
-   super-board**: each ticket goes to **Backlog**, then `/super-board lint` and `run`.
+   skill-board**: each ticket goes to **Backlog**, then `/skill-board lint` and `run`.
 
 No `/to-spec` or `/to-tickets` in this project → file each finding straight into Backlog
 (today's path, "Filing" below) and print why. super-collect never edits app code and never
-moves a card to `Ready`. Per project only: it reads the active project's super-board config and
+moves a card to `Ready`. Per project only: it reads the active project's skill-board config and
 files onto that project's board. The whole rule in plain words:
-[routing](../../docs/super-board/routing.md).
+[routing](../../docs/skill-board/routing.md).
 
 ## Invocation
 
@@ -42,13 +42,13 @@ No job, cadence or scheduler is created by this skill.
 
 ## Setup
 
-1. Resolve the config: `.claude/super-board/active` → `.claude/super-board/configs/<slug>.json`
-   (shape: `../super-board/references/config-schema.json`). No config, or no `collect` block for a
-   requested source → stop and point at `/super-board onboard` (its collect step sets sources up).
+1. Resolve the config: `.claude/skill-board/active` → `.claude/skill-board/configs/<slug>.json`
+   (shape: `../skill-board/references/config-schema.json`). No config, or no `collect` block for a
+   requested source → stop and point at `/skill-board onboard` (its collect step sets sources up).
 2. Secrets come only from `.env` (nearest walking up): `SENTRY_AUTH_TOKEN`,
    `POSTHOG_PERSONAL_API_KEY`. Never print, echo or paste them.
-3. Source `.claude/bin/super-board-gh-guard.sh`; `sb_gh_guard_check 200` before each gh burst.
-4. Snapshot the board through `.claude/bin/super-board-github-read.py --kind items -- project item-list <number> --owner <owner> --format json --limit 500`. A count mismatch or read failure halts; never treat a partial board as complete.
+3. Source `.claude/bin/skill-board-gh-guard.sh`; `sb_gh_guard_check 200` before each gh burst.
+4. Snapshot the board through `.claude/bin/skill-board-github-read.py --kind items -- project item-list <number> --owner <owner> --format json --limit 500`. A count mismatch or read failure halts; never treat a partial board as complete.
    It is the dedupe set for verification and the "not on the board" set for `github`.
 
 Scripts live in `.claude/skills/super-collect/scripts/` (`S=` below). Every fetcher takes
@@ -69,7 +69,7 @@ Scripts live in `.claude/skills/super-collect/scripts/` (`S=` below). Every fetc
 
 ### custom sources
 
-Added in onboard's "➕ Add another source" (`super-board onboard` → 📥 Bug sources): the user types a
+Added in onboard's "➕ Add another source" (`skill-board onboard` → 📥 Bug sources): the user types a
 link, an app name, an API URL, an MCP server or a command; `collect_custom.py classify` decides
 which, `ping` proves it can be read (read-only) and `add` saves `{name, kind, target, auth_env?,
 map?}` to this project's config and its `name` to `collect.sources`. Here they run like any other
@@ -172,7 +172,7 @@ missing) or `--direct` → skip to **Filing** below and print the `reason` line 
    findings with the same cause share one group.
 2. `python3 $S/collect_handoff.py doc --findings <verified.json> --since <w>` prints the doc
    (dry run). On confirm, add `--yes`: it writes
-   `docs/super-board/findings/collect-<YYYY-MM-DD>.md` (never overwrites; `-2`, `-3`, …) and
+   `docs/skill-board/findings/collect-<YYYY-MM-DD>.md` (never overwrites; `-2`, `-3`, …) and
    prints the path. Only `file` and `needs-triage` findings go in; drops and duplicates are
    listed under "Not in this doc". A `duplicate` still gets its "Seen again" comment through
    the filer (`--yes`, same fingerprint), and a `github` candidate is still adopted with
@@ -183,9 +183,9 @@ missing) or `--direct` → skip to **Filing** below and print the `reason` line 
    said `implement_spec: null`):
    - **1–5 tickets → `/implement-spec <spec>`**: one session, its own review, no QA lane.
      super-collect does not build: it prints the command; on confirm it starts it.
-   - **6+ tickets → super-board**: add each ticket to Backlog with
+   - **6+ tickets → skill-board**: add each ticket to Backlog with
      `$S/super-collect-file.sh --config <cfg> --adopt <n> --type bug|feature|refactor --yes`,
-     then `/super-board lint`. Build → QA (with the security check) → Review → merge gate.
+     then `/skill-board lint`. Build → QA (with the security check) → Review → merge gate.
    - Tickets in a local tracker (files, not GitHub issues) cannot go on the board: report
      their paths and stop.
 
@@ -206,7 +206,7 @@ $S/super-collect-file.sh --config <cfg> --adopt <n> --type <t> [--yes]
 - `bug`, `feature`, `fix` → `super-qa-file-bug.sh` (`fix` files as `tech-debt`); `refactor` →
   `super-review-file-refactor.sh`. `--title` is the bare problem: the filers add the
   `<emoji> [<kind>] <scope>:` prefix, so never pass one (`🐛 [bug] …` would appear twice). Every body uses the ticket format in
-  `.claude/skills/super-board/references/writing-standard.md` § 3: Problem · Context (lettered
+  `.claude/skills/skill-board/references/writing-standard.md` § 3: Problem · Context (lettered
   steps under Where) · Fix · Acceptance Criteria (checklist) · Risk; bugs add the folded 12-row
   Evidence table (a missing row says `n/a — why`), fixes add an Evidence section. Evidence is
   links and counts — never secrets or user PII. The filer refuses a body that misses a section.
@@ -229,14 +229,14 @@ with `--yes`.
 ```
 ## super-collect: <planned n | filed n | dry-run n> · since 2026-09-18 (14d)
 Coverage   sentry: read 42 | posthog: read 9 (silent: rageclick) | github: read 7 | prs: 23 PRs, 6 reports | architecture: 4 | linear: read 12
-Findings   docs/super-board/findings/collect-2026-10-02.md  (7 findings, 3 groups)
+Findings   docs/skill-board/findings/collect-2026-10-02.md  (7 findings, 3 groups)
 Spec       #430  ← /to-spec
 Tickets    #431–#438 (8)  ← /to-tickets
-Build      6+ tickets → super-board: #431–#438 adopted into Backlog
+Build      6+ tickets → skill-board: #431–#438 adopted into Backlog
 Duplicate  #301 ← Sentry 4502 (comment added)
 Dropped    Sentry 4490 drop-fixed — resolved in web@1.4.0, not seen since (PR #377)
-Report     docs/super-board/runs/collect-funnel-2026-10-02.md
-Next       /super-board lint  — nothing here is in Ready
+Report     docs/skill-board/runs/collect-funnel-2026-10-02.md
+Next       /skill-board lint  — nothing here is in Ready
 ```
 
 1–5 tickets: `Build 3 tickets → /implement-spec #430` and `Next /implement-spec #430`.

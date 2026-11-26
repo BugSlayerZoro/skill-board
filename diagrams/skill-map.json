@@ -1,11 +1,11 @@
 {
-  "title": "super-board skill map",
-  "pack": "_skills/vendor/super-board",
+  "title": "skill-board skill map",
+  "pack": "_skills/vendor/skill-board",
   "branch": "feat/sb-cleanup @ b67241e1 (v3.0.0)",
   "sourcesBase": "",
   "kinds": {
     "public": "skill or command a user triggers directly",
-    "lane": "board lane skill: started by /super-board run, also runnable standalone",
+    "lane": "board lane skill: started by /skill-board run, also runnable standalone",
     "external": "skill from outside the pack (origin field says where)",
     "verb": "an Impeccable command",
     "script": "shell, python, node script or saved Workflow",
@@ -14,15 +14,15 @@
   },
   "nodes": [
     {
-      "id": "super-board",
-      "label": "/super-board",
+      "id": "skill-board",
+      "label": "/skill-board",
       "kind": "public",
       "what": "The **autonomous GitHub-Project pipeline**: five verbs (onboard, lint, status, run, stop) take one board shape (Backlog · Ready · Building · QA · Review · Blocked · Done) ==from empty to drained==, with labels qa · bug · feature routing each card.",
-      "when": "Sanjeev types **/super-board <verb>**, or says \"==drain my GitHub project==\" or \"stop super-board\"; with no verb it asks which one.",
+      "when": "Sanjeev types **/skill-board <verb>**, or says \"==drain my GitHub project==\" or \"stop skill-board\"; with no verb it asks which one.",
       "how": "The session is an **orchestrator** only: it routes the verb to its reference file, dispatches lane agents, and ==never does product work itself==. Board state is the only state, so `run` is also resume. Every commit, ticket, PR body and comment follows references/writing-standard.md.",
       "source": [
-        "_skills/vendor/super-board/skills/super-board/SKILL.md",
-        "_skills/vendor/super-board/skills/super-board/references/writing-standard.md"
+        "_skills/vendor/skill-board/skills/skill-board/SKILL.md",
+        "_skills/vendor/skill-board/skills/skill-board/references/writing-standard.md"
       ],
       "verbs": [
         "onboard",
@@ -32,7 +32,7 @@
         "stop"
       ],
       "sublabel": "onboard · lint · status · run · stop",
-      "opensView": "super-board",
+      "opensView": "skill-board",
       "author": "BugSlayerZoro"
     },
     {
@@ -43,7 +43,7 @@
       "when": "Use it when you want to know ==what keeps breaking==. Run /super-collect for every enabled source, or name some sources; --since sets the window.",
       "how": "It fetches each source for the window (default 14 days) and sends every candidate to **one fresh verifier**. Verified problems go into the **findings doc**. That doc ==hands off to /to-spec, then /to-tickets==, instead of filing straight to Backlog.",
       "source": [
-        "_skills/vendor/super-board/skills/super-collect/SKILL.md"
+        "_skills/vendor/skill-board/skills/super-collect/SKILL.md"
       ],
       "verbs": [
         "sentry",
@@ -63,10 +63,10 @@
       "kind": "public",
       "what": "Unattended **Impeccable** check-then-fix loop on one page or component that ==ends in a draft PR== with a Before | After table. Standalone: no board lane ever starts it.",
       "when": "Sanjeev runs **/ui-refine-loop** <route | component | description> [\"what's wrong\"] [--rounds N], or says \"refine loop\" or \"==polish this page with impeccable==\".",
-      "how": "Reads the target's code, grills Sanjeev (at most 10 questions) into a **taste file**, then runs the saved ui-refine-loop workflow: each round fresh checkers rank typed problems and a fresh fixer chains Impeccable verbs, polish last. Default 5 rounds; ==a finish reviewer grades every fix==. Commits are `💄 [ui] <slug>: …` and the PR body uses super-board-pr-body.sh's marker blocks.",
+      "how": "Reads the target's code, grills Sanjeev (at most 10 questions) into a **taste file**, then runs the saved ui-refine-loop workflow: each round fresh checkers rank typed problems and a fresh fixer chains Impeccable verbs, polish last. Default 5 rounds; ==a finish reviewer grades every fix==. Commits are `💄 [ui] <slug>: …` and the PR body uses skill-board-pr-body.sh's marker blocks.",
       "source": [
-        "_skills/vendor/super-board/skills/ui-refine-loop/SKILL.md",
-        "_skills/vendor/super-board/workflows/ui-refine-loop.js"
+        "_skills/vendor/skill-board/skills/ui-refine-loop/SKILL.md",
+        "_skills/vendor/skill-board/workflows/ui-refine-loop.js"
       ],
       "verbs": [
         "<route|component>",
@@ -84,7 +84,7 @@
       "when": "Sanjeev runs **/visual**, /visual recap [base], /visual plan [file] or /visual <path>; ==with no argument visual.py detect picks the mode==.",
       "how": "Writes a **data.json** from git facts or the plan, then visual.py render injects it into an inline template with ==no build step==. It screenshots the page headless to check it, and offers to publish only on a yes.",
       "source": [
-        "_skills/vendor/super-board/skills/visual/SKILL.md"
+        "_skills/vendor/skill-board/skills/visual/SKILL.md"
       ],
       "verbs": [
         "recap",
@@ -115,14 +115,14 @@
         },
         {
           "title": "Architecture map",
-          "caption": "super-board's **lanes and scripts**, explored.",
+          "caption": "skill-board's **lanes and scripts**, explored.",
           "thumb": "examples/architecture.thumb.png",
           "full": "examples/architecture.png",
           "href": "examples/architecture.html"
         },
         {
           "title": "Command and script interface",
-          "caption": "super-board has no HTTP API, so this maps its **commands and scripts**.",
+          "caption": "skill-board has no HTTP API, so this maps its **commands and scripts**.",
           "thumb": "examples/api-endpoints.thumb.png",
           "full": "examples/api-endpoints.png",
           "href": "examples/api-endpoints.html"
@@ -131,72 +131,72 @@
     },
     {
       "id": "sb-onboard",
-      "label": "/super-board onboard",
+      "label": "/skill-board onboard",
       "kind": "public",
       "what": "An 8-step setup wizard (Checks · GitHub · Board · Branch · AGENTS.md · Policies · Bug sources · Review) that installs or repairs what the board needs and writes the config once.",
-      "when": "Sanjeev runs /super-board onboard (or /super-board:super-board onboard after a plugin install), on a new project, after an upgrade from 2.x, or to check and repair an existing setup.",
-      "how": "One AskUserQuestion per step with the recommended option first; must-haves are fixed without asking by super-board-setup.py. Answers save to onboard-answers.json as they come, so a halt resumes, and repo files change only at step 8 after \"Write everything\". It ends by naming /super-board lint.",
+      "when": "Sanjeev runs /skill-board onboard (or /skill-board:skill-board onboard after a plugin install), on a new project, after an upgrade from 2.x, or to check and repair an existing setup.",
+      "how": "One AskUserQuestion per step with the recommended option first; must-haves are fixed without asking by skill-board-setup.py. Answers save to onboard-answers.json as they come, so a halt resumes, and repo files change only at step 8 after \"Write everything\". It ends by naming /skill-board lint.",
       "source": [
-        "_skills/vendor/super-board/skills/super-board/references/onboard.md",
-        "_skills/vendor/super-board/scripts/super-board-setup.py"
+        "_skills/vendor/skill-board/skills/skill-board/references/onboard.md",
+        "_skills/vendor/skill-board/scripts/skill-board-setup.py"
       ],
       "author": "BugSlayerZoro",
       "opensView": "sb-onboard"
     },
     {
       "id": "sb-lint",
-      "label": "/super-board lint",
+      "label": "/skill-board lint",
       "kind": "public",
       "what": "Pre-flight readiness check that walks Ready, Building, QA and Review, flags issues that fail any of 18 criteria, proposes a qa/bug/feature label, and dispatches a helper skill per flagged issue.",
-      "when": "Sanjeev runs /super-board lint before a run, typically after /super-collect filed new Backlog cards.",
+      "when": "Sanjeev runs /skill-board lint before a run, typically after /super-collect filed new Backlog cards.",
       "how": "Criteria 13–18 cover what the loop needs: a parseable `## Blocked by` line, a fake with no follow-up card, too big (over ~400 changed lines or many areas), the ticket sections, a checklist AC, and lettered Context steps. Phase 4 routes each flagged pattern to one skill sub-agent while Sanjeev keeps the pace.",
       "source": [
-        "_skills/vendor/super-board/skills/super-board/references/lint.md"
+        "_skills/vendor/skill-board/skills/skill-board/references/lint.md"
       ],
       "opensView": "sb-lint",
       "author": "BugSlayerZoro"
     },
     {
       "id": "sb-status",
-      "label": "/super-board status",
+      "label": "/skill-board status",
       "kind": "public",
       "what": "Read-only snapshot of the active config, every column in board order (Backlog included), and in-flight workers.",
-      "when": "Sanjeev runs /super-board status to see where a run stands.",
-      "how": "super-board-status.py reads the board and local in-flight state and prints the columns in the board's own order; it changes nothing.",
+      "when": "Sanjeev runs /skill-board status to see where a run stands.",
+      "how": "skill-board-status.py reads the board and local in-flight state and prints the columns in the board's own order; it changes nothing.",
       "source": [
-        "_skills/vendor/super-board/skills/super-board/references/status.md",
-        "_skills/vendor/super-board/scripts/super-board-status.py"
+        "_skills/vendor/skill-board/skills/skill-board/references/status.md",
+        "_skills/vendor/skill-board/scripts/skill-board-status.py"
       ],
       "author": "BugSlayerZoro"
     },
     {
       "id": "sb-run",
-      "label": "/super-board run",
+      "label": "/skill-board run",
       "kind": "public",
-      "what": "The autonomous loop: repeated waves of the super-board-wave workflow from this session until the board drains or a halt gate fires. Also the resume command.",
-      "when": "Sanjeev runs /super-board run [--low|--high] [<slug>]; the default worker_backend \"workflow\" stays in-session, \"claude-p\" opts into the legacy headless runner.",
-      "how": "Each wave: rate and usage guard, plan with super-board-wave-plan.sh (which refuses an old `variant: qa-only` config with exit 65), act on sweep/flag/stranded/resume, claim cards by assignee, launch the workflow, reconcile, report. Halts after 3 zero-progress waves, a high block rate, or a stop.",
+      "what": "The autonomous loop: repeated waves of the skill-board-wave workflow from this session until the board drains or a halt gate fires. Also the resume command.",
+      "when": "Sanjeev runs /skill-board run [--low|--high] [<slug>]; the default worker_backend \"workflow\" stays in-session, \"claude-p\" opts into the legacy headless runner.",
+      "how": "Each wave: rate and usage guard, plan with skill-board-wave-plan.sh (which refuses an old `variant: qa-only` config with exit 65), act on sweep/flag/stranded/resume, claim cards by assignee, launch the workflow, reconcile, report. Halts after 3 zero-progress waves, a high block rate, or a stop.",
       "source": [
-        "_skills/vendor/super-board/skills/super-board/references/run-workflow.md",
-        "_skills/vendor/super-board/skills/super-board/references/run.md"
+        "_skills/vendor/skill-board/skills/skill-board/references/run-workflow.md",
+        "_skills/vendor/skill-board/skills/skill-board/references/run.md"
       ],
       "verbs": [
         "--low",
         "--high"
       ],
-      "opensView": "super-board-run",
+      "opensView": "skill-board-run",
       "author": "BugSlayerZoro"
     },
     {
       "id": "sb-stop",
-      "label": "/super-board stop",
+      "label": "/skill-board stop",
       "kind": "public",
       "what": "Graceful shutdown: stops the wave, posts \"stopped mid-flight\" comments, releases assignee claims, and removes the wave lock so the next run resumes.",
-      "when": "Sanjeev runs /super-board stop or says \"stop the run\" / \"pause the loop\".",
-      "how": "Stops the workflow (or kills the legacy dispatcher via super-board-stop.sh), comments on every in-flight issue and PR, and strips bot_identity assignees. Resume is just `run` again.",
+      "when": "Sanjeev runs /skill-board stop or says \"stop the run\" / \"pause the loop\".",
+      "how": "Stops the workflow (or kills the legacy dispatcher via skill-board-stop.sh), comments on every in-flight issue and PR, and strips bot_identity assignees. Resume is just `run` again.",
       "source": [
-        "_skills/vendor/super-board/skills/super-board/references/stop.md",
-        "_skills/vendor/super-board/scripts/super-board-stop.sh"
+        "_skills/vendor/skill-board/skills/skill-board/references/stop.md",
+        "_skills/vendor/skill-board/scripts/skill-board-stop.sh"
       ],
       "author": "BugSlayerZoro"
     },
@@ -205,13 +205,13 @@
       "label": "super-build",
       "kind": "lane",
       "what": "**Builder lane**: takes a pre-flighted Ready card into its own worktree, makes the ==smallest safe change test-first== under the 400-line PR cap, opens a draft PR and moves the card to QA. It never merges.",
-      "when": "==Started by the board==: the super-board-wave workflow runs it for **Ready cards** labelled feature or bug (or unlabelled) once pre-flight says proceed. Also runnable standalone as /super-build (legacy headless claude -p dispatch).",
-      "how": "Follows run.md's Builder lifecycle. An explicit **`Skills:` line** wins, else the type label picks the chain, always plus ponytail first, verification-before-completion and a code-review of its own diff. Past the size cap mid-build it stops and ==proposes a /to-tickets split==. Commits and PR blocks follow the writing standard via super-board-pr-body.sh.",
+      "when": "==Started by the board==: the skill-board-wave workflow runs it for **Ready cards** labelled feature or bug (or unlabelled) once pre-flight says proceed. Also runnable standalone as /super-build (legacy headless claude -p dispatch).",
+      "how": "Follows run.md's Builder lifecycle. An explicit **`Skills:` line** wins, else the type label picks the chain, always plus ponytail first, verification-before-completion and a code-review of its own diff. Past the size cap mid-build it stops and ==proposes a /to-tickets split==. Commits and PR blocks follow the writing standard via skill-board-pr-body.sh.",
       "source": [
-        "_skills/vendor/super-board/skills/super-build/SKILL.md",
-        "_skills/vendor/super-board/skills/super-build/references/decision-policy.md",
-        "_skills/vendor/super-board/skills/super-build/references/worker-preamble.md",
-        "_skills/vendor/super-board/skills/super-board/references/run.md"
+        "_skills/vendor/skill-board/skills/super-build/SKILL.md",
+        "_skills/vendor/skill-board/skills/super-build/references/decision-policy.md",
+        "_skills/vendor/skill-board/skills/super-build/references/worker-preamble.md",
+        "_skills/vendor/skill-board/skills/skill-board/references/run.md"
       ],
       "opensView": "super-build",
       "author": "BugSlayerZoro"
@@ -222,11 +222,11 @@
       "kind": "lane",
       "what": "**Tester lane**: builds an issue-scoped test plan, runs a ==test-gap check== on the Builder's diff, captures evidence and screenshots, then passes the card to Review or bounces it to Build.",
       "when": "==Started by the board== for cards in **QA**, and straight from Ready for cards labelled qa (they skip Building). Also runnable standalone as /super-qa, a BFS route-crawling bug-bash, or /super-qa <url> for a live site with no repo.",
-      "how": "One observable test per AC plus the test-gap ledger, High gaps written red-first. On a qa card it creates the issue branch itself and files real defects as bug cards. It ticks the PR's ac block, writes visual and history rows with super-board-pr-body.sh, and posts `[qa] [report]` comments with screenshots pinned to a sha. It also runs **pr-security-review** on every PR, and ==a kept finding fails QA==.",
+      "how": "One observable test per AC plus the test-gap ledger, High gaps written red-first. On a qa card it creates the issue branch itself and files real defects as bug cards. It ticks the PR's ac block, writes visual and history rows with skill-board-pr-body.sh, and posts `[qa] [report]` comments with screenshots pinned to a sha. It also runs **pr-security-review** on every PR, and ==a kept finding fails QA==.",
       "source": [
-        "_skills/vendor/super-board/skills/super-qa/SKILL.md",
-        "_skills/vendor/super-board/skills/super-qa/references/iteration-preamble.md",
-        "_skills/vendor/super-board/skills/super-board/references/run.md"
+        "_skills/vendor/skill-board/skills/super-qa/SKILL.md",
+        "_skills/vendor/skill-board/skills/super-qa/references/iteration-preamble.md",
+        "_skills/vendor/skill-board/skills/skill-board/references/run.md"
       ],
       "opensView": "super-qa",
       "author": "BugSlayerZoro"
@@ -239,7 +239,7 @@
       "when": "==Started by the board== for cards in **Review** (always on the session model). Also runnable standalone when Sanjeev says \"review this branch\" or \"is this merge-ready\".",
       "how": "Thread scan, prior-report round 1, own pass with code-review, codebase-design and ponytail-review, a rerun of the Tester's exact test command, then an **adversarial truth-check** on non-trivial diffs. One report comment is edited in place every round. ==A clean review merges through the gate== pinned to the reviewed head SHA; exit 7 or 8 parks the card in Blocked with 🙋. Visual problems become a UI ticket, never a ui-refine-loop run. The truth-check sub-agents get a fixed verbatim brief, and Over-engineering is never a Blocker from any of them.",
       "source": [
-        "_skills/vendor/super-board/skills/super-review/SKILL.md"
+        "_skills/vendor/skill-board/skills/super-review/SKILL.md"
       ],
       "opensView": "super-review",
       "author": "BugSlayerZoro"
@@ -272,19 +272,19 @@
       "when": "Read and written on every wave, by every lane move, and by /super-collect filing into Backlog.",
       "how": "Cards move by `gh project item-edit`; assignees act as claim mutexes; PR threads start with their owner lane [builder] / [qa] / [reviewer] plus a label. A card dropped on purpose is closed as not planned and moved to Done with a 🤷 comment.",
       "source": [
-        "_skills/vendor/super-board/skills/super-board/references/run.md",
-        "_skills/vendor/super-board/skills/super-board/references/run-workflow.md"
+        "_skills/vendor/skill-board/skills/skill-board/references/run.md",
+        "_skills/vendor/skill-board/skills/skill-board/references/run-workflow.md"
       ]
     },
     {
       "id": "sb-config",
-      "label": "super-board config",
+      "label": "skill-board config",
       "kind": "board",
       "what": "Per-project JSON config: board, base branch, timezone, the seven columns, labels, merge_policy, migrations, worker backend, model tier, truth gate, plus `collect` (sources and custom[]) and `refine` blocks. No `variant` key.",
-      "when": "Written once by onboard at step 8 (and migrated to v3 keys by super-board-setup.py fix); read at the start of every run, collect and ui-refine-loop setup.",
-      "how": "Lives at `.claude/super-board/configs/<slug>.json` with `.claude/super-board/active` pointing at it, validated against config-schema.json.",
+      "when": "Written once by onboard at step 8 (and migrated to v3 keys by skill-board-setup.py fix); read at the start of every run, collect and ui-refine-loop setup.",
+      "how": "Lives at `.claude/skill-board/configs/<slug>.json` with `.claude/skill-board/active` pointing at it, validated against config-schema.json.",
       "source": [
-        "_skills/vendor/super-board/skills/super-board/references/config-schema.json"
+        "_skills/vendor/skill-board/skills/skill-board/references/config-schema.json"
       ]
     },
     {
@@ -295,19 +295,19 @@
       "when": "Changed only by a merge-gate squash-merge; read by /visual and branched from by every worktree.",
       "how": "Lanes and ui-refine-loop work on their own branches under .worktrees/ or .claude/worktrees/; the opt-in protected-push guard can block direct pushes to it.",
       "source": [
-        "_skills/vendor/super-board/skills/super-review/SKILL.md",
-        "_skills/vendor/super-board/skills/super-board/references/run.md"
+        "_skills/vendor/skill-board/skills/super-review/SKILL.md",
+        "_skills/vendor/skill-board/skills/skill-board/references/run.md"
       ]
     },
     {
       "id": "run-manifest",
       "label": "run manifest",
       "kind": "board",
-      "what": "Per-run ledger at `docs/super-board/runs/<date>-<slug>.md`, one line per card per wave.",
+      "what": "Per-run ledger at `docs/skill-board/runs/<date>-<slug>.md`, one line per card per wave.",
       "when": "Appended during each wave's reconcile step.",
       "how": "Each line records card, lanes run, final status, column and detail: `| #N | <lanesRun> | <finalStatus> | <column> | <detail> |`.",
       "source": [
-        "_skills/vendor/super-board/skills/super-board/references/run-workflow.md"
+        "_skills/vendor/skill-board/skills/skill-board/references/run-workflow.md"
       ]
     },
     {
@@ -318,7 +318,7 @@
       "when": "Written when a standalone super-qa iteration finds a red spec; /super-collect bugs and qa-card defects also go through the same filer.",
       "how": "super-qa-file-bug.sh creates a `source:qa` issue with the evidence body and sets its Status to Bug (Flaky and Skip for the other outcomes).",
       "source": [
-        "_skills/vendor/super-board/skills/super-qa/SKILL.md"
+        "_skills/vendor/skill-board/skills/super-qa/SKILL.md"
       ]
     },
     {
@@ -329,8 +329,8 @@
       "when": "Written after the grill and committed as the refine branch's first commit; read first by every checker, fixer and finish reviewer.",
       "how": "Starts from the neutral references/taste.md when absent; each target gets a `### <target>` block under Direction, with \"you pick\" answers marked (picked).",
       "source": [
-        "_skills/vendor/super-board/skills/ui-refine-loop/references/grill.md",
-        "_skills/vendor/super-board/skills/ui-refine-loop/references/taste.md"
+        "_skills/vendor/skill-board/skills/ui-refine-loop/references/grill.md",
+        "_skills/vendor/skill-board/skills/ui-refine-loop/references/taste.md"
       ]
     },
     {
@@ -341,7 +341,7 @@
       "when": "Appended by the workflow after every check; written to `<run>/ledger.md` at finish.",
       "how": "Checkers reuse ledger ids so a problem that survives three checks is called out; stop rules read it (two clean checks, two reverts in a row).",
       "source": [
-        "_skills/vendor/super-board/skills/ui-refine-loop/references/ledger.md"
+        "_skills/vendor/skill-board/skills/ui-refine-loop/references/ledger.md"
       ]
     },
     {
@@ -352,8 +352,8 @@
       "when": "Opened once at the end of a ui-refine-loop run; never merged by the loop.",
       "how": "pr-shots.sh commits round-0 and final shots to `docs/ui-refine/<slug>/` and prints a Before | After table pinned to both shas; the body uses the writing standard's marker blocks (status, problem, solution, ac, history, visual, risk) and is humanized before `gh pr create --draft`.",
       "source": [
-        "_skills/vendor/super-board/skills/ui-refine-loop/SKILL.md",
-        "_skills/vendor/super-board/skills/ui-refine-loop/scripts/pr-shots.sh"
+        "_skills/vendor/skill-board/skills/ui-refine-loop/SKILL.md",
+        "_skills/vendor/skill-board/skills/ui-refine-loop/scripts/pr-shots.sh"
       ]
     },
     {
@@ -364,7 +364,7 @@
       "when": "Read by the /super-collect github source.",
       "how": "Fetched with `gh issue list --state open`; real work is adopted onto the board (`--adopt <n>`), never copied into a new issue.",
       "source": [
-        "_skills/vendor/super-board/skills/super-collect/SKILL.md"
+        "_skills/vendor/skill-board/skills/super-collect/SKILL.md"
       ]
     },
     {
@@ -375,9 +375,9 @@
       "when": "Written by install.sh (backed up first, never adding a command twice); read by Claude Code at every session.",
       "how": "Wires PreToolUse, PostToolUse and SessionStart commands to the scripts copied into `.claude/hooks/`; `--protect-main` adds settings-protect-main.json.",
       "source": [
-        "_skills/vendor/super-board/hooks/settings-snippet.json",
-        "_skills/vendor/super-board/hooks/settings-protect-main.json",
-        "_skills/vendor/super-board/install.sh"
+        "_skills/vendor/skill-board/hooks/settings-snippet.json",
+        "_skills/vendor/skill-board/hooks/settings-protect-main.json",
+        "_skills/vendor/skill-board/install.sh"
       ]
     },
     {
@@ -388,7 +388,7 @@
       "when": "Installed by install.sh unless --no-hooks; each fires on its Claude Code event and matcher.",
       "how": "Python 3 stdlib scripts that read hook JSON on stdin, print a decision only when they block, and exit 0 on their own errors so a broken guard never stops work.",
       "source": [
-        "_skills/vendor/super-board/hooks/README.md"
+        "_skills/vendor/skill-board/hooks/README.md"
       ],
       "opensView": "hooks"
     },
@@ -400,7 +400,7 @@
       "when": "PreToolUse, matcher Bash, on every shell command.",
       "how": "Parses the command, honouring `cd X &&` and `git -C X`, resolves the target path, and blocks when it escapes the worktrees folder.",
       "source": [
-        "_skills/vendor/super-board/hooks/guard-worktree-path.py"
+        "_skills/vendor/skill-board/hooks/guard-worktree-path.py"
       ]
     },
     {
@@ -409,9 +409,9 @@
       "kind": "hook",
       "what": "Denies reading or piping dotenv files, SSH keys, .npmrc, credentials(.json), service-account JSON and .pem files; .env.example stays readable.",
       "when": "PreToolUse, matcher Bash|Read|Grep.",
-      "how": "Matches file paths in Read/Grep input and in shell commands against secret-file patterns and blocks the call. One plain call to super-board-env-check.sh (no pipe, chain or redirect) is allowed, since it prints only present / empty / missing.",
+      "how": "Matches file paths in Read/Grep input and in shell commands against secret-file patterns and blocks the call. One plain call to skill-board-env-check.sh (no pipe, chain or redirect) is allowed, since it prints only present / empty / missing.",
       "source": [
-        "_skills/vendor/super-board/hooks/guard-secrets.py"
+        "_skills/vendor/skill-board/hooks/guard-secrets.py"
       ]
     },
     {
@@ -422,7 +422,7 @@
       "when": "PreToolUse on Edit|MultiEdit|Write|NotebookEdit|Bash, and PostToolUse on Edit|MultiEdit|Write|NotebookEdit.",
       "how": "Scans the content being written for key-shaped literals and reports line numbers only, never the value.",
       "source": [
-        "_skills/vendor/super-board/hooks/guard-key-literals.py"
+        "_skills/vendor/skill-board/hooks/guard-key-literals.py"
       ]
     },
     {
@@ -433,7 +433,7 @@
       "when": "PreToolUse, matcher Bash.",
       "how": "Resolves each target (honouring cd, git -C, ~ and $HOME); temp dirs stay allowed, and a path known only at run time is allowed.",
       "source": [
-        "_skills/vendor/super-board/hooks/guard-delete-outside.py"
+        "_skills/vendor/skill-board/hooks/guard-delete-outside.py"
       ]
     },
     {
@@ -444,8 +444,8 @@
       "when": "PreToolUse, matcher Bash, only after onboard's Policies yes (step 6) or `./install.sh --protect-main`.",
       "how": "Catches force pushes, explicit refspecs, --delete, --all/--mirror and a bare push while the base is checked out; feature-branch force pushes stay allowed. SB_ALLOW_PROTECTED_PUSH=1 turns it off for a session.",
       "source": [
-        "_skills/vendor/super-board/hooks/guard-protected-push.py",
-        "_skills/vendor/super-board/hooks/settings-protect-main.json"
+        "_skills/vendor/skill-board/hooks/guard-protected-push.py",
+        "_skills/vendor/skill-board/hooks/settings-protect-main.json"
       ]
     },
     {
@@ -456,8 +456,8 @@
       "when": "SessionStart with `--auto --fetch` when a base tip moved since the last session, and after every merge when the merge gate calls it with `--post-merge`.",
       "how": "Wip-commits a dirty worktree on a merged branch and keeps its branch, never touches bases or its own worktree, and writes a recovery TSV under `<git-common-dir>/cleanup-wt/` before acting.",
       "source": [
-        "_skills/vendor/super-board/hooks/cleanup-wt.py",
-        "_skills/vendor/super-board/scripts/super-board-merge-gate.sh"
+        "_skills/vendor/skill-board/hooks/cleanup-wt.py",
+        "_skills/vendor/skill-board/scripts/skill-board-merge-gate.sh"
       ]
     },
     {
@@ -468,8 +468,8 @@
       "when": "Stop event in the pack's own `.claude/settings.json` (and SanjeevOS if added by hand); never installed into target projects.",
       "how": "A changed SKILL.md always counts; a changed reference, script or workflow counts when the skill has an eval case. SKILL_EVAL_GATE=off, a running eval or `.claude/eval-gate-ignore` globs stand it down.",
       "source": [
-        "_skills/vendor/super-board/hooks/dev/gate-skill-evals.py",
-        "_skills/vendor/super-board/.claude/settings.json"
+        "_skills/vendor/skill-board/hooks/dev/gate-skill-evals.py",
+        "_skills/vendor/skill-board/.claude/settings.json"
       ]
     },
     {
@@ -478,46 +478,46 @@
       "kind": "hook",
       "what": "Dev-only hooks that keep README.md's skill tables in step with skills/*/SKILL.md and families.json.",
       "when": "PostToolUse on Edit|Write|MultiEdit in the pack repo, and as a git pre-commit hook when it is symlinked in.",
-      "how": "Runs super-board-readme-sync.py; the pre-commit version stops the commit when README.md had to change so it can be staged.",
+      "how": "Runs skill-board-readme-sync.py; the pre-commit version stops the commit when README.md had to change so it can be staged.",
       "source": [
-        "_skills/vendor/super-board/.claude/settings.json",
-        "_skills/vendor/super-board/hooks/pre-commit-readme.sh",
-        "_skills/vendor/super-board/scripts/super-board-readme-sync.py"
+        "_skills/vendor/skill-board/.claude/settings.json",
+        "_skills/vendor/skill-board/hooks/pre-commit-readme.sh",
+        "_skills/vendor/skill-board/scripts/skill-board-readme-sync.py"
       ]
     },
     {
       "id": "wave-plan",
-      "label": "super-board-wave-plan.sh",
+      "label": "skill-board-wave-plan.sh",
       "kind": "script",
       "what": "Read-only planner that computes the next wave from board state: cards (each with its lane and labels) plus the sweep, flag, stranded and resume lists.",
       "when": "Run by the orchestrator at the start of every wave, after the rate and usage guards pass.",
-      "how": "Reads the board and `## Blocked by` dependencies (via super-board-deps.sh); a Ready card labelled qa gets lane qa, every other Ready card lane build. `resume` lists 🙋 cards a human approved with `done`. A `variant: qa-only` config is refused with exit 65.",
+      "how": "Reads the board and `## Blocked by` dependencies (via skill-board-deps.sh); a Ready card labelled qa gets lane qa, every other Ready card lane build. `resume` lists 🙋 cards a human approved with `done`. A `variant: qa-only` config is refused with exit 65.",
       "source": [
-        "_skills/vendor/super-board/scripts/super-board-wave-plan.sh",
-        "_skills/vendor/super-board/scripts/super-board-deps.sh"
+        "_skills/vendor/skill-board/scripts/skill-board-wave-plan.sh",
+        "_skills/vendor/skill-board/scripts/skill-board-deps.sh"
       ]
     },
     {
       "id": "wave-js",
-      "label": "super-board-wave.js",
+      "label": "skill-board-wave.js",
       "kind": "script",
       "what": "Saved Workflow that drains one wave: a Pre-flight phase for cards about to be built, a haiku classify router, then Build, QA and Review lane agents per card.",
-      "when": "Launched by /super-board run with {configPath, cards (with lane and labels), humanApprovesMerge, tier}; a stale `variant` other than full is refused.",
+      "when": "Launched by /skill-board run with {configPath, cards (with lane and labels), humanApprovesMerge, tier}; a stale `variant` other than full is refused.",
       "how": "Pre-flights Ready build cards in batches of 5 and never builds a card without a proceed verdict. The classifier keeps a card's qa/bug/feature label and adds feature or bug to unlabelled ones, never qa. A qa card goes Ready → QA. Model ladder by tier and complexity; Review always on the session model.",
       "source": [
-        "_skills/vendor/super-board/workflows/super-board-wave.js"
+        "_skills/vendor/skill-board/workflows/skill-board-wave.js"
       ]
     },
     {
       "id": "merge-gate",
-      "label": "super-board-merge-gate.sh",
+      "label": "skill-board-merge-gate.sh",
       "kind": "script",
       "what": "The only path to the base branch: takes an atomic mkdir lock, applies merge_policy, re-proves the branch against the current base inside the lock, runs allowed DB migrations, then squash-merges.",
       "when": "Called by the Reviewer once a review passes (and human_approves_merge is not set).",
-      "how": "super-board-merge-policy.py decides who merges: money, auth, destructive schema or a diff over auto_max_lines (400 changed lines, lockfiles/generated/snapshots/migration SQL excluded) exits 7; a migration it may not run or a declared human step exits 8. Otherwise it merges with `--match-head-commit` (exit 6 when the head moved) and runs cleanup-wt --post-merge.",
+      "how": "skill-board-merge-policy.py decides who merges: money, auth, destructive schema or a diff over auto_max_lines (400 changed lines, lockfiles/generated/snapshots/migration SQL excluded) exits 7; a migration it may not run or a declared human step exits 8. Otherwise it merges with `--match-head-commit` (exit 6 when the head moved) and runs cleanup-wt --post-merge.",
       "source": [
-        "_skills/vendor/super-board/scripts/super-board-merge-gate.sh",
-        "_skills/vendor/super-board/scripts/super-board-merge-policy.py"
+        "_skills/vendor/skill-board/scripts/skill-board-merge-gate.sh",
+        "_skills/vendor/skill-board/scripts/skill-board-merge-policy.py"
       ]
     },
     {
@@ -528,7 +528,7 @@
       "when": "Called by standalone super-qa on a red spec, and by super-collect-file.sh for bug, feature and fix tickets.",
       "how": "Rejects bodies missing the ticket-format sections (Problem · Context · Fix · Acceptance Criteria · Risk, bugs with the folded Evidence table) or holding placeholders; adds type, source, priority and area labels and sets the project Status, falling back through Bug, Ready, Todo, Backlog, Triage.",
       "source": [
-        "_skills/vendor/super-board/scripts/super-qa-file-bug.sh"
+        "_skills/vendor/skill-board/scripts/super-qa-file-bug.sh"
       ]
     },
     {
@@ -539,7 +539,7 @@
       "when": "Called by super-review for shape findings that must not block a merge, and by super-collect-file.sh for architecture tickets.",
       "how": "A body with an `## Acceptance criteria` section goes straight to Ready; otherwise it lands in the holding column for lint. It appends `## Blocked by` when missing.",
       "source": [
-        "_skills/vendor/super-board/scripts/super-review-file-refactor.sh"
+        "_skills/vendor/skill-board/scripts/super-review-file-refactor.sh"
       ]
     },
     {
@@ -550,8 +550,8 @@
       "when": "Used for 6+ tickets from /to-tickets (`--adopt <n>`), and for the **direct path**: `--direct`, scheduled runs, or a project with no /to-spec or /to-tickets. A **GitHub issue** is always adopted directly.",
       "how": "bug, feature and fix go to super-qa-file-bug.sh, refactor to super-review-file-refactor.sh. It checks each finding's fingerprint, comments \"Seen again\" on a duplicate and files into the board's ==holding column== (Backlog). Without `--yes` it only shows what it would do.",
       "source": [
-        "_skills/vendor/super-board/skills/super-collect/scripts/super-collect-file.sh",
-        "_skills/vendor/super-board/skills/super-collect/SKILL.md"
+        "_skills/vendor/skill-board/skills/super-collect/scripts/super-collect-file.sh",
+        "_skills/vendor/skill-board/skills/super-collect/SKILL.md"
       ]
     },
     {
@@ -562,7 +562,7 @@
       "when": "Run when /super-collect includes sentry and the config has a sentry block.",
       "how": "`collect_sentry.py list --since <w>` calls the Sentry REST API with SENTRY_AUTH_TOKEN from .env; `check <id>` answers still-happening for the verifier. One issue becomes one bug, fp `err|sentry|<id>`.",
       "source": [
-        "_skills/vendor/super-board/skills/super-collect/scripts/collect_sentry.py"
+        "_skills/vendor/skill-board/skills/super-collect/scripts/collect_sentry.py"
       ]
     },
     {
@@ -573,7 +573,7 @@
       "when": "Run when /super-collect includes posthog.",
       "how": "`collect_posthog.py list|events|funnel|check` runs HogQL queries with POSTHOG_PERSONAL_API_KEY; signal groups over the thresholds become bugs, and missing workflow events become `analytics` feature tickets.",
       "source": [
-        "_skills/vendor/super-board/skills/super-collect/scripts/collect_posthog.py"
+        "_skills/vendor/skill-board/skills/super-collect/scripts/collect_posthog.py"
       ]
     },
     {
@@ -584,7 +584,7 @@
       "when": "Run when /super-collect includes prs.",
       "how": "`collect_prs.py list` runs one paginated GraphQL search; Claude then clusters recurring root causes at a shared boundary into fix, refactor or feature tickets (fp `prs|<boundary>|<cause>`).",
       "source": [
-        "_skills/vendor/super-board/skills/super-collect/scripts/collect_prs.py"
+        "_skills/vendor/skill-board/skills/super-collect/scripts/collect_prs.py"
       ]
     },
     {
@@ -595,7 +595,7 @@
       "when": "Run for round-0 shots at setup and for AFTER shots at the end of every fix round.",
       "how": "Writes `<label>-<state>-<desktop|mobile>-<light|dark>.png` grown to the scroll height; `--compare round-0` adds cmp sheets the next checker judges.",
       "source": [
-        "_skills/vendor/super-board/skills/ui-refine-loop/scripts/shoot.mjs"
+        "_skills/vendor/skill-board/skills/ui-refine-loop/scripts/shoot.mjs"
       ]
     },
     {
@@ -606,8 +606,8 @@
       "when": "Run by the isolated detector sub-agent in every check, alongside the audit.",
       "how": "Invoked as `scripts/impeccable detect --json` (v4.4+) or `node scripts/detect.mjs --json` (v4.0.x), as found by refine-setup.sh detect; exit 2 means findings, which are checked in source for false positives.",
       "source": [
-        "_skills/vendor/super-board/skills/ui-refine-loop/references/checker-brief.md",
-        "_skills/vendor/super-board/skills/ui-refine-loop/scripts/refine-setup.sh"
+        "_skills/vendor/skill-board/skills/ui-refine-loop/references/checker-brief.md",
+        "_skills/vendor/skill-board/skills/ui-refine-loop/scripts/refine-setup.sh"
       ]
     },
     {
@@ -615,10 +615,10 @@
       "label": "install.sh",
       "kind": "script",
       "what": "Installs the pack into a target project: skills, .claude/bin scripts, workflows and the guard hooks, with grouped emoji output.",
-      "when": "Run by get.sh, by super-board-setup.py fix during onboard, or by hand: `./install.sh [--no-hooks] [--protect-main] [target]`.",
-      "how": "Copies hooks/*.py to `.claude/hooks/` (never hooks/dev/) and merges the hook block through super-board-settings.py; `--no-hooks --protect-main` installs only the push guard. It records an older install in `.claude/super-board/upgrade.json` and ends with one next step: /super-board onboard.",
+      "when": "Run by get.sh, by skill-board-setup.py fix during onboard, or by hand: `./install.sh [--no-hooks] [--protect-main] [target]`.",
+      "how": "Copies hooks/*.py to `.claude/hooks/` (never hooks/dev/) and merges the hook block through skill-board-settings.py; `--no-hooks --protect-main` installs only the push guard. It records an older install in `.claude/skill-board/upgrade.json` and ends with one next step: /skill-board onboard.",
       "source": [
-        "_skills/vendor/super-board/install.sh"
+        "_skills/vendor/skill-board/install.sh"
       ],
       "opensView": "install"
     },
@@ -630,7 +630,7 @@
       "when": "Run by /visual at every step: detect with no argument, facts in recap mode, render after data.json is written.",
       "how": "render prints `{out, missingHunks}`; grounded hunks come from git via `hunks[].file + contains`, and output lands in a gitignored `_tmp/<date>-visual/` or `.visual/`.",
       "source": [
-        "_skills/vendor/super-board/skills/visual/scripts/visual.py"
+        "_skills/vendor/skill-board/skills/visual/scripts/visual.py"
       ]
     },
     {
@@ -638,7 +638,7 @@
       "label": "grilling",
       "kind": "external",
       "what": "Interview pattern that walks a design tree in rounds: numbered questions, each with a recommended answer, until the frontier is empty.",
-      "when": "Reached by /ui-refine-loop's grill step and by /super-board lint for vague or multi-reading tickets; forbidden inside unattended workers.",
+      "when": "Reached by /ui-refine-loop's grill step and by /skill-board lint for vague or multi-reading tickets; forbidden inside unattended workers.",
       "how": "Asks the whole frontier per round and waits; facts come from sub-agents, decisions from the user. ui-refine-loop caps it at 10 questions in waves of 3, then 4.",
       "source": [
         ".agents/skills/grilling/SKILL.md"
@@ -789,7 +789,7 @@
       "source": [
         ".agents/skills/humanizer/SKILL.md",
         "sanjeev-skills/skills/humanizer/SKILL.md",
-        "_skills/vendor/super-board/skills/super-board/references/writing-standard.md"
+        "_skills/vendor/skill-board/skills/skill-board/references/writing-standard.md"
       ],
       "external": true,
       "origin": "sanjeev-skills (vendored blader/humanizer)",
@@ -931,8 +931,8 @@
       "when": "Listed by super-build's skill map and super-qa's dependencies for deciding which kind of test a change needs.",
       "how": "Informs coverage only; the localisation ladder, not this skill, picks the test layer. Not installed in SanjeevOS.",
       "source": [
-        "_skills/vendor/super-board/skills/super-qa/SKILL.md",
-        "_skills/vendor/super-board/skills/super-build/references/decision-policy.md"
+        "_skills/vendor/skill-board/skills/super-qa/SKILL.md",
+        "_skills/vendor/skill-board/skills/super-build/references/decision-policy.md"
       ],
       "external": true,
       "origin": "not installed in SanjeevOS"
@@ -945,7 +945,7 @@
       "when": "Listed by super-qa and super-build when the localisation ladder stops at unit or integration in a TS/JS repo.",
       "how": "Its references (core-expect, features-mocking, features-coverage, core-hooks, advanced-vi) guide test code. Not installed in SanjeevOS.",
       "source": [
-        "_skills/vendor/super-board/skills/super-qa/SKILL.md"
+        "_skills/vendor/skill-board/skills/super-qa/SKILL.md"
       ],
       "external": true,
       "origin": "not installed in SanjeevOS"
@@ -958,7 +958,7 @@
       "when": "Listed by super-qa when writing or refactoring a Playwright spec.",
       "how": "data-testid first with getByRole fallback, custom fixtures for auth and seeding, POM for reusable interactions. Not installed in SanjeevOS.",
       "source": [
-        "_skills/vendor/super-board/skills/super-qa/SKILL.md"
+        "_skills/vendor/skill-board/skills/super-qa/SKILL.md"
       ],
       "external": true,
       "origin": "not installed in SanjeevOS"
@@ -968,10 +968,10 @@
       "label": "qa-test-planner",
       "kind": "external",
       "what": "Test-plan helper lint dispatches for QA tickets with a vague test surface.",
-      "when": "Reached by /super-board lint Phase 4 for QA tickets whose test surface is vague.",
+      "when": "Reached by /skill-board lint Phase 4 for QA tickets whose test surface is vague.",
       "how": "One sub-agent per flagged issue drafts a concrete test plan. Not installed in SanjeevOS.",
       "source": [
-        "_skills/vendor/super-board/skills/super-board/references/lint.md"
+        "_skills/vendor/skill-board/skills/skill-board/references/lint.md"
       ],
       "external": true,
       "origin": "not installed in SanjeevOS"
@@ -1054,8 +1054,8 @@
       "label": "to-tickets",
       "kind": "external",
       "what": "Matt Pocock's **to-tickets** breaks a spec into **tracer-bullet tickets**. Each ticket ==says which tickets block it==.",
-      "when": "Use it right after **/to-spec**, to split the spec into work. /super-board lint also uses it to ==split a ticket that is too big==.",
-      "how": "It files blockers first, so every link points at a real ticket. The ticket count then ==picks the route==. With 1 to 5 tickets use **/implement-spec**, with 6 or more use **/super-board**.",
+      "when": "Use it right after **/to-spec**, to split the spec into work. /skill-board lint also uses it to ==split a ticket that is too big==.",
+      "how": "It files blockers first, so every link points at a real ticket. The ticket count then ==picks the route==. With 1 to 5 tickets use **/implement-spec**, with 6 or more use **/skill-board**.",
       "source": [
         ".agents/skills/to-tickets/SKILL.md"
       ],
@@ -1102,9 +1102,9 @@
       "when": "Each fix round, after the checker returns ranked, typed P0–P3 problems.",
       "how": "The workflow attaches routing.md's default command per type and suggests a chain (severity order, structural before surface, additive verbs only when the direction asks); the fixer reads each playbook and craft-floor, then makes the final call.",
       "source": [
-        "_skills/vendor/super-board/skills/ui-refine-loop/references/routing.md",
-        "_skills/vendor/super-board/workflows/ui-refine-loop.js",
-        "_skills/vendor/super-board/skills/ui-refine-loop/references/fixer-brief.md"
+        "_skills/vendor/skill-board/skills/ui-refine-loop/references/routing.md",
+        "_skills/vendor/skill-board/workflows/ui-refine-loop.js",
+        "_skills/vendor/skill-board/skills/ui-refine-loop/references/fixer-brief.md"
       ],
       "opensView": "impeccable-verbs",
       "author": "pbakaus"
@@ -1117,7 +1117,7 @@
       "when": "When a problem is typed needs-motion, personality or performance.",
       "how": "routing.md runs these after the structural, surface and fix tiers; animate and delight are additive, so they run only when the brief or taste direction asks for more.",
       "source": [
-        "_skills/vendor/super-board/skills/ui-refine-loop/references/routing.md"
+        "_skills/vendor/skill-board/skills/ui-refine-loop/references/routing.md"
       ],
       "opensView": "late-verbs",
       "author": "pbakaus"
@@ -1283,7 +1283,7 @@
       "label": "clarify",
       "kind": "verb",
       "what": "Improves UX copy: labels, errors, status words and instructions.",
-      "when": "Routed for `confusing-copy` in the refine loop; also dispatched by /super-board lint for copy or error-message ACs.",
+      "when": "Routed for `confusing-copy` in the refine loop; also dispatched by /skill-board lint for copy or error-message ACs.",
       "how": "Fix tier; refinement keeps the meaning of factual copy and never adds claims.",
       "source": [
         ".agents/skills/impeccable/SKILL.md",
@@ -1348,7 +1348,7 @@
       "label": "shape",
       "kind": "verb",
       "what": "Plans UX/UI for a feature before code is written.",
-      "when": "Dispatched by /super-board lint for feature tickets with undefined UX; never typed as a refine-loop problem.",
+      "when": "Dispatched by /skill-board lint for feature tickets with undefined UX; never typed as a refine-loop problem.",
       "how": "Requires init's PRODUCT.md; a redesign need found in the loop goes to openQuestions instead.",
       "source": [
         ".agents/skills/impeccable/SKILL.md",
@@ -1410,26 +1410,26 @@
     },
     {
       "id": "preflight",
-      "label": "super-board-preflight.sh",
+      "label": "skill-board-preflight.sh",
       "kind": "script",
       "what": "Builder pre-flight check: is a Ready card already done, already in progress, overlapping an open PR's files, or unclear?",
       "when": "Run once per batch of up to 5 Ready build cards by the wave's Pre-flight agent (or by the Builder as step 0 on the legacy backend), before any worktree.",
       "how": "Prints mechanical verdicts and near-miss candidates; the agent adds 'too big' and semantic matches, then returns proceed, hold, sequence or skipped. Hold and sequence move the card to Blocked with the block template; skipped leaves it in Ready.",
       "source": [
-        "_skills/vendor/super-board/scripts/super-board-preflight.sh",
-        "_skills/vendor/super-board/skills/super-board/references/run.md"
+        "_skills/vendor/skill-board/scripts/skill-board-preflight.sh",
+        "_skills/vendor/skill-board/skills/skill-board/references/run.md"
       ]
     },
     {
       "id": "pr-body",
-      "label": "super-board-pr-body.sh",
+      "label": "skill-board-pr-body.sh",
       "kind": "script",
       "what": "Rewrites one marker block of a PR body (redcheck, status, problem, solution, ac, history, visual, risk) without clobbering other lanes' blocks.",
       "when": "Called by every lane when it updates its part of the PR, and with --skeleton by ui-refine-loop for a fresh body.",
       "how": "`--pr N --block <name> --expect-head <sha>` with --body-file or --append-file (history rows); `--time` prints local time in the config's timezone.",
       "source": [
-        "_skills/vendor/super-board/scripts/super-board-pr-body.sh",
-        "_skills/vendor/super-board/skills/super-board/references/writing-standard.md"
+        "_skills/vendor/skill-board/scripts/skill-board-pr-body.sh",
+        "_skills/vendor/skill-board/skills/skill-board/references/writing-standard.md"
       ]
     },
     {
@@ -1440,67 +1440,67 @@
       "when": "The merge gate exits 7 (merge_policy: money, auth, destructive schema, over 400 lines) or 8 (a migration the robot may not run, or a declared human step).",
       "how": "The comment opens \"🙋 Your turn on #N\" with the exact commands as checkboxes; a human merges it, or comments `done` / labels `needs-you:done` so the planner's resume list sends it back to Review.",
       "source": [
-        "_skills/vendor/super-board/skills/super-board/references/block-template.md",
-        "_skills/vendor/super-board/skills/super-board/references/run.md"
+        "_skills/vendor/skill-board/skills/skill-board/references/block-template.md",
+        "_skills/vendor/skill-board/skills/skill-board/references/run.md"
       ]
     },
     {
       "id": "setup-py",
-      "label": "super-board-setup.py",
+      "label": "skill-board-setup.py",
       "kind": "script",
       "what": "The deterministic half of onboard: finds what is missing or old and fixes the must-haves, and handles boards and branches.",
       "when": "Run by onboard step 1 (check / fix), step 3 (board-rank, board-migrate, names) and step 4 (branch).",
       "how": "`fix` installs or refreshes skills, scripts, workflows, guard hooks and settings (via install.sh), removes super-refine / cleanup-wt / arch-loop folders, migrates config keys to v3, runs git init and adds Matt Pocock's skills, all backed up first. `board-migrate` adds missing columns and the three labels and moves Skipped cards to Done.",
       "source": [
-        "_skills/vendor/super-board/scripts/super-board-setup.py"
+        "_skills/vendor/skill-board/scripts/skill-board-setup.py"
       ]
     },
     {
       "id": "agents-md-py",
-      "label": "super-board-agents-md.py",
+      "label": "skill-board-agents-md.py",
       "kind": "script",
-      "what": "The deterministic half of the AGENTS.md step: detect, backup, the managed super-board block, the CLAUDE.md pointer, coverage and size checks.",
+      "what": "The deterministic half of the AGENTS.md step: detect, backup, the managed skill-board block, the CLAUDE.md pointer, coverage and size checks.",
       "when": "Run by onboard step 5 to stage the merge and at step 8 to write it; install.sh refreshes the managed block on re-install.",
       "how": "The agent merges rules semantically (duplicates once, conflicts asked one by one); the script proves every rule unit maps to a line (`coverage`), keeps AGENTS.md ≤ 200 lines with one marker pair, and writes atomically.",
       "source": [
-        "_skills/vendor/super-board/scripts/super-board-agents-md.py",
-        "_skills/vendor/super-board/skills/super-board/references/agents-md-block.md",
-        "_skills/vendor/super-board/skills/super-board/references/onboard.md"
+        "_skills/vendor/skill-board/scripts/skill-board-agents-md.py",
+        "_skills/vendor/skill-board/skills/skill-board/references/agents-md-block.md",
+        "_skills/vendor/skill-board/skills/skill-board/references/onboard.md"
       ]
     },
     {
       "id": "agents-file",
       "label": "AGENTS.md + CLAUDE.md",
       "kind": "board",
-      "what": "The project's instruction files: AGENTS.md as the single source of truth with a managed super-board block, and CLAUDE.md as `@AGENTS.md` plus Claude-only rules.",
+      "what": "The project's instruction files: AGENTS.md as the single source of truth with a managed skill-board block, and CLAUDE.md as `@AGENTS.md` plus Claude-only rules.",
       "when": "Written at onboard step 8 when Sanjeev chose to move his rules (or only add the section); the block is rewritten on re-install.",
-      "how": "The block sits between `<!-- super-board:begin -->` and `<!-- super-board:end -->`, rendered from agents-md-block.md with a Writing table that links the writing standard; nothing outside the markers is touched.",
+      "how": "The block sits between `<!-- skill-board:begin -->` and `<!-- skill-board:end -->`, rendered from agents-md-block.md with a Writing table that links the writing standard; nothing outside the markers is touched.",
       "source": [
-        "_skills/vendor/super-board/skills/super-board/references/agents-md-block.md",
-        "_skills/vendor/super-board/skills/super-board/references/onboard.md"
+        "_skills/vendor/skill-board/skills/skill-board/references/agents-md-block.md",
+        "_skills/vendor/skill-board/skills/skill-board/references/onboard.md"
       ]
     },
     {
       "id": "settings-py",
-      "label": "super-board-settings.py",
+      "label": "skill-board-settings.py",
       "kind": "script",
       "what": "Merges hook blocks and permission allow rules into .claude/settings.json without losing anything.",
       "when": "Run by install.sh for the guard hooks, and by onboard step 6/8 for the permission lines and the protect-main hook.",
       "how": "`hooks <settings> <snippet>` and `allow <settings> <rules…>` keep every existing key, back the file up, write atomically, and leave an invalid settings.json untouched; `--dry-run` prints the diff onboard shows as \"N lines\".",
       "source": [
-        "_skills/vendor/super-board/scripts/super-board-settings.py"
+        "_skills/vendor/skill-board/scripts/skill-board-settings.py"
       ]
     },
     {
       "id": "env-check",
-      "label": "super-board-env-check.sh",
+      "label": "skill-board-env-check.sh",
       "kind": "script",
       "what": "Says which env keys exist (present, empty or missing) without ever printing a value.",
       "when": "Run by onboard to detect SENTRY_AUTH_TOKEN, POSTHOG_PERSONAL_API_KEY or migration DB URLs, and allowed in permissions for runs.",
       "how": "Reads .env.local or .env itself and prints one word per key; guard-secrets lets a plain call through while still blocking cat, grep or source on dotenv files.",
       "source": [
-        "_skills/vendor/super-board/scripts/super-board-env-check.sh",
-        "_skills/vendor/super-board/hooks/guard-secrets.py"
+        "_skills/vendor/skill-board/scripts/skill-board-env-check.sh",
+        "_skills/vendor/skill-board/hooks/guard-secrets.py"
       ]
     },
     {
@@ -1511,18 +1511,18 @@
       "when": "Run by onboard step 7 (classify, ping, add) and by /super-collect for every custom source (list, normalize).",
       "how": "`collect_custom.py` classifies the typed text, pings read-only before saving, refuses commands that look like they change something, and turns output into candidates with fp `custom|<name>|<key>`. MCP reads go through the agent and `normalize`.",
       "source": [
-        "_skills/vendor/super-board/skills/super-collect/scripts/collect_custom.py"
+        "_skills/vendor/skill-board/skills/super-collect/scripts/collect_custom.py"
       ]
     },
     {
       "id": "get-sh",
       "label": "get.sh",
       "kind": "script",
-      "what": "One-line installer: `curl -fsSL …/get.sh | bash` fetches the latest super-board release and runs install.sh.",
+      "what": "One-line installer: `curl -fsSL …/get.sh | bash` fetches the latest skill-board release and runs install.sh.",
       "when": "Sanjeev (or a user) runs it in a project folder to install or upgrade; options --target, --ref, --no-helper-skills, and --no-hooks / --protect-main passed through.",
       "how": "Downloads the release tarball, runs install.sh, adds Matt Pocock's skills via `npx skills@latest add mattpocock/skills` unless told not to, and prints the next step once.",
       "source": [
-        "_skills/vendor/super-board/get.sh"
+        "_skills/vendor/skill-board/get.sh"
       ]
     },
     {
@@ -1531,33 +1531,33 @@
       "kind": "board",
       "what": "The Claude Code plugin form of the pack (marketplace.json + plugin.json): ships the seven skills only.",
       "when": "A user adds the marketplace and installs the plugin instead of running get.sh.",
-      "how": "Skills carry the plugin prefix (/super-board:super-board onboard); onboard step 1 then installs the guard hooks, .claude/bin scripts and workflows a plugin cannot ship from the plugin's own copy.",
+      "how": "Skills carry the plugin prefix (/skill-board:skill-board onboard); onboard step 1 then installs the guard hooks, .claude/bin scripts and workflows a plugin cannot ship from the plugin's own copy.",
       "source": [
-        "_skills/vendor/super-board/.claude-plugin/marketplace.json",
-        "_skills/vendor/super-board/.claude-plugin/plugin.json"
+        "_skills/vendor/skill-board/.claude-plugin/marketplace.json",
+        "_skills/vendor/skill-board/.claude-plugin/plugin.json"
       ]
     },
     {
       "id": "onboard-answers",
       "label": "onboard answers file",
       "kind": "board",
-      "what": "`.claude/super-board/onboard-answers.json`: every onboard answer, saved the moment it is given (gitignored).",
+      "what": "`.claude/skill-board/onboard-answers.json`: every onboard answer, saved the moment it is given (gitignored).",
       "when": "Written after each answer; read when onboard re-runs or resumes after a halt.",
       "how": "Atomic writes; `last_step` drives the \"Continue where you left off?\" screen, and a finished setup's values fill the step-8 table on re-run.",
       "source": [
-        "_skills/vendor/super-board/skills/super-board/references/onboard.md"
+        "_skills/vendor/skill-board/skills/skill-board/references/onboard.md"
       ]
     },
     {
       "id": "upgrade-json",
       "label": "upgrade record",
       "kind": "board",
-      "what": "`.claude/super-board/upgrade.json`: the version an install replaced, so onboard knows to upgrade a 2.x setup.",
+      "what": "`.claude/skill-board/upgrade.json`: the version an install replaced, so onboard knows to upgrade a 2.x setup.",
       "when": "Written by install.sh (or get.sh) when it finds an older install.",
-      "how": "super-board-setup.py fix reads it and reports \"Upgraded for you\": old folders removed, config keys migrated, labels mapped, Skipped cards moved to Done.",
+      "how": "skill-board-setup.py fix reads it and reports \"Upgraded for you\": old folders removed, config keys migrated, labels mapped, Skipped cards moved to Done.",
       "source": [
-        "_skills/vendor/super-board/install.sh",
-        "_skills/vendor/super-board/RELEASE-NOTES.md"
+        "_skills/vendor/skill-board/install.sh",
+        "_skills/vendor/skill-board/RELEASE-NOTES.md"
       ]
     },
     {
@@ -1568,7 +1568,7 @@
       "when": "Sanjeev runs **/git-sync** or says \"sync\", \"commit and push\" or \"pull and push\", usually ==at the end of a piece of work==.",
       "how": "Stages each group by path (never `git add -A`), **refuses secrets**, writes the host's commit format or the writing standard, gates `supabase/` changes on a migration file and advisors, then `git pull --no-rebase` and `git push`. ==The default or a protected branch needs a yes==.",
       "source": [
-        "_skills/vendor/super-board/skills/git-sync/SKILL.md"
+        "_skills/vendor/skill-board/skills/git-sync/SKILL.md"
       ],
       "sublabel": "commit · pull · push",
       "opensView": "git-sync",
@@ -1582,7 +1582,7 @@
       "when": "Run by **super-qa** on ==every PR==, not only on security labels. You can also run it by hand as /pr-security-review on a branch.",
       "how": "One sub-task finds candidates such as injection, auth bypass, secrets and data exposure. A parallel sub-task per candidate drops false positives and anything under 8/10. Each kept finding ==fails QA and sends the card back to Build==. It is Anthropic's **claude-code-security-review**, ported under MIT, and replaces QA's old built-in /security-review call.",
       "source": [
-        "_skills/vendor/super-board/skills/pr-security-review/SKILL.md"
+        "_skills/vendor/skill-board/skills/pr-security-review/SKILL.md"
       ],
       "external": true,
       "origin": "anthropics/claude-code-security-review (bundled port, MIT)",
@@ -1609,35 +1609,35 @@
   "edges": [
     {
       "id": "r-board-build",
-      "from": "super-board",
+      "from": "skill-board",
       "to": "super-build",
       "label": "starts Build lane",
       "when": "a planned Ready card labelled feature or bug (or unlabelled) passes pre-flight"
     },
     {
       "id": "r-board-qa",
-      "from": "super-board",
+      "from": "skill-board",
       "to": "super-qa",
       "label": "starts QA lane",
       "when": "a card is in QA, or in Ready with the qa label (skips Building)"
     },
     {
       "id": "r-board-review",
-      "from": "super-board",
+      "from": "skill-board",
       "to": "super-review",
       "label": "starts Review lane",
       "when": "a card is in Review"
     },
     {
       "id": "r-board-gh",
-      "from": "super-board",
+      "from": "skill-board",
       "to": "gh-board",
       "label": "drains",
       "when": "every wave until drained or halted"
     },
     {
       "id": "r-board-config",
-      "from": "super-board",
+      "from": "skill-board",
       "to": "sb-config",
       "label": "reads config",
       "when": "onboard writes it; every run reads it"
@@ -1710,7 +1710,7 @@
       "from": "ui-refine-loop",
       "to": "sb-config",
       "label": "reads refine block",
-      "when": "setup, when a super-board config exists"
+      "when": "setup, when a skill-board config exists"
     },
     {
       "id": "run-claim",
@@ -1721,38 +1721,38 @@
     },
     {
       "id": "sb-v-onboard",
-      "from": "super-board",
+      "from": "skill-board",
       "to": "sb-onboard",
       "label": "routes onboard",
-      "when": "Sanjeev runs /super-board onboard"
+      "when": "Sanjeev runs /skill-board onboard"
     },
     {
       "id": "sb-v-lint",
-      "from": "super-board",
+      "from": "skill-board",
       "to": "sb-lint",
       "label": "routes lint",
-      "when": "Sanjeev runs /super-board lint"
+      "when": "Sanjeev runs /skill-board lint"
     },
     {
       "id": "sb-v-status",
-      "from": "super-board",
+      "from": "skill-board",
       "to": "sb-status",
       "label": "routes status",
-      "when": "Sanjeev runs /super-board status"
+      "when": "Sanjeev runs /skill-board status"
     },
     {
       "id": "sb-v-run",
-      "from": "super-board",
+      "from": "skill-board",
       "to": "sb-run",
       "label": "routes run",
-      "when": "Sanjeev runs /super-board run, or asks to resume"
+      "when": "Sanjeev runs /skill-board run, or asks to resume"
     },
     {
       "id": "sb-v-stop",
-      "from": "super-board",
+      "from": "skill-board",
       "to": "sb-stop",
       "label": "routes stop",
-      "when": "Sanjeev runs /super-board stop or says pause"
+      "when": "Sanjeev runs /skill-board stop or says pause"
     },
     {
       "id": "sb-onb-config",
@@ -2991,7 +2991,7 @@
       "from": "install-sh",
       "to": "upgrade-json",
       "label": "records old version",
-      "when": "an older super-board install was found"
+      "when": "an older skill-board install was found"
     },
     {
       "id": "upgrade-setup",
@@ -3040,7 +3040,7 @@
     {
       "id": "root",
       "parent": null,
-      "title": "super-board pack",
+      "title": "skill-board pack",
       "caption": "Two ways in. Ideas start at /grill-me or /wayfinder; bugs and errors start at /super-collect. Both meet at /to-spec and /to-tickets, then the ticket count picks the route. The tools on the right run on their own.",
       "nodeIds": [
         "grill-me",
@@ -3050,7 +3050,7 @@
         "to-tickets",
         "route-fork",
         "implement-spec",
-        "super-board",
+        "skill-board",
         "super-build",
         "super-qa",
         "super-review",
@@ -3095,12 +3095,12 @@
         },
         {
           "from": "route-fork",
-          "to": "super-board",
+          "to": "skill-board",
           "label": "6+ tickets",
           "when": "big job: every ticket gets its own build, QA and review"
         },
         {
-          "from": "super-board",
+          "from": "skill-board",
           "to": "super-build",
           "label": "Ready cards"
         },
@@ -3144,7 +3144,7 @@
         "to-spec",
         "to-tickets",
         "route-fork",
-        "super-board",
+        "skill-board",
         "super-build",
         "super-qa",
         "super-review",
@@ -3180,7 +3180,7 @@
           4,
           0
         ],
-        "super-board": [
+        "skill-board": [
           4,
           2
         ],
@@ -3223,7 +3223,7 @@
           "sublabel": "Find real problems",
           "emphasis": true
         },
-        "super-board": {
+        "skill-board": {
           "verbs": [],
           "sublabel": "6+ tickets · run the board",
           "emphasis": true
@@ -3306,9 +3306,9 @@
         },
         {
           "id": "board-family",
-          "label": "/super-board · Build → QA → Review",
+          "label": "/skill-board · Build → QA → Review",
           "nodeIds": [
-            "super-board",
+            "skill-board",
             "super-build",
             "super-qa",
             "super-review"
@@ -3330,7 +3330,7 @@
         "super-collect",
         "to-spec",
         "to-tickets",
-        "super-board",
+        "skill-board",
         "super-build",
         "super-qa",
         "super-review",
@@ -3349,18 +3349,18 @@
           "sublabel": "1–5 fast · 6+ board",
           "what": "This is the **fork** between two ways to build. A small job takes the ==fast route==, and a big one goes to the board.",
           "when": "Pick a route right after **/to-tickets**, once you know ==how many tickets== the spec made. Count the tickets, not the files.",
-          "how": "With **1 to 5 tickets**, run **/implement-spec**. One session builds them all on one branch, with no QA lane. With **6 or more**, run **/super-board**, so ==each ticket gets its own build, QA and review==. Not sure? Pick the board when the work touches auth, billing or data.",
+          "how": "With **1 to 5 tickets**, run **/implement-spec**. One session builds them all on one branch, with no QA lane. With **6 or more**, run **/skill-board**, so ==each ticket gets its own build, QA and review==. Not sure? Pick the board when the work touches auth, billing or data.",
           "source": []
         }
       ]
     },
     {
-      "id": "super-board",
+      "id": "skill-board",
       "parent": "root",
-      "title": "/super-board · five verbs",
+      "title": "/skill-board · five verbs",
       "caption": "Onboard sets up; lint makes cards ready; run delegates the lanes. Status inspects a run; stop halts it.",
       "nodeIds": [
-        "super-board",
+        "skill-board",
         "sb-onboard",
         "sb-lint",
         "sb-status",
@@ -3397,8 +3397,8 @@
         }
       ],
       "nodeOverrides": {
-        "super-board": {
-          "label": "/super-board",
+        "skill-board": {
+          "label": "/skill-board",
           "verbs": [],
           "sublabel": "Five verbs",
           "emphasis": true
@@ -3440,15 +3440,15 @@
         "super-review",
         "sb-onboard",
         "sb-lint",
-        "super-board-run",
+        "skill-board-run",
         "sb-status",
         "sb-stop"
       ]
     },
     {
       "id": "sb-lint",
-      "parent": "super-board",
-      "title": "/super-board lint · Phase 4 routing",
+      "parent": "skill-board",
+      "title": "/skill-board lint · Phase 4 routing",
       "caption": "Interactive-only skills live here, never inside an unattended worker. Ticket-format fixes (criteria 16–18) and catch-alls get an inline draft.",
       "nodeIds": [
         "sb-lint",
@@ -3471,9 +3471,9 @@
       ]
     },
     {
-      "id": "super-board-run",
-      "parent": "super-board",
-      "title": "/super-board run · main steps",
+      "id": "skill-board-run",
+      "parent": "skill-board",
+      "title": "/skill-board run · main steps",
       "caption": "One wave: classify → pre-flight → delegate → merge → done. Up to min(16, CPUs − 2) cards run at once; the runtime queues the rest. Pre-flight checks batches of 5. Open a step for scripts and policies.",
       "nodeIds": [
         "sb-run",
@@ -3520,7 +3520,7 @@
           "when": "Each Ready card enters the classifier. Existing type labels take priority.",
           "how": "Read the issue body and comments. Judge complexity as low, medium or high; choose the worker model tier.",
           "source": [
-            "_skills/vendor/super-board/workflows/super-board-wave.js"
+            "_skills/vendor/skill-board/workflows/skill-board-wave.js"
           ],
           "opensView": "run-classify",
           "sublabel": "qa / bug / feature"
@@ -3533,8 +3533,8 @@
           "when": "Before any worktree or Builder starts. Check build cards in batches of up to five.",
           "how": "Combine mechanical checks with semantic matches. Return proceed, hold, sequence or skipped.",
           "source": [
-            "_skills/vendor/super-board/scripts/super-board-preflight.sh",
-            "_skills/vendor/super-board/skills/super-board/references/run.md"
+            "_skills/vendor/skill-board/scripts/skill-board-preflight.sh",
+            "_skills/vendor/skill-board/skills/skill-board/references/run.md"
           ],
           "opensView": "run-preflight",
           "sublabel": "Done? overlap? too big?"
@@ -3547,7 +3547,7 @@
           "when": "After pre-flight allows a build card to proceed. QA and Review cards enter their current lane.",
           "how": "Build advances to QA, then Review. A non-advanced exit stops that card’s chain; Review uses the session model. The runtime caps concurrent agents at min(16, CPUs − 2), and queues the rest.",
           "source": [
-            "_skills/vendor/super-board/workflows/super-board-wave.js"
+            "_skills/vendor/skill-board/workflows/skill-board-wave.js"
           ],
           "opensView": "run-lanes",
           "sublabel": "Build → QA → Review"
@@ -3560,8 +3560,8 @@
           "when": "Once Review passes. Human-only steps park the card in Blocked.",
           "how": "Check the current base and permitted migrations. Match the PR head before merge; clean the worktree afterwards.",
           "source": [
-            "_skills/vendor/super-board/scripts/super-board-merge-gate.sh",
-            "_skills/vendor/super-board/scripts/super-board-merge-policy.py"
+            "_skills/vendor/skill-board/scripts/skill-board-merge-gate.sh",
+            "_skills/vendor/skill-board/scripts/skill-board-merge-policy.py"
           ],
           "opensView": "merge-gate",
           "sublabel": "Prove + apply policy"
@@ -3574,8 +3574,8 @@
           "when": "After Review and the merge gate pass. Report the wave before selecting the next one.",
           "how": "Record merged, bounced, blocked or failed outcomes. Repeat waves until the board drains or a halt gate fires.",
           "source": [
-            "_skills/vendor/super-board/hooks/cleanup-wt.py",
-            "_skills/vendor/super-board/scripts/super-board-merge-gate.sh"
+            "_skills/vendor/skill-board/hooks/cleanup-wt.py",
+            "_skills/vendor/skill-board/scripts/skill-board-merge-gate.sh"
           ],
           "opensView": "run-done",
           "sublabel": "Merge · clean · reconcile"
@@ -3620,7 +3620,7 @@
     },
     {
       "id": "super-build",
-      "parent": "super-board",
+      "parent": "skill-board",
       "title": "super-build · skills by ticket type",
       "caption": "An explicit `Skills:` line wins; otherwise the type label picks the chain. Each PR stays under 400 changed lines. grilling is forbidden here and lives in lint.",
       "nodeIds": [
@@ -3665,7 +3665,7 @@
     },
     {
       "id": "super-qa",
-      "parent": "super-board",
+      "parent": "skill-board",
       "title": "super-qa · test plan, gap check, evidence",
       "caption": "Issue-scoped inside a run (qa-labelled cards skip Building); standalone it crawls routes and files onto the Super Ultimate QA board. Every PR also gets the pr-security-review pass.",
       "nodeIds": [
@@ -3712,7 +3712,7 @@
     },
     {
       "id": "super-review",
-      "parent": "super-board",
+      "parent": "skill-board",
       "title": "super-review · own pass, memory, merge gate",
       "caption": "Fresh review, adversarial grounding and refactor findings. Passing review enters the merge gate; human-only steps open their own view.",
       "nodeIds": [
@@ -3783,7 +3783,7 @@
           "when": "When /super-collect runs for the project. Use the requested window or the default 14 days.",
           "how": "Read the selected adapters and findings. Send each candidate to a fresh verifier.",
           "source": [
-            "_skills/vendor/super-board/skills/super-collect/SKILL.md"
+            "_skills/vendor/skill-board/skills/super-collect/SKILL.md"
           ],
           "opensView": "collect-sources",
           "sublabel": "Last 14 days by default"
@@ -3796,7 +3796,7 @@
           "when": "After source adapters return candidates. Use one fresh verifier for each candidate.",
           "how": "Verify against the project evidence. Mark unclear candidates needs-triage before filing.",
           "source": [
-            "_skills/vendor/super-board/skills/super-collect/SKILL.md"
+            "_skills/vendor/skill-board/skills/super-collect/SKILL.md"
           ],
           "opensView": "collect-verify",
           "sublabel": "One fresh check each"
@@ -3809,7 +3809,7 @@
           "when": "After verification produces the candidate results. Before writing tickets to the board.",
           "how": "Present the plan table for confirmation. Use --yes when filing is already authorized.",
           "source": [
-            "_skills/vendor/super-board/skills/super-collect/SKILL.md"
+            "_skills/vendor/skill-board/skills/super-collect/SKILL.md"
           ],
           "opensView": "collect-confirm",
           "sublabel": "Dry run until you say yes"
@@ -3820,9 +3820,9 @@
           "kind": "step",
           "what": "Write every verified problem into **one findings doc**. Each finding ==keeps its proof==.",
           "when": "After you confirm the plan. Only verified problems go in.",
-          "how": "Hand the doc to **/to-spec**, then **/to-tickets**. The tickets then ==pick the route==, /implement-spec or /super-board.",
+          "how": "Hand the doc to **/to-spec**, then **/to-tickets**. The tickets then ==pick the route==, /implement-spec or /skill-board.",
           "source": [
-            "_skills/vendor/super-board/skills/super-collect/scripts/super-collect-file.sh"
+            "_skills/vendor/skill-board/skills/super-collect/scripts/super-collect-file.sh"
           ],
           "opensView": "collect-submit",
           "sublabel": "Then /to-spec"
@@ -3937,8 +3937,8 @@
           "when": "At the start of a standalone refine task. Before unattended checking and fixing begins.",
           "how": "Ask at most ten questions. Write the agreed direction into the taste file.",
           "source": [
-            "_skills/vendor/super-board/skills/ui-refine-loop/SKILL.md",
-            "_skills/vendor/super-board/workflows/ui-refine-loop.js"
+            "_skills/vendor/skill-board/skills/ui-refine-loop/SKILL.md",
+            "_skills/vendor/skill-board/workflows/ui-refine-loop.js"
           ],
           "opensView": "refine-brief",
           "sublabel": "Agree what good means"
@@ -3951,8 +3951,8 @@
           "when": "At the start of each refinement round. Check the chosen page or component.",
           "how": "Capture screenshots and run critique or audit. Route typed findings to the appropriate fix verbs.",
           "source": [
-            "_skills/vendor/super-board/skills/ui-refine-loop/SKILL.md",
-            "_skills/vendor/super-board/workflows/ui-refine-loop.js"
+            "_skills/vendor/skill-board/skills/ui-refine-loop/SKILL.md",
+            "_skills/vendor/skill-board/workflows/ui-refine-loop.js"
           ],
           "opensView": "refine-check",
           "sublabel": "Rank typed problems"
@@ -3965,8 +3965,8 @@
           "when": "After checkers have ranked the problems. Use a fresh fixer for the round.",
           "how": "Chain the verbs in their prescribed order. Keep additive motion within the brief’s permission.",
           "source": [
-            "_skills/vendor/super-board/skills/ui-refine-loop/SKILL.md",
-            "_skills/vendor/super-board/workflows/ui-refine-loop.js"
+            "_skills/vendor/skill-board/skills/ui-refine-loop/SKILL.md",
+            "_skills/vendor/skill-board/workflows/ui-refine-loop.js"
           ],
           "opensView": "refine-fix",
           "sublabel": "Polish comes last"
@@ -3979,8 +3979,8 @@
           "when": "After the round’s fixer completes. Run five rounds by default unless a stop condition fires.",
           "how": "Write the outcome to the refine ledger. Stop after two clean checks, two reverted rounds or a dead agent.",
           "source": [
-            "_skills/vendor/super-board/skills/ui-refine-loop/SKILL.md",
-            "_skills/vendor/super-board/workflows/ui-refine-loop.js"
+            "_skills/vendor/skill-board/skills/ui-refine-loop/SKILL.md",
+            "_skills/vendor/skill-board/workflows/ui-refine-loop.js"
           ],
           "opensView": "refine-review",
           "sublabel": "Default: 5 rounds"
@@ -3993,8 +3993,8 @@
           "when": "When the standalone refinement loop finishes. After fixes have received their finish review.",
           "how": "Use the PR body marker blocks. Follow the writing standard with humanizer.",
           "source": [
-            "_skills/vendor/super-board/skills/ui-refine-loop/SKILL.md",
-            "_skills/vendor/super-board/skills/ui-refine-loop/scripts/pr-shots.sh"
+            "_skills/vendor/skill-board/skills/ui-refine-loop/SKILL.md",
+            "_skills/vendor/skill-board/skills/ui-refine-loop/scripts/pr-shots.sh"
           ],
           "opensView": "refine-pr",
           "sublabel": "Before | After evidence"
@@ -4476,8 +4476,8 @@
     },
     {
       "id": "sb-onboard",
-      "parent": "super-board",
-      "title": "/super-board onboard · setup",
+      "parent": "skill-board",
+      "title": "/skill-board onboard · setup",
       "caption": "Eight questions, grouped into five phases. Answers save as you go; files change once at the final “Write everything” step.",
       "nodeIds": [
         "sb-onboard",
@@ -4524,8 +4524,8 @@
           "when": "At the first Checks and GitHub setup questions. Re-run onboard to repair an existing setup.",
           "how": "Run the setup helper for must-haves. Save answers as each question completes.",
           "source": [
-            "_skills/vendor/super-board/skills/super-board/references/onboard.md",
-            "_skills/vendor/super-board/scripts/super-board-setup.py"
+            "_skills/vendor/skill-board/skills/skill-board/references/onboard.md",
+            "_skills/vendor/skill-board/scripts/skill-board-setup.py"
           ],
           "opensView": "onboard-checks",
           "sublabel": "Checks · GitHub"
@@ -4538,8 +4538,8 @@
           "when": "During the Board and Branch questions. After required tools and GitHub access are ready.",
           "how": "Record the board and branch in the saved answers. Write the config only after the final review.",
           "source": [
-            "_skills/vendor/super-board/skills/super-board/references/onboard.md",
-            "_skills/vendor/super-board/scripts/super-board-setup.py"
+            "_skills/vendor/skill-board/skills/skill-board/references/onboard.md",
+            "_skills/vendor/skill-board/scripts/skill-board-setup.py"
           ],
           "opensView": "onboard-project",
           "sublabel": "Board · Branch"
@@ -4552,8 +4552,8 @@
           "when": "During the AGENTS.md and Policies questions. Before the final write of repository files.",
           "how": "Generate the standards and hook settings. Enable the protected-push guard only when chosen.",
           "source": [
-            "_skills/vendor/super-board/skills/super-board/references/onboard.md",
-            "_skills/vendor/super-board/scripts/super-board-setup.py"
+            "_skills/vendor/skill-board/skills/skill-board/references/onboard.md",
+            "_skills/vendor/skill-board/scripts/skill-board-setup.py"
           ],
           "opensView": "onboard-policies",
           "sublabel": "AGENTS.md · Policies"
@@ -4566,7 +4566,7 @@
           "when": "During the Bug sources setup question. After standards and policies are selected.",
           "how": "Save source choices in the collect config. Review all answers before writing files.",
           "source": [
-            "_skills/vendor/super-board/skills/super-collect/SKILL.md"
+            "_skills/vendor/skill-board/skills/super-collect/SKILL.md"
           ],
           "opensView": "onboard-sources",
           "sublabel": "Bug sources"
@@ -4577,10 +4577,10 @@
           "kind": "step",
           "what": "Review all saved setup answers. Write repository files once at step eight.",
           "when": "When the owner chooses “Write everything”. After all setup questions are complete.",
-          "how": "Apply the setup and config writes together. End by naming /super-board lint as the next command.",
+          "how": "Apply the setup and config writes together. End by naming /skill-board lint as the next command.",
           "source": [
-            "_skills/vendor/super-board/skills/super-board/references/onboard.md",
-            "_skills/vendor/super-board/scripts/super-board-setup.py"
+            "_skills/vendor/skill-board/skills/skill-board/references/onboard.md",
+            "_skills/vendor/skill-board/scripts/skill-board-setup.py"
           ],
           "opensView": "onboard-write",
           "sublabel": "Review · then lint"
@@ -4657,7 +4657,7 @@
     },
     {
       "id": "run-start",
-      "parent": "super-board-run",
+      "parent": "skill-board-run",
       "title": "Run trigger · planner and guards",
       "caption": "",
       "nodeIds": [
@@ -4690,11 +4690,11 @@
           "label": "Usage pause",
           "kind": "step",
           "what": "Pause when the rate or usage guard requires it. Report the reset time and remaining cards.",
-          "when": "Before the planner at the start of a wave. Resume with /super-board run.",
+          "when": "Before the planner at the start of a wave. Resume with /skill-board run.",
           "how": "Check the rate guard and usage window. Halt on repeated zero progress, a high block rate or an explicit stop.",
           "source": [
-            "_skills/vendor/super-board/skills/super-board/references/run-workflow.md",
-            "_skills/vendor/super-board/skills/super-board/references/run.md"
+            "_skills/vendor/skill-board/skills/skill-board/references/run-workflow.md",
+            "_skills/vendor/skill-board/skills/skill-board/references/run.md"
           ],
           "opensView": "usage-pause"
         }
@@ -4731,7 +4731,7 @@
     },
     {
       "id": "run-classify",
-      "parent": "super-board-run",
+      "parent": "skill-board-run",
       "title": "Classifier · labels, planner and state",
       "caption": "",
       "nodeIds": [
@@ -4772,7 +4772,7 @@
     },
     {
       "id": "run-preflight",
-      "parent": "super-board-run",
+      "parent": "skill-board-run",
       "title": "Pre-flight · readiness and size",
       "caption": "",
       "nodeIds": [
@@ -4808,10 +4808,10 @@
           "when": "During lint and pre-flight readiness checks. Recheck during Build and at the merge gate.",
           "how": "The Builder stops and proposes a /to-tickets split. Merge policy escalates a diff over auto_max_lines.",
           "source": [
-            "_skills/vendor/super-board/skills/super-build/SKILL.md",
-            "_skills/vendor/super-board/skills/super-build/references/decision-policy.md",
-            "_skills/vendor/super-board/skills/super-build/references/worker-preamble.md",
-            "_skills/vendor/super-board/skills/super-board/references/run.md"
+            "_skills/vendor/skill-board/skills/super-build/SKILL.md",
+            "_skills/vendor/skill-board/skills/super-build/references/decision-policy.md",
+            "_skills/vendor/skill-board/skills/super-build/references/worker-preamble.md",
+            "_skills/vendor/skill-board/skills/skill-board/references/run.md"
           ],
           "opensView": "size-cap"
         }
@@ -4859,7 +4859,7 @@
     },
     {
       "id": "run-lanes",
-      "parent": "super-board-run",
+      "parent": "skill-board-run",
       "title": "Delegate · Build → QA → Review",
       "caption": "Each card enters the lane selected by its label. Review gets a fresh context.",
       "nodeIds": [
@@ -4906,7 +4906,7 @@
     },
     {
       "id": "merge-gate",
-      "parent": "super-board-run",
+      "parent": "skill-board-run",
       "title": "Merge gate · proof, policy and human handoff",
       "caption": "",
       "nodeIds": [
@@ -4942,8 +4942,8 @@
           "when": "After Review passes. Decide inside the atomic merge lock.",
           "how": "Exit 7 for money, auth, destructive schema or excessive size. Exit 8 for a disallowed migration or declared human step.",
           "source": [
-            "_skills/vendor/super-board/scripts/super-board-merge-gate.sh",
-            "_skills/vendor/super-board/scripts/super-board-merge-policy.py"
+            "_skills/vendor/skill-board/scripts/skill-board-merge-gate.sh",
+            "_skills/vendor/skill-board/scripts/skill-board-merge-policy.py"
           ],
           "opensView": "merge-policy"
         }
@@ -5052,7 +5052,7 @@
     },
     {
       "id": "run-done",
-      "parent": "super-board-run",
+      "parent": "skill-board-run",
       "title": "Done · cleanup and reconciliation",
       "caption": "",
       "nodeIds": [
@@ -5455,12 +5455,12 @@
           "label": "Findings doc",
           "kind": "board",
           "sublabel": "collect-<date>.md",
-          "what": "**One file** for the whole run: `docs/super-board/findings/collect-<date>.md`. Findings with the same cause ==share one group==.",
+          "what": "**One file** for the whole run: `docs/skill-board/findings/collect-<date>.md`. Findings with the same cause ==share one group==.",
           "when": "Written after you confirm. Only problems the verifier marked **file** or **needs-triage** go in. Drops and duplicates are listed under \"Not in this doc\".",
           "how": "`collect_handoff.py doc` shows it first and writes it with `--yes`. It never overwrites: a second run that day gets `-2`. A duplicate still gets its \"Seen again\" comment, and a **GitHub issue** is ==adopted as it is==, not copied into the doc.",
           "source": [
-            "_skills/vendor/super-board/skills/super-collect/SKILL.md",
-            "_skills/vendor/super-board/skills/super-collect/scripts/collect_handoff.py"
+            "_skills/vendor/skill-board/skills/super-collect/SKILL.md",
+            "_skills/vendor/skill-board/skills/super-collect/scripts/collect_handoff.py"
           ]
         },
         {
@@ -5470,11 +5470,11 @@
           "sublabel": "1–5 fast · 6+ board",
           "what": "The **fork** after /to-tickets. The ticket count ==picks who builds==.",
           "when": "Right after /to-tickets publishes the tickets. `collect_handoff.py fork --tickets <n>` makes the call.",
-          "how": "With **1 to 5 tickets**, super-collect prints `/implement-spec <spec>` and ==starts it only after you say yes==. One session, no QA lane. With **6 or more**, each ticket is adopted into **Backlog**; then run /super-board lint. No /implement-spec installed? The tickets go to Backlog too.",
+          "how": "With **1 to 5 tickets**, super-collect prints `/implement-spec <spec>` and ==starts it only after you say yes==. One session, no QA lane. With **6 or more**, each ticket is adopted into **Backlog**; then run /skill-board lint. No /implement-spec installed? The tickets go to Backlog too.",
           "source": [
-            "_skills/vendor/super-board/skills/super-collect/SKILL.md",
-            "_skills/vendor/super-board/skills/super-collect/scripts/collect_handoff.py",
-            "_skills/vendor/super-board/docs/super-board/routing.md"
+            "_skills/vendor/skill-board/skills/super-collect/SKILL.md",
+            "_skills/vendor/skill-board/skills/super-collect/scripts/collect_handoff.py",
+            "_skills/vendor/skill-board/docs/skill-board/routing.md"
           ]
         }
       ]
@@ -5656,8 +5656,8 @@
     },
     {
       "id": "sb-status",
-      "parent": "super-board",
-      "title": "/super-board status",
+      "parent": "skill-board",
+      "title": "/skill-board status",
       "caption": "Inspect active work, lane outcomes and the dispatcher status without starting a worker.",
       "nodeIds": [
         "sb-status"
@@ -5666,8 +5666,8 @@
     },
     {
       "id": "sb-stop",
-      "parent": "super-board",
-      "title": "/super-board stop",
+      "parent": "skill-board",
+      "title": "/skill-board stop",
       "caption": "Halt the active dispatcher and report what was stopped.",
       "nodeIds": [
         "sb-stop"
@@ -5855,14 +5855,14 @@
     }
   ],
   "notes": [
-    "Refreshed to super-board v3.0.0 (feat/sb-cleanup @ b67241e1, 28 commits after cd199b2d). Source paths are repo-root-relative.",
+    "Refreshed to skill-board v3.0.0 (feat/sb-cleanup @ b67241e1, 28 commits after cd199b2d). Source paths are repo-root-relative.",
     "Board: seven columns, no Skipped (a dropped card is closed as not planned → Done with 🤷). Labels qa · bug · feature route cards; qa skips Building; the classifier adds feature or bug, never qa. The per-board `variant` is gone and a `qa-only` config is refused with exit 65 until onboard upgrades it.",
-    "Onboarding is an 8-step wizard (Checks · GitHub · Board · Branch · AGENTS.md · Policies · Bug sources · Review) backed by super-board-setup.py (check, fix, migrate-config, names, branch, board-rank, board-migrate). New view sb-onboard; its steps are edge labels, not nodes.",
-    "Merge policy and DB migrations live in the merge gate (super-board-merge-policy.py): money, auth, destructive schema or a diff over auto_max_lines (400 changed lines, lockfiles/generated/snapshots/migration SQL excluded) exits 7; a migration outside allowed_envs, a failed migrate or a declared human step exits 8. Both park the card in Blocked with the 🙋 checklist and the needs-you label, with no extra column; `done` sends it back through the planner's resume list.",
-    "Builder pre-flight (super-board-preflight.sh, a Pre-flight phase in super-board-wave.js, batches of 5) checks already done / in progress / file overlap / unclear / too big before any card is built. Lint has 18 criteria now: 15 = too big (split via /to-tickets), 16–18 = ticket format.",
-    "Writing standard (references/writing-standard.md): commits `<emoji> [type] scope: subject` + bullets, tickets Problem · Context · Fix · AC · Risk · Blocked by, PR bodies in marker blocks rewritten per lane with super-board-pr-body.sh, comments `[role] [label] status`, prose through humanizer when installed. That is why every lane view now shows pr-body and humanizer.",
+    "Onboarding is an 8-step wizard (Checks · GitHub · Board · Branch · AGENTS.md · Policies · Bug sources · Review) backed by skill-board-setup.py (check, fix, migrate-config, names, branch, board-rank, board-migrate). New view sb-onboard; its steps are edge labels, not nodes.",
+    "Merge policy and DB migrations live in the merge gate (skill-board-merge-policy.py): money, auth, destructive schema or a diff over auto_max_lines (400 changed lines, lockfiles/generated/snapshots/migration SQL excluded) exits 7; a migration outside allowed_envs, a failed migrate or a declared human step exits 8. Both park the card in Blocked with the 🙋 checklist and the needs-you label, with no extra column; `done` sends it back through the planner's resume list.",
+    "Builder pre-flight (skill-board-preflight.sh, a Pre-flight phase in skill-board-wave.js, batches of 5) checks already done / in progress / file overlap / unclear / too big before any card is built. Lint has 18 criteria now: 15 = too big (split via /to-tickets), 16–18 = ticket format.",
+    "Writing standard (references/writing-standard.md): commits `<emoji> [type] scope: subject` + bullets, tickets Problem · Context · Fix · AC · Risk · Blocked by, PR bodies in marker blocks rewritten per lane with skill-board-pr-body.sh, comments `[role] [label] status`, prose through humanizer when installed. That is why every lane view now shows pr-body and humanizer.",
     "super-collect gained custom sources (collect_custom.py: http, cli, mcp) added in onboard's \"➕ Add another source\", with fingerprint `custom|<name>|<key>` and the same verifier and filer.",
-    "Install: get.sh one-liner, a plugin marketplace (skills only; onboard adds hooks, scripts and workflows), install.sh with grouped output and an upgrade record, and super-board-settings.py for hook and allow-line merges. There is a new install view under root. env-check (key names only) is allowed through guard-secrets. The AGENTS.md helper is super-board-agents-md.py.",
+    "Install: get.sh one-liner, a plugin marketplace (skills only; onboard adds hooks, scripts and workflows), install.sh with grouped output and an upgrade record, and skill-board-settings.py for hook and allow-line merges. There is a new install view under root. env-check (key names only) is allowed through guard-secrets. The AGENTS.md helper is skill-board-agents-md.py.",
     "Added nodes: preflight, pr-body, needs-you, setup-py, agents-md-py, agents-file, settings-py, env-check, collect-custom, get-sh, plugin-mkt, onboard-answers, upgrade-json. Added views: sb-onboard, install. Removed edges: sb-onb-push (now settings-push in sb-onboard), h-install and h-ships (now install-sh → settings-py and install-sh → hooks). Nothing was renamed.",
     "Also since 88c27812: super-review truth-check sub-agents get a fixed verbatim brief (Over-engineering never blocks), and status lists columns in board order with Backlog. Disagreement: the coordinator listed 'labels qa/bug/feature routing'. That matches, with one addition: no label is also built (treated as feature).",
     "Kept as-is but stale in the files: the merge protocol and the wave.js `humanApprovesMerge` arg still mention human_approves_merge, which onboard now migrates into merge_policy. super-qa standalone still files onto the separate Super Ultimate QA board.",

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Shared scaffold for the super-collect evals (evals/collect-*/seed.sh sources this).
-# Builds a small "shop" app repo with a super-board config, the pack's collect scripts in
+# Builds a small "shop" app repo with a skill-board config, the pack's collect scripts in
 # .claude/, and fully offline sources:
 #   gh            evals/_stubs/bin/gh, answering from .git/gh-fixture/
 #   Sentry/PostHog evals/_stubs/py/sitecustomize.py, answering from .git/collect-fixture/
@@ -164,21 +164,21 @@ TS
   printf '.gh-log\n.env\nnode_modules/\n__pycache__/\n' > .gitignore
   git_at 30 "shop: checkout, profile, signup, receipts, reports"
 
-  # --- super-board install (scripts only, so the plugin's SKILL.md is the one in play) ----
-  mkdir -p .claude/skills/super-collect .claude/skills/super-board .claude/bin .claude/super-board/configs
+  # --- skill-board install (scripts only, so the plugin's SKILL.md is the one in play) ----
+  mkdir -p .claude/skills/super-collect .claude/skills/skill-board .claude/bin .claude/skill-board/configs
   cp -R "$PACK/skills/super-collect/scripts" .claude/skills/super-collect/
-  cp -R "$PACK/skills/super-board/references" .claude/skills/super-board/
+  cp -R "$PACK/skills/skill-board/references" .claude/skills/skill-board/
   cp "$PACK"/scripts/*.sh "$PACK"/scripts/*.py .claude/bin/
-  echo shop > .claude/super-board/active
+  echo shop > .claude/skill-board/active
   jq -n --argjson collect "$collect" '{
     version: 1, variant: "full",
     project: {owner: "example", number: 1, title: "Shop"},
     repo: {path: ".", remote: "https://github.com/example/shop.git"},
-    paths: {runs_dir: "docs/super-board/runs"},
-    collect: $collect}' > .claude/super-board/configs/shop.json
+    paths: {runs_dir: "docs/skill-board/runs"},
+    collect: $collect}' > .claude/skill-board/configs/shop.json
   # Fake credentials: the HTTP shim never sends them anywhere.
   printf 'SENTRY_AUTH_TOKEN=sntrys_eval_offline_token\nPOSTHOG_PERSONAL_API_KEY=phx_eval_offline_key\n' > .env
-  git_at 20 "chore: install super-board"
+  git_at 20 "chore: install skill-board"
 
   # --- offline sources -------------------------------------------------------
   mkdir -p .git/collect-fixture .git/gh-fixture

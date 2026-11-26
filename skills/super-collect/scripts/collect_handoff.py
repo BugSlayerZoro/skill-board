@@ -10,10 +10,10 @@ route  Resolves to-spec, to-tickets and implement-spec with the pack's skills-re
        route "backlog" with a printable reason: file straight into Backlog as before.
 doc    Writes ONE findings doc from the verifier's results: `file` and `needs-triage`
        findings grouped by `group` (else by source), everything else listed under
-       "Not in this doc". Default path docs/super-board/findings/collect-<date>.md;
+       "Not in this doc". Default path docs/skill-board/findings/collect-<date>.md;
        an existing file is never overwritten (-2, -3, …). Without --yes it prints the
        doc and writes nothing.
-fork   1–5 tickets → implement-spec (one session, no QA lane); 6+ → super-board Backlog.
+fork   1–5 tickets → implement-spec (one session, no QA lane); 6+ → skill-board Backlog.
 
 Exits: 0 ok · 2 resolver not found · 3 nothing verified to hand off · 64 bad args
 """
@@ -30,30 +30,30 @@ from pathlib import Path
 CHAIN = ("to-spec", "to-tickets")
 SMALL = 5            # 1..SMALL tickets → /implement-spec
 KEEP = ("file", "needs-triage")
-DOC_DIR = "docs/super-board/findings"
+DOC_DIR = "docs/skill-board/findings"
 
 
 def resolver():
-    """Load super-board-skills-ready.py: installed .claude/bin, else the pack's scripts/."""
+    """Load skill-board-skills-ready.py: installed .claude/bin, else the pack's scripts/."""
     here = Path(__file__).resolve().parent
-    bin_env = os.environ.get("SUPER_BOARD_BIN")
+    bin_env = os.environ.get("SKILL_BOARD_BIN")
     dirs = ([Path(bin_env)] if bin_env else []) + [Path(".claude/bin"), here.parents[2] / "bin",
                                                    here.parents[2] / "scripts"]
     for d in dirs:
-        path = d / "super-board-skills-ready.py"
+        path = d / "skill-board-skills-ready.py"
         if path.is_file():
             spec = importlib.util.spec_from_file_location("sb_skills_ready", path)
             mod = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(mod)
             return mod
-    print("collect-handoff: cannot find super-board-skills-ready.py — set SUPER_BOARD_BIN or run install.sh",
+    print("collect-handoff: cannot find skill-board-skills-ready.py — set SKILL_BOARD_BIN or run install.sh",
           file=sys.stderr)
     sys.exit(2)
 
 
 def route(args):
     mod = resolver()
-    inv = mod.Inventory(args.root, args.host, args.home or os.environ.get("SUPER_BOARD_SKILLS_HOME"))
+    inv = mod.Inventory(args.root, args.host, args.home or os.environ.get("SKILL_BOARD_SKILLS_HOME"))
     found = {n: inv.resolve("mattpocock-skills:" + n)[0] for n in CHAIN + ("implement-spec",)}
     missing = [n for n in CHAIN if not found[n]]
     out = {"route": "backlog" if missing else "planning", "missing": missing,
@@ -128,9 +128,9 @@ def fork(args):
         print("collect-handoff: --tickets must be 1 or more", file=sys.stderr)
         return 64
     if args.tickets > SMALL:
-        out = {"build": "super-board", "why": f"{args.tickets} tickets (6+): add each to Backlog, then /super-board lint and run"}
+        out = {"build": "skill-board", "why": f"{args.tickets} tickets (6+): add each to Backlog, then /skill-board lint and run"}
     elif args.no_implement_spec:
-        out = {"build": "super-board", "why": "implement-spec not installed: add the tickets to Backlog instead"}
+        out = {"build": "skill-board", "why": "implement-spec not installed: add the tickets to Backlog instead"}
     else:
         out = {"build": "implement-spec", "why": f"{args.tickets} tickets (1–5): one /implement-spec session, no QA lane"}
     print(json.dumps(out))

@@ -1,15 +1,15 @@
 ---
 name: super-build
-description: Builder lane of the super-board pipeline — takes a `Ready` GitHub Project card into its own per-issue git worktree, makes the smallest safe change test-first (TDD, `ponytail` simplest-first, official docs first for third-party APIs, upgrades and auth/billing), opens a draft PR and hands it to QA and Review through the board; it never merges — merges go through the Reviewer's merge gate. Inside `super-board run` it runs as a lane agent in the in-session wave workflow (`workflows/super-board-wave.js`, no worker cap unless `max_workers` is set); standalone headless `claude -p` dispatch is legacy opt-in. Use when the user says "Super Build", "run the build loop", "/super-build", or invokes the skill.
+description: Builder lane of the skill-board pipeline — takes a `Ready` GitHub Project card into its own per-issue git worktree, makes the smallest safe change test-first (TDD, `ponytail` simplest-first, official docs first for third-party APIs, upgrades and auth/billing), opens a draft PR and hands it to QA and Review through the board; it never merges — merges go through the Reviewer's merge gate. Inside `skill-board run` it runs as a lane agent in the in-session wave workflow (`workflows/skill-board-wave.js`, no worker cap unless `max_workers` is set); standalone headless `claude -p` dispatch is legacy opt-in. Use when the user says "Super Build", "run the build loop", "/super-build", or invokes the skill.
 ---
 
 # Super Build — Builder lane and legacy headless GitHub-Project executor
 
-Inside `super-board run`, Super Build is the Builder lane: a lane agent in the in-session wave workflow (`workflows/super-board-wave.js`) that follows "super-board integration" below. Run on its own, `/super-build` is the **legacy headless path (opt-in)**: you are the orchestrator, the source of truth is the **`Ready` column of the configured GitHub Project board**, and your job is to dispatch every issue in `Ready` (in board order) as a headless `claude -p` worker in its own git worktree, open a PR for each finished branch, and move its card to `QA` so the Tester and Reviewer take it from there. Super Build never merges — merging happens only through the Reviewer's merge gate (`scripts/super-board-merge-gate.sh`).
+Inside `skill-board run`, Super Build is the Builder lane: a lane agent in the in-session wave workflow (`workflows/skill-board-wave.js`) that follows "skill-board integration" below. Run on its own, `/super-build` is the **legacy headless path (opt-in)**: you are the orchestrator, the source of truth is the **`Ready` column of the configured GitHub Project board**, and your job is to dispatch every issue in `Ready` (in board order) as a headless `claude -p` worker in its own git worktree, open a PR for each finished branch, and move its card to `QA` so the Tester and Reviewer take it from there. Super Build never merges — merging happens only through the Reviewer's merge gate (`scripts/skill-board-merge-gate.sh`).
 
 **Curation contract:** the human moves cards into `Ready` when they should be worked. The loop never reads `Backlog`, `In Progress`, or `Done` cards. If `Ready` is empty, the loop reports "queue empty" and exits cleanly — no error.
 
-**This skill is single-purpose: EXECUTE curated GitHub Project `Ready` issues.** It is INDEPENDENT of `/super-qa` / **Super QA** (the autonomous bug-bash loop that hardens shipped code). They share no state unless a `super-board run` sequences them through the board. Run **Super Build** to make forward progress on the issue queue; run **Super QA** to bug-bash the existing codebase. They CAN run concurrently in different orchestrator sessions, but expect merge conflicts if both touch the same files.
+**This skill is single-purpose: EXECUTE curated GitHub Project `Ready` issues.** It is INDEPENDENT of `/super-qa` / **Super QA** (the autonomous bug-bash loop that hardens shipped code). They share no state unless a `skill-board run` sequences them through the board. Run **Super Build** to make forward progress on the issue queue; run **Super QA** to bug-bash the existing codebase. They CAN run concurrently in different orchestrator sessions, but expect merge conflicts if both touch the same files.
 
 ## Role boundary
 
@@ -17,7 +17,7 @@ Super Build is the canonical builder. Do not use a separate `build-feature` work
 
 Super Build may implement, test, commit, push, open PRs, and move project cards to `QA`. It never merges, closes issues, or moves cards to `Done` — the Reviewer does that through the merge gate. It should not invent new product scope beyond the issue body. If the issue needs product/design/security judgment, apply the human-gate or WIP-partial path instead of guessing.
 
-**GitHub budget** — every "move card" is `.claude/bin/super-board-card.sh --config <cfg> move <N> <Status>` (1 GraphQL point; `gh project item-list` / `field-list` cost ~100–200). Comments, labels and PR reads go over REST; [rate-limit-etiquette.md](../super-board/references/rate-limit-etiquette.md) → "Price list" has the calls.
+**GitHub budget** — every "move card" is `.claude/bin/skill-board-card.sh --config <cfg> move <N> <Status>` (1 GraphQL point; `gh project item-list` / `field-list` cost ~100–200). Comments, labels and PR reads go over REST; [rate-limit-etiquette.md](../skill-board/references/rate-limit-etiquette.md) → "Price list" has the calls.
 
 ## Configuration
 
@@ -52,11 +52,11 @@ Source column is `Ready` (override with `BUILD_LOOP_SOURCE_COLUMN`):
 ```bash
 SOURCE_COLUMN="${BUILD_LOOP_SOURCE_COLUMN:-Ready}"
 
-.claude/bin/super-board-card.sh --owner "$BUILD_LOOP_OWNER" --number "$BUILD_LOOP_PROJECT" items \
+.claude/bin/skill-board-card.sh --owner "$BUILD_LOOP_OWNER" --number "$BUILD_LOOP_PROJECT" items \
   | jq --arg col "$SOURCE_COLUMN" '.items[] | select(.status == $col and .content.type == "Issue")'
 ```
 
-`super-board-card.sh items` is the `gh project item-list` shape for ~1 GraphQL point per 100 cards (item-list spends 101) — without bodies.
+`skill-board-card.sh items` is the `gh project item-list` shape for ~1 GraphQL point per 100 cards (item-list spends 101) — without bodies.
 
 For each Ready item:
 - Capture `content.number` (issue #), `content.title` and `labels`; read the body over REST: `gh api repos/{owner}/{repo}/issues/<N> --jq .body`.
@@ -72,9 +72,9 @@ If `Ready` is empty: print `📭 Project board "Ready" column is empty — nothi
 
 ### 1b. Resolve the selected worker skills before locks
 
-Hydrate each selected issue through `super-board-github-read.py --kind issue --
+Hydrate each selected issue through `skill-board-github-read.py --kind issue --
 issue view <N> --json number,title,body`. Save a JSON array with number, Ready
-status, labels and literal body. Run `.claude/bin/super-board-skills-ready.py
+status, labels and literal body. Run `.claude/bin/skill-board-skills-ready.py
 --root <repo> --host claude --cards <cards.json> --lane build` before label
 creation, stale-lock recovery, comments or dispatch. Exit 10 halts and names the
 missing helpers. Preserve existing claims and worktrees. No automatic helper
@@ -91,7 +91,7 @@ gh label create human-gated --color B60205 --description "Requires manual handli
 
 ### 3. Dispatch wave (worker cap)
 
-Worker cap on this legacy path: `max_workers` from the super-board config when set, otherwise 3.
+Worker cap on this legacy path: `max_workers` from the skill-board config when set, otherwise 3.
 
 Report once per wave: `▶️ Super Build dispatching: Issues [#N1, #N2, #N3] (parallel)`
 
@@ -128,12 +128,12 @@ The dispatcher (this skill's `scripts/super-build-dispatch.sh`) handles:
 Poll BashOutput on each in-flight shell. As each finishes:
 
 After creating either a complete or partial PR below, follow
-[PR author notes](../super-board/references/pr-author-notes.md) before reporting the
+[PR author notes](../skill-board/references/pr-author-notes.md) before reporting the
 handoff complete. Add file summaries and critical inline notes on the PR, not in source.
 
 **On dispatcher exit 0 (success):**
 - `git -C .claude/worktrees/issue-N push -u origin loop/issue-N`
-- `gh pr create --draft --base <base-branch> --head loop/issue-N --title "<emoji> [<type>] <scope>: <subject>" --body-file <body.md>` — title in commit-subject format, body = the marker-block template from `skills/super-board/references/run.md` (writing-standard.md § 2), `Closes #N` in the status card, `Docs:` bullets in Solution, Door + Blast radius in Risk
+- `gh pr create --draft --base <base-branch> --head loop/issue-N --title "<emoji> [<type>] <scope>: <subject>" --body-file <body.md>` — title in commit-subject format, body = the marker-block template from `skills/skill-board/references/run.md` (writing-standard.md § 2), `Closes #N` in the status card, `Docs:` bullets in Solution, Door + Blast radius in Risk
 - `gh issue edit N --remove-label loop:in-progress`
 - `gh issue comment N --body "[builder] [report] ✅ built · PR <URL>"` (Next line: `qa`)
 - Move the project card to `QA`. The Tester and Reviewer take it from there; the issue closes when the Reviewer merges through the merge gate.
@@ -164,7 +164,7 @@ handoff complete. Add file summaries and critical inline notes on the PR, not in
 
 ### 5. Final report
 
-When the selected GitHub Project `Ready` queue is empty, or only blocked cards remain: report a summary listing PRs opened this run (cards in `QA`), issues not built (`human-gated` / `loop:halted` / blocked dependencies), and any halts. Suggest: "Run `super-board run` to test, review and merge them."
+When the selected GitHub Project `Ready` queue is empty, or only blocked cards remain: report a summary listing PRs opened this run (cards in `QA`), issues not built (`human-gated` / `loop:halted` / blocked dependencies), and any halts. Suggest: "Run `skill-board run` to test, review and merge them."
 
 ## Issue contract
 
@@ -193,7 +193,7 @@ Super Build treats acceptance criteria as the completion contract. Workers must 
 - **Never modify code in the main worktree** while workers are running. Only run `gh` commands and push/PR operations.
 - **Conflicts** between concurrent workers' branches are not resolved here — they surface at the merge gate, and the card comes back to the Builder for a rebuild. Don't auto-resolve.
 - **Report cadence** (to the user, in the session): 1 message at start, 1 per dispatch wave, 1 per completion (success/fail), 1 final summary. Don't spam.
-- **Workers MUST use the right skills.** The worker preamble enforces: workers parse the `Skills:` line from the issue body if present; otherwise they route on the issue's **type label** (`bug` → `diagnosing-bugs`+`tdd`, `feature` → `implement`+`tdd`+`codebase-design`, `refactor`/`tech-debt` → `codebase-design`+`tdd`, `docs` → skip `tdd`), always adding `ponytail:ponytail` (simplest solution first, before any code; inline fallback when the plugin is absent), `verification-before-completion` and a `code-review` pass on their own diff. Test mechanics are picked by the localisation ladder, never by label. Decision points walk the decision ladder — acceptance criteria → repo precedent → smallest blast radius → human gate — and stop at the first rung that answers the question. No panel, no vote; `mattpocock-skills:grilling` is forbidden inside a worker (it waits on a user who is not there) and lives in `super-board lint` instead. `mattpocock-skills:code-review` runs once against the worker's own diff before the final commit. See `references/decision-policy.md` for the skill map, the ladder, the human gates, and the `--- decision ---` commit trailer.
+- **Workers MUST use the right skills.** The worker preamble enforces: workers parse the `Skills:` line from the issue body if present; otherwise they route on the issue's **type label** (`bug` → `diagnosing-bugs`+`tdd`, `feature` → `implement`+`tdd`+`codebase-design`, `refactor`/`tech-debt` → `codebase-design`+`tdd`, `docs` → skip `tdd`), always adding `ponytail:ponytail` (simplest solution first, before any code; inline fallback when the plugin is absent), `verification-before-completion` and a `code-review` pass on their own diff. Test mechanics are picked by the localisation ladder, never by label. Decision points walk the decision ladder — acceptance criteria → repo precedent → smallest blast radius → human gate — and stop at the first rung that answers the question. No panel, no vote; `mattpocock-skills:grilling` is forbidden inside a worker (it waits on a user who is not there) and lives in `skill-board lint` instead. `mattpocock-skills:code-review` runs once against the worker's own diff before the final commit. See `references/decision-policy.md` for the skill map, the ladder, the human gates, and the `--- decision ---` commit trailer.
 
 ## Worker preamble
 
@@ -225,26 +225,26 @@ If the user invokes `/super-build` after a partial run:
 
 ## Companion skill
 
-`/super-qa` / **Super QA** is the autonomous bug-bash iteration loop. It is **independent of this skill** unless a `super-board run` sequences them through the board. Run **Super Build** for forward progress on Ready issues; run **Super QA** to harden the existing codebase by hunting bugs.
+`/super-qa` / **Super QA** is the autonomous bug-bash iteration loop. It is **independent of this skill** unless a `skill-board run` sequences them through the board. Run **Super Build** for forward progress on Ready issues; run **Super QA** to harden the existing codebase by hunting bugs.
 
-## super-board integration
+## skill-board integration
 
-When invoked by super-board (env `SUPER_BOARD_RUN=1` set by the runner, or invocation contains "super-board run"), follow these rules instead of the standalone defaults:
+When invoked by skill-board (env `SKILL_BOARD_RUN=1` set by the runner, or invocation contains "skill-board run"), follow these rules instead of the standalone defaults:
 
 ### State protocol
 - Read context from: issue body + ALL issue comments + linked PR description + PR comments + PR review threads. NEVER from local state files for inter-lane coordination.
-- Respect the worktree path super-board hands you (typically `.claude/worktrees/issue-<N>-build/`). Don't create your own.
-- Respect the single branch super-board hands you (`issue-<N>-<slug>`). Don't create alternate branches.
+- Respect the worktree path skill-board hands you (typically `.claude/worktrees/issue-<N>-build/`). Don't create your own.
+- Respect the single branch skill-board hands you (`issue-<N>-<slug>`). Don't create alternate branches.
 
 ### Lifecycle (Builder, first pass)
-Follow spec `.claude/skills/super-board/references/run.md` → Builder (first pass). Summary:
+Follow spec `.claude/skills/skill-board/references/run.md` → Builder (first pass). Summary:
 1. Worktree off `config.base_branch`.
 2. Branch `issue-<N>-<slug>` from `config.base_branch`.
 3. Docs check (section below) — if the ticket touches a third-party surface, an upgrade, or auth/billing, read the current official docs first.
 4. Implement smallest safe change covering ACs — under the PR size cap (section below).
 5. Commit + push (always).
 6. Open **draft PR** with the PR description template from `run.md` — title in commit-subject format, every marker block filled, `Docs:` bullets in Solution, Door + Blast radius in Risk.
-7. Follow [PR author notes](../super-board/references/pr-author-notes.md), then post the `[builder] [report]` PR comment + the short issue comment with the PR URL (writing-standard.md § 4).
+7. Follow [PR author notes](../skill-board/references/pr-author-notes.md), then post the `[builder] [report]` PR comment + the short issue comment with the PR URL (writing-standard.md § 4).
 8. Move card Ready/Building → QA.
 
 ### Keep each PR small (every ticket)
@@ -269,7 +269,7 @@ Triggered when card returns to Ready/Building with `loop:rebuild-N` label.
    ```
 3. Address any new failure feedback from Tester's latest ❌ comment.
 4. Commit + push to same branch. Verify ALL `[builder]` threads are resolved before exit.
-5. Refresh [PR author notes](../super-board/references/pr-author-notes.md), rewrite your PR body blocks (`super-board-pr-body.sh`), post `[builder] [report]` PR + issue comments. Move card Ready/Building → QA.
+5. Refresh [PR author notes](../skill-board/references/pr-author-notes.md), rewrite your PR body blocks (`skill-board-pr-body.sh`), post `[builder] [report]` PR + issue comments. Move card Ready/Building → QA.
 
 ### Docs before outside-tool code (every ticket)
 Before writing code, decide whether the ticket touches any of:
@@ -294,10 +294,10 @@ On any failure-handoff comment, include:
 ```
 root-cause-hash: <sha256 first 12 hex chars>
 ```
-Hash inputs (joined with `|`): lane (`build`) | error class | first 3 unique normalized file:line frames. See `.claude/skills/super-board/references/run.md` → Root-cause hash.
+Hash inputs (joined with `|`): lane (`build`) | error class | first 3 unique normalized file:line frames. See `.claude/skills/skill-board/references/run.md` → Root-cause hash.
 
 ### Never merge
 Builder NEVER squash-merges. Reviewer owns merge.
 
 ### Block exits use the §4 mandatory template
-When moving a card to Blocked (or dropping it: closed as not planned, Done, 🤷), populate the full template from `.claude/skills/super-board/references/block-template.md`. A 1-line "needs creds" comment is a contract violation.
+When moving a card to Blocked (or dropping it: closed as not planned, Done, 🤷), populate the full template from `.claude/skills/skill-board/references/block-template.md`. A 1-line "needs creds" comment is a contract violation.

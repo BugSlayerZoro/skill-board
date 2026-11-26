@@ -19,4 +19,4 @@ actual=$(printf '%s\n' "$refs" | awk -v tag="refs/tags/$TAG" '$2 == tag { sha=$1
 
 # --verify-tag refuses implicit tag creation. gh also refuses an existing release.
 gh release create "$TAG" --verify-tag --target "$EXPECTED_SHA" \
-  --title "super-board $TAG" --generate-notes
+  --title "skill-board $TAG" --generate-notes

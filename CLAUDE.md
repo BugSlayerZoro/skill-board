@@ -1,20 +1,20 @@
-# super-board — agent-facing notes
+# skill-board — agent-facing notes
 
-This repo ships nine skills under `skills/`: five you type (`super-board`, `super-collect`,
+This repo ships nine skills under `skills/`: five you type (`skill-board`, `super-collect`,
 `ui-refine-loop`, `visual`, `git-sync`) and four the board runs (the lane workers `super-build`, `super-qa`,
 `super-review`, plus `pr-security-review`, which super-qa runs on every PR). Cloudflare's
 `security-audit` is not shipped: get.sh and onboard fetch it with `npx skills`, and no lane runs it. Architecture findings come from `/super-collect architecture`.
 Worktree cleanup (`hooks/cleanup-wt.py`) is a hook, not a skill. README skill tables are generated
-by `scripts/super-board-readme-sync.py` from SKILL.md frontmatter and `skills/families.json`.
+by `scripts/skill-board-readme-sync.py` from SKILL.md frontmatter and `skills/families.json`.
 
 ## The cardinal rule
 
-**`super-board` is an autonomous trader. The interactive Claude session that invokes `/super-board run` is an *orchestrator*, NOT a worker.** Its only jobs are:
+**`skill-board` is an autonomous trader. The interactive Claude session that invokes `/skill-board run` is an *orchestrator*, NOT a worker.** Its only jobs are:
 
 1. Verify preconditions (clean git, no orphan workers, GraphQL quota, etc.).
 2. Dispatch per the config's `worker_backend`:
-   - `"workflow"` (default) — stay in-session and run the wave loop in `skills/super-board/references/run-workflow.md`: plan a wave, claim assignees, launch the `super-board-wave` dynamic workflow, reconcile, repeat. Lane agents inside the workflow do all product work.
-   - `"claude-p"` (legacy, explicit opt-in only) — spawn the headless runner `nohup .claude/bin/super-board-run.sh <slug> &`, report PID + log path, exit. The runner refuses to start (exit 78) unless the config sets this value.
+   - `"workflow"` (default) — stay in-session and run the wave loop in `skills/skill-board/references/run-workflow.md`: plan a wave, claim assignees, launch the `skill-board-wave` dynamic workflow, reconcile, repeat. Lane agents inside the workflow do all product work.
+   - `"claude-p"` (legacy, explicit opt-in only) — spawn the headless runner `nohup .claude/bin/skill-board-run.sh <slug> &`, report PID + log path, exit. The runner refuses to start (exit 78) unless the config sets this value.
 3. Report back to the user (dispatch confirmation, or one status line per wave).
 
 The orchestrator MUST NOT:
@@ -30,15 +30,15 @@ If a problem surfaces during the run, the orchestrator's reply is: "I saw X. Wan
 
 Workers (`super-build`, `super-qa`, `super-review`) share the dispatcher's `gh` token bucket. They MUST:
 
-- Required GitHub reads use `.claude/bin/super-board-github-read.py`; exit 79 stops the run.
+- Required GitHub reads use `.claude/bin/skill-board-github-read.py`; exit 79 stops the run.
 - Check its `--check` before GitHub writes, migrations, merges, and new dispatch; preserve work when halted.
-- Source `.claude/bin/super-board-gh-guard.sh` (`scripts/` in this repo) at worker start.
+- Source `.claude/bin/skill-board-gh-guard.sh` (`scripts/` in this repo) at worker start.
 - Call `sb_gh_guard_check 200` before any burst of `gh` calls.
 - Prefer local `git blame` / `git log` over `gh api graphql` for any sub-agent that doesn't need fresh state.
 - Cap adversarial sub-agents at 50 gh calls each. If a sub-agent runs out, it returns `confidence: insufficient_data` rather than burning the shared quota.
 - Append `gh-quota-on-exit: graphql=<n>/5000 rest=<n>/5000` to the PR handoff comment.
 
-See `skills/super-board/references/rate-limit-etiquette.md` for the full discipline.
+See `skills/skill-board/references/rate-limit-etiquette.md` for the full discipline.
 
 ## Installation contract
 
@@ -46,37 +46,37 @@ See `skills/super-board/references/rate-limit-etiquette.md` for the full discipl
 once into the target project's shared `.agents/` tree, then links each host folder into it: one
 link per skill under `skills/`, one per file under `bin/`, `workflows/`, `hooks/`. `.claude/` is
 always linked; `.codex/` and `.opencode/` only when that folder already exists, a config `host`
-key names it, `super-board-host.sh` reports it, or `--hosts` asks. A real-directory `.claude/`
-install is replaced by links on upgrade; a user's own links and anything not super-board's are
+key names it, `skill-board-host.sh` reports it, or `--hosts` asks. A real-directory `.claude/`
+install is replaced by links on upgrade; a user's own links and anything not skill-board's are
 left alone; where no symlink can be made the file is copied. Settings and run state stay in `.claude/`.
 
 ```
 .agents/
 ├── skills/<all nine>/...
 ├── hooks/guard-*.py, cleanup-wt.py   (wired into settings.json; --no-hooks skips)
-├── workflows/super-board-wave.js, ui-refine-loop.js
-└── bin/super-board-*.sh (incl. pr-body), super-board-*.py (status, merge-policy, agents-md, settings, setup), super-qa-file-bug.sh, super-review-file-refactor.sh
+├── workflows/skill-board-wave.js, ui-refine-loop.js
+└── bin/skill-board-*.sh (incl. pr-body), skill-board-*.py (status, merge-policy, agents-md, settings, setup), super-qa-file-bug.sh, super-review-file-refactor.sh
 ```
 
-It also refreshes the managed `<!-- super-board:begin … -->` block in the target's AGENTS.md when
+It also refreshes the managed `<!-- skill-board:begin … -->` block in the target's AGENTS.md when
 one exists (nothing outside the markers), records an older install in
-`.claude/super-board/upgrade.json`, prints grouped emoji output, and asks nothing:
-`super-board onboard` asks the questions. Onboard's 🔍 Checks (`scripts/super-board-setup.py`)
+`.claude/skill-board/upgrade.json`, prints grouped emoji output, and asks nothing:
+`skill-board onboard` asks the questions. Onboard's 🔍 Checks (`scripts/skill-board-setup.py`)
 fixes must-haves and finishes upgrades with no question.
 
 ## Board shape (v3.0.0)
 
 Columns are always Backlog · Ready · Building · QA · Review · Blocked · Done — no Skipped, no
 per-board `variant`. Labels `qa` · `bug` · `feature` route cards: `qa` skips Building, everything
-else (and no label) is built. Change routing in `scripts/super-board-wave-plan.sh`,
-`workflows/super-board-wave.js` and `run.md` → "Lanes and label routing" together.
+else (and no label) is built. Change routing in `scripts/skill-board-wave-plan.sh`,
+`workflows/skill-board-wave.js` and `run.md` → "Lanes and label routing" together.
 
 Skills call the dispatcher scripts as `.claude/bin/<script>`.
 
 ## Writing
 
 Commits, PR bodies, tickets and comments in this repo follow
-`skills/super-board/references/writing-standard.md`, the same standard super-board writes into
+`skills/skill-board/references/writing-standard.md`, the same standard skill-board writes into
 every project it is installed in.
 
 | Thing | Format |
@@ -85,9 +85,9 @@ every project it is installed in.
 | PR body | marker blocks, one owner each: status · problem · solution · ac · history · visual · risk |
 | Ticket | Problem · Context · Fix · Acceptance Criteria · Risk · Blocked by (+ Evidence for bugs) |
 | Comment | `[role] [label] status` · Did · ✅ Done · ❌ Not done · Next · ≤ 8 lines |
-| PR author notes | Purpose · What changed · Why it matters, in native file/inline review comments; follow `skills/super-board/references/pr-author-notes.md` |
+| PR author notes | Purpose · What changed · Why it matters, in native file/inline review comments; follow `skills/skill-board/references/pr-author-notes.md` |
 
-- NEVER rewrite a whole PR body: `scripts/super-board-pr-body.sh` rewrites one block.
+- NEVER rewrite a whole PR body: `scripts/skill-board-pr-body.sh` rewrites one block.
 - ALWAYS change a format in `writing-standard.md` first, then the templates and `tests/test_writing_format.py`.
 
 ## Release checks

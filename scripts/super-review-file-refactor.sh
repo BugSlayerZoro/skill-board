@@ -9,7 +9,7 @@
 #
 # A card with real acceptance criteria lands in Ready; one without lands in Backlog.
 # A bare note has had no human eyes on it; auto-promoting it to Ready would feed the
-# build lane work nobody asked for. It waits for `super-board lint` like any other
+# build lane work nobody asked for. It waits for `skill-board lint` like any other
 # unrefined ticket.
 #
 # Usage:
@@ -74,7 +74,7 @@ else
   REPO_FLAG=()
 fi
 
-GITHUB_READ="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/super-board-github-read.py"
+GITHUB_READ="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/skill-board-github-read.py"
 python3 "$GITHUB_READ" --check || exit $?
 
 # --- dedupe -----------------------------------------------------------------
@@ -105,7 +105,7 @@ fi
 #
 # A card with real acceptance criteria is buildable, so it goes to `Ready` and the
 # next wave takes it. A card without them is a note, and `Ready` feeds the Builder
-# lane directly — so it goes to the holding column and waits for `super-board
+# lane directly — so it goes to the holding column and waits for `skill-board
 # lint` like any other unrefined ticket.
 #
 # This used to be an unconditional `Backlog`, which was wrong twice over: it fed
@@ -132,7 +132,7 @@ trap 'rm -f "$BODY_TMP"' EXIT
     echo
     echo "## Acceptance Criteria"
     echo
-    echo "- [ ] _Not written by the Reviewer that filed this. Run \`super-board lint\` on this card"
+    echo "- [ ] _Not written by the Reviewer that filed this. Run \`skill-board lint\` on this card"
     echo "      before it is built — a card graded against criteria nobody wrote is graded against"
     echo "      nothing._"
   fi

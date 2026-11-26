@@ -1,4 +1,4 @@
-"""Format tests for the writing standard (skills/super-board/references/writing-standard.md).
+"""Format tests for the writing standard (skills/skill-board/references/writing-standard.md).
 
 Pins the shapes scripts and agents depend on: the commit subject, the ticket's required
 sections, the comment header, the PR body markers. Each test reads the shipped docs and
@@ -15,7 +15,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-REF = ROOT / "skills" / "super-board" / "references"
+REF = ROOT / "skills" / "skill-board" / "references"
 STANDARD = (REF / "writing-standard.md").read_text(encoding="utf-8")
 
 EMOJI = {
@@ -157,7 +157,7 @@ def test_ticket_title_shape():
 def test_comment_header_regex():
     assert COMMENT_HEADER.match("[qa] [report] ❌ failing · round 1")
     assert COMMENT_HEADER.match("[reviewer] [blocker] 🛑 blocked · 🔐 missing key")
-    assert not COMMENT_HEADER.match("🔍 super-board · QA fail · v1")
+    assert not COMMENT_HEADER.match("🔍 skill-board · QA fail · v1")
     assert not COMMENT_HEADER.match("[QA] [report] ❌ failing")
     assert not COMMENT_HEADER.match("[qa] [fyi] ❌ failing")
 
@@ -171,7 +171,7 @@ def test_comment_examples_follow_the_header():
     for text in (STANDARD, run_md):
         for block in fenced(text):
             lines = block.splitlines()
-            if lines and lines[0].startswith("<!-- super-board:author-note "):
+            if lines and lines[0].startswith("<!-- skill-board:author-note "):
                 assert lines[0].endswith(" -->"), "author-note marker must stay hidden"
                 labels = re.findall(r"^\*\*(.+?):\*\* \S", block, flags=re.M)
                 assert labels == ["Purpose", "What changed", "Why it matters"], labels
@@ -196,7 +196,7 @@ def test_block_template_uses_the_header():
     assert heads, "block-template.md has no header line"
     for h in heads:
         assert re.match(r"^\[(<role>|builder|qa|reviewer|collect|orchestrator)\] \[blocker\] \S", h), h
-    assert "Reason tag:" in text, "super-board-deps.sh parses 'Reason tag:'"
+    assert "Reason tag:" in text, "skill-board-deps.sh parses 'Reason tag:'"
 
 
 def test_needs_you_comment_is_checklist_first():
@@ -217,7 +217,7 @@ def test_needs_you_comment_is_checklist_first():
 # ── PR body ──────────────────────────────────────────────────────────────────
 
 def test_pr_body_markers():
-    out = subprocess.run(["bash", str(ROOT / "scripts" / "super-board-pr-body.sh"), "--skeleton"],
+    out = subprocess.run(["bash", str(ROOT / "scripts" / "skill-board-pr-body.sh"), "--skeleton"],
                          capture_output=True, text=True, check=True).stdout
     for b in PR_BLOCKS:
         assert f"<!-- sb:{b} -->" in out and f"<!-- /sb:{b} -->" in out, f"skeleton lacks {b}"

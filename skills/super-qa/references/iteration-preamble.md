@@ -4,7 +4,7 @@ clarifying answers.
 
 ## Mission
 
-**Before worker writes or worktree creation:** follow [skill readiness](../../super-board/references/skills-readiness.md).
+**Before worker writes or worktree creation:** follow [skill readiness](../../skill-board/references/skills-readiness.md).
 Resolve this lane for the actual host, load the report's files/fallbacks, halt
 on missing requirements and recheck each conditional helper before use.
 
@@ -317,14 +317,14 @@ acceptable; a fix can silently disable a feature to make a wrong spec pass.
    ```
 
    PR body = the marker blocks of writing-standard.md § 2
-   (`.claude/bin/super-board-pr-body.sh --skeleton`): status card with
+   (`.claude/bin/skill-board-pr-body.sh --skeleton`): status card with
    `Closes #${ISSUE_N}`, Problem (the failing assertion / signal type, lettered
    steps, screenshot), Solution (plain bullets), Acceptance criteria with proof
    lines, Iteration history, Risk (🟢/🟡/🔴 + Door + Blast radius — subjective
    signals are never 🟢).
    Forensics excerpts go in the proof lines, not as file lists.
    After opening the PR and after each later push, follow
-   `.claude/skills/super-board/references/pr-author-notes.md`: one file-level review
+   `.claude/skills/skill-board/references/pr-author-notes.md`: one file-level review
    comment per changed file and a few critical inline notes, with Purpose, What changed,
    and Why it matters. Confirm them before handing the PR to review.
 
@@ -601,7 +601,7 @@ detection (do NOT batch at end of iter):
 
 1. **Write the issue body** to a temp file, e.g.
    `/tmp/super-qa-iter-${N}-bug-${slug}.md`, in the ticket format of
-   `.claude/skills/super-board/references/writing-standard.md` § 3 — enough
+   `.claude/skills/skill-board/references/writing-standard.md` § 3 — enough
    context for a future headless session to fix it without rediscovery. The
    filer refuses a body that misses a section:
    - `## Problem` — 1–3 sentences: what is wrong and where.

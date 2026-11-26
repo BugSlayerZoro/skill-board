@@ -12,7 +12,7 @@ The Tester: proves a card's acceptance criteria with tests and evidence, or send
 
 ## When To Use It
 
-- Inside a super-board run (the QA lane). This is the normal path.
+- Inside a skill-board run (the QA lane). This is the normal path.
 - Standalone, as `/super-qa`, to bug-bash an app: a browser crawl from `docs/super-qa/queue.md` that grows a Playwright suite and files fix-ready issues.
 
 ## Standalone flags
@@ -26,4 +26,4 @@ The Tester: proves a card's acceptance criteria with tests and evidence, or send
 
 ## Install
 
-Part of the super-board pack: `./install.sh /path/to/project`. Run it against staging, not production. Lane details: `skills/super-board/references/run.md` → Tester.
+Part of the skill-board pack: `./install.sh /path/to/project`. Run it against staging, not production. Lane details: `skills/skill-board/references/run.md` → Tester.

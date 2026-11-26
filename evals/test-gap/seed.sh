@@ -77,7 +77,7 @@ jq -n --arg head "$HEAD_SHA" --arg acs "$ACS" '{
   labels: [], files: [{path: "src/slug.py"}, {path: "tests/test_slug.py"}],
   reviewThreads: [],
   comments: [
-    {author: {login: "super-board-bot"}, body: "[builder] Build done: slugify in src/slug.py, tests in tests/test_slug.py. All ACs handled.\nLocal tests: python3 -m unittest -q", createdAt: "2026-10-01T10:00:00Z"}
+    {author: {login: "skill-board-bot"}, body: "[builder] Build done: slugify in src/slug.py, tests in tests/test_slug.py. All ACs handled.\nLocal tests: python3 -m unittest -q", createdAt: "2026-10-01T10:00:00Z"}
   ]
 }' > "$FX/pr.json"
 jq -n --arg acs "$ACS" '{number: 9, title: "Slugs for post URLs", body: ("Posts need URL slugs.\n\n" + ($acs | gsub("\\\\n"; "\n"))), labels: [], comments: []}' > "$FX/issue.json"

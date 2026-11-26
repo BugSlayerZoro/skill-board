@@ -46,10 +46,10 @@ class WorktreePaths(unittest.TestCase):
             path.chmod(0o755)
         self.run_cmd(sys.executable, str(PACK / 'tests/fixtures/install_worker_skills.py'), str(self.root))
         helper_bin = self.root / '.claude/bin'; helper_bin.mkdir(parents=True)
-        for name in ['super-board-github-read.py', 'super-board-skills-ready.py']:
+        for name in ['skill-board-github-read.py', 'skill-board-skills-ready.py']:
             shutil.copy2(PACK / 'scripts' / name, helper_bin / name)
-        self.env['SUPER_BOARD_SKILLS_HOME'] = str(Path(self.tmp.name) / 'home')
-        Path(self.env['SUPER_BOARD_SKILLS_HOME']).mkdir()
+        self.env['SKILL_BOARD_SKILLS_HOME'] = str(Path(self.tmp.name) / 'home')
+        Path(self.env['SKILL_BOARD_SKILLS_HOME']).mkdir()
         self.env.update(PATH=str(bin_dir) + os.pathsep + self.env["PATH"], BASE_BRANCH="main",
                         REPO_DIR=str(self.root), WORKER_CWD=str(Path(self.tmp.name) / "worker-cwd"))
 
@@ -79,7 +79,7 @@ class WorktreePaths(unittest.TestCase):
 
     def runner_helper(self, body):
         return self.run_cmd("bash", "-c", 'SB_LIB_ONLY=1 . "$1"\n' + body, "fixture",
-                            str(PACK / "scripts/super-board-run.sh"), check=False)
+                            str(PACK / "scripts/skill-board-run.sh"), check=False)
 
     def test_runner_halts_for_legacy_checkout_without_removing_it(self):
         old = self.root / ".worktrees/issue-7-build"
@@ -170,7 +170,7 @@ new AsyncFunction('args','agent','pipeline','log',src)(
   agent,pipeline,()=>{}).then(()=>console.log(JSON.stringify(prompts)))
 """
         prompts = json.loads(self.run_cmd("node", "-e", js,
-                                          str(PACK / "workflows/super-board-wave.js")).stdout)
+                                          str(PACK / "workflows/skill-board-wave.js")).stdout)
         for lane in ("build", "qa", "review"):
             with self.subTest(lane=lane):
                 match = re.search(r"create your own worktree under ([^, ]+)", prompts[lane + ":#7"])

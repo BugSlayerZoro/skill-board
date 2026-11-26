@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parent.parent
 STAMP = ROOT / "diagrams" / "_shared" / "stamp_version.py"
 PAGES = ["diagrams/index.html", "diagrams/onboarding/index.html", "diagrams/writing-standard/reference.html"]
 HARDCODED = re.compile(
-    r"super-board[ @]v?\d+\.\d+\.\d+|releases/tag/v\d|class=\"vpill\">v?\d+\.\d+\.\d+"
+    r"skill-board[ @]v?\d+\.\d+\.\d+|releases/tag/v\d|class=\"vpill\">v?\d+\.\d+\.\d+"
 )
 VERSION = (ROOT / "VERSION").read_text().strip()
 
@@ -52,7 +52,7 @@ def test_stamp_writes_version_into_every_placeholder():
             assert ">dev</span>" not in text, f"{page} still shows dev after stamping"
             assert f">{VERSION}</span>" in text or f">v{VERSION}</span>" in text, page
         onboarding = (site / "p1.html").read_text(encoding="utf-8")
-        assert f"super-board@<span data-sb-version=\"v\">v{VERSION}</span>" in onboarding
+        assert f"skill-board@<span data-sb-version=\"v\">v{VERSION}</span>" in onboarding
 
 
 def test_stamp_refuses_a_malformed_version():

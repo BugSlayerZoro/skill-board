@@ -1,16 +1,16 @@
 ---
 name: super-review
-description: Reviewer lane of the super-board pipeline and standalone PR/branch readiness review — forms its own hypotheses before reading the builder's summary, remembers prior findings and re-checks each with file:line proof, runs an adversarial truth-check on non-trivial diffs, and classes every finding (Gap, Bug, Verification miss, Scope drift, Over-engineering via `ponytail:ponytail-review`). Merges only through `super-board-merge-gate.sh`, pinned to the reviewed head SHA, and routes other fixes to Super Build or Super QA via the board. Use when the user says "Super Review", "review this branch", "review loop", "make sure this is merge-ready", "PR review", or asks for code, architecture, security, QA evidence, or release-readiness judgment.
+description: Reviewer lane of the skill-board pipeline and standalone PR/branch readiness review — forms its own hypotheses before reading the builder's summary, remembers prior findings and re-checks each with file:line proof, runs an adversarial truth-check on non-trivial diffs, and classes every finding (Gap, Bug, Verification miss, Scope drift, Over-engineering via `ponytail:ponytail-review`). Merges only through `skill-board-merge-gate.sh`, pinned to the reviewed head SHA, and routes other fixes to Super Build or Super QA via the board. Use when the user says "Super Review", "review this branch", "review loop", "make sure this is merge-ready", "PR review", or asks for code, architecture, security, QA evidence, or release-readiness judgment.
 ---
 
 
-**For a board worker, before writes or worktree creation:** follow [skill readiness](../super-board/references/skills-readiness.md).
+**For a board worker, before writes or worktree creation:** follow [skill readiness](../skill-board/references/skills-readiness.md).
 Resolve this lane for the actual host, load the report's files/fallbacks, halt
 on missing requirements and recheck each conditional helper before use.
 
 # Super Review — PR/code readiness reviewer
 
-**Super Review** is the super-board reviewer. It checks whether a branch or PR is safe to merge, records actionable findings, and routes fixes to the right Super workflow.
+**Super Review** is the skill-board reviewer. It checks whether a branch or PR is safe to merge, records actionable findings, and routes fixes to the right Super workflow.
 
 Super Review should be conservative with claims: only say **merge-ready** when review evidence is clean and verification has passed. If evidence is missing, say what is unverified.
 
@@ -21,7 +21,7 @@ Use this skill for:
 - PR or branch review before merge.
 - Code, architecture, security, data-model, or migration judgment.
 - Release-readiness checks after Super Build, Super QA, or a human's `/ui-refine-loop` pass.
-- The Review lane of a `super-board run`.
+- The Review lane of a `skill-board run`.
 - A final pass that needs risks, blockers, and human gates summarized.
 
 Do **not** use this as the primary implementation workflow. Route fixes to:
@@ -38,7 +38,7 @@ Accept any of these inputs:
 - GitHub PR number or URL;
 - commit range;
 - user-provided file list;
-- QA report, screenshots, or super-board wave report;
+- QA report, screenshots, or skill-board wave report;
 - release goal / done definition;
 - `prior_report` — the previous review's findings on this PR (see "Review remembers"). Empty on a first review.
 
@@ -117,7 +117,7 @@ If the input is ambiguous, default to reviewing the current branch against its u
      `## Context` (`- **Where:**` the module and files), `## Fix` — the filer refuses a body
      without them. **Write real acceptance criteria too.** A card that carries an
      `## Acceptance Criteria` checklist is filed straight into `Ready` and the next wave builds it;
-     one without lands in the holding column and waits for `super-board lint`. That is the whole
+     one without lands in the holding column and waits for `skill-board lint`. That is the whole
      difference between a finding that gets fixed this week and a note nobody grades. Two or three
      checkable lines is enough — what must be true when this is done, in terms a test can assert.
      The filer appends `## Risk` and `## Blocked by` for you when you have not written them.
@@ -138,7 +138,7 @@ If the input is ambiguous, default to reviewing the current branch against its u
 ## Output format
 
 The report follows writing-standard.md § 4: a comment header, ≤ 8 lines, then one findings
-table. In a super-board run it is ONE PR comment, **edited in place** every round (see "Review
+table. In a skill-board run it is ONE PR comment, **edited in place** every round (see "Review
 remembers"); R-ids never change.
 
 ```markdown
@@ -175,13 +175,13 @@ Next: qa
 
 ## Review Loop behavior
 
-In a `super-board run` the loop runs through the board:
+In a `skill-board run` the loop runs through the board:
 
 1. Super Review inspects branch/PR and writes findings.
 2. Each actionable finding becomes a prefixed PR thread (`[builder]`, `[qa]`) and the card bounces to the owning lane — Super Build or Super QA; for visual polish, file a UI ticket; a human can run `/ui-refine-loop`.
 3. The owning lane fixes and verifies its scope.
 4. Super Review runs again against the updated branch, with its last report as `prior_report` — round 1 checks those findings before any fresh pass.
-5. Stop only when no blocking review findings remain, or unresolved items are explicitly human-gated. A clean review merges through `scripts/super-board-merge-gate.sh`, pinned to the head SHA it reviewed.
+5. Stop only when no blocking review findings remain, or unresolved items are explicitly human-gated. A clean review merges through `scripts/skill-board-merge-gate.sh`, pinned to the head SHA it reviewed.
 
 Super Review should not silently push fixes during the loop unless the user explicitly grants that authority.
 
@@ -203,7 +203,7 @@ The number after `#issuecomment-` in `url` is the comment id. Write this round's
 `gh api -X PATCH repos/<owner>/<repo>/issues/comments/<id> -F body=@report.md`. One report per
 PR, edited in place, so the table carries every round's status.
 
-Outside super-board (no PR), `prior_report` is whatever earlier review the caller hands you.
+Outside skill-board (no PR), `prior_report` is whatever earlier review the caller hands you.
 
 **No prior report** → first review. Behave exactly as before.
 
@@ -288,13 +288,13 @@ existing ADR in `docs/adr/` already settled, or a shape the issue's acceptance c
 explicitly asked for. The script dedupes by fingerprint, so re-reviewing a bounced card
 will not stack duplicates.
 
-## super-board integration
+## skill-board integration
 
-When invoked by super-board (env `SUPER_BOARD_RUN=1` or invocation contains "super-board run"):
+When invoked by skill-board (env `SKILL_BOARD_RUN=1` or invocation contains "skill-board run"):
 
 ### State protocol
 - Read from issue + PR comments + PR review threads.
-- **GitHub budget** — every "move card" is `.claude/bin/super-board-card.sh --config <cfg> move <N> <Status>` (1 GraphQL point; `gh project item-list` / `field-list` cost ~100–200). Comments, labels and PR reads go over REST; [rate-limit-etiquette.md](../super-board/references/rate-limit-etiquette.md) → "Price list" has the calls.
+- **GitHub budget** — every "move card" is `.claude/bin/skill-board-card.sh --config <cfg> move <N> <Status>` (1 GraphQL point; `gh project item-list` / `field-list` cost ~100–200). Comments, labels and PR reads go over REST; [rate-limit-etiquette.md](../skill-board/references/rate-limit-etiquette.md) → "Price list" has the calls.
 - Respect handed-down worktree at `.claude/worktrees/issue-<N>-review/` and branch `issue-<N>-<slug>`.
 
 ### Two card types
@@ -302,10 +302,10 @@ When invoked by super-board (env `SUPER_BOARD_RUN=1` or invocation contains "sup
 - **`qa` card:** review the QA report quality and any test diff; there is no product-code diff.
 
 ### Lifecycle (Reviewer)
-See `.claude/skills/super-board/references/run.md` → Reviewer. Summary of the sub-steps:
+See `.claude/skills/skill-board/references/run.md` → Reviewer. Summary of the sub-steps:
 
 1. Worktree from current state of `issue-<N>-<slug>`.
-2. **Gate 1 — thread scan.** Read threads and replies. [PR author notes](../super-board/references/pr-author-notes.md)
+2. **Gate 1 — thread scan.** Read threads and replies. [PR author notes](../skill-board/references/pr-author-notes.md)
    alone are explanations, not findings or approval. Human questions or change requests
    in those threads still follow the normal review/blocking flow; the marker exempts no
    replies. Never auto-resolve them or bypass GitHub's conversation-resolution requirements.
@@ -315,7 +315,7 @@ See `.claude/skills/super-board/references/run.md` → Reviewer. Summary of the 
    - Both open → bounce to whichever is older.
    - Clean up worktree, exit.
 3. Read PR + spot-check Tester evidence + read CLAUDE.md / AGENTS.md.
-   Check the Risk block against the diff: is the Door right (one-way: DROP, rename, data rewrite, public API, sent email) and the Blast radius honest? Fix it with `super-board-pr-body.sh --block risk`; a one-way door is never 🟢.
+   Check the Risk block against the diff: is the Door right (one-way: DROP, rename, data rewrite, public API, sent email) and the Blast radius honest? Fix it with `skill-board-pr-body.sh --block risk`; a one-way door is never 🟢.
    **3b. Prior-report check** — load `prior_report` (see "Review remembers"); if present, round 1 checks each prior finding; any `not fixed` → re-open its thread, bounce by prefix, post the report, exit.
 4. Review code + tests.
 5. **Reviewer-side test rerun (always — closes Tester self-verification gap):**
@@ -350,7 +350,7 @@ two complete builds. In order, no shortcuts:
 2. Merge through the gate, pinned to the head you reviewed (`merge_policy.default: "human"`
    keeps a person on every merge — the gate returns exit 7 below):
    record `gh pr view <PR> --json headRefOid` when review passes, then
-   `super-board-merge-gate.sh --config <cfg> --pr <PR> --expect-head <sha> --subject "<PR title>"
+   `skill-board-merge-gate.sh --config <cfg> --pr <PR> --expect-head <sha> --subject "<PR title>"
    --body-file <msg.md>` (it merges with `--match-head-commit`; the message is the PR title plus the
    commit bullets and `Closes #N` — writing-standard.md § 1). Exit 6 = the head moved after review → your evidence is void;
    leave the card in **Review** with a `[reviewer]` comment naming both shas.

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# super-board one-line installer.
+# skill-board one-line installer.
 #
 #   curl -fsSL https://raw.githubusercontent.com/BugSlayerZoro/skill-board/main/get.sh | bash
 #   curl -fsSL https://raw.githubusercontent.com/BugSlayerZoro/skill-board/main/get.sh | bash -s -- --protect-main
@@ -13,9 +13,9 @@
 # Passed through to install.sh: --no-hooks, --protect-main, --hosts=<list>.
 #
 # Environment:
-#   SUPER_BOARD_REF       same as --ref
-#   SUPER_BOARD_REPO      GitHub owner/repo to fetch from (default BugSlayerZoro/skill-board)
-#   SUPER_BOARD_TARBALL   exact tarball URL to fetch instead (file:// works; used by tests)
+#   SKILL_BOARD_REF       same as --ref
+#   SKILL_BOARD_REPO      GitHub owner/repo to fetch from (default BugSlayerZoro/skill-board)
+#   SKILL_BOARD_TARBALL   exact tarball URL to fetch instead (file:// works; used by tests)
 #
 # Written for bash 3.2 (stock macOS). The whole script lives in main(), called on
 # the last line, so a download cut off halfway through runs nothing.
@@ -56,8 +56,8 @@ security_audit_present() {
 }
 
 main() {
-  local target="" ref="${SUPER_BOARD_REF:-}" helpers=1
-  local repo="${SUPER_BOARD_REPO:-BugSlayerZoro/skill-board}"
+  local target="" ref="${SKILL_BOARD_REF:-}" helpers=1
+  local repo="${SKILL_BOARD_REPO:-BugSlayerZoro/skill-board}"
   local pass=()
 
   while [ $# -gt 0 ]; do
@@ -81,16 +81,16 @@ main() {
   [ -d "$target" ] || die "the target '$target' is not a folder. Create it first, or pass --target <an existing folder>." 64
   target="$(cd "$target" && pwd)"
 
-  say "🧩 super-board installer"
+  say "🧩 skill-board installer"
   say "   target: $target"
 
   # --- prerequisites ----------------------------------------------------
   local fetch=""
   if have curl && have tar; then fetch="tar"
   elif have git; then fetch="git"
-  else die "I need either curl + tar, or git, to download super-board. Install one of those and run this again." 69
+  else die "I need either curl + tar, or git, to download skill-board. Install one of those and run this again." 69
   fi
-  have python3 || die "python3 is missing. super-board's installer and scripts use it. Install Python 3 (https://www.python.org/downloads/) and run this again." 69
+  have python3 || die "python3 is missing. skill-board's installer and scripts use it. Install Python 3 (https://www.python.org/downloads/) and run this again." 69
 
   # One grouped line: what is here ✓, what is not ✗ (onboard's 🔍 Checks installs it).
   local later="" ok="" t
@@ -111,11 +111,11 @@ main() {
 
   # --- download ---------------------------------------------------------
   local tmp
-  tmp="$(mktemp -d 2>/dev/null || mktemp -d -t super-board)"
+  tmp="$(mktemp -d 2>/dev/null || mktemp -d -t skill-board)"
   # shellcheck disable=SC2064
   trap "rm -rf '$tmp'" EXIT INT TERM
 
-  local url="${SUPER_BOARD_TARBALL:-}" label
+  local url="${SKILL_BOARD_TARBALL:-}" label
   if [ -n "$url" ]; then
     fetch="tar"; label="$url"
   elif [ "$fetch" = "tar" ]; then
@@ -153,13 +153,13 @@ except Exception: print("")' 2>/dev/null || true)"
     fi
     src="$tmp/x"
   fi
-  [ -n "$src" ] && [ -f "$src/install.sh" ] || die "the download has no install.sh at its top level — is '$label' really super-board?" 1
+  [ -n "$src" ] && [ -f "$src/install.sh" ] || die "the download has no install.sh at its top level — is '$label' really skill-board?" 1
   local version="?"
   [ -f "$src/VERSION" ] && version="$(tr -d '[:space:]' < "$src/VERSION")"
 
   # --- install ----------------------------------------------------------
   # Quiet mode: install.sh prints only its "🔧 installing" group; the summary is ours.
-  SUPER_BOARD_QUIET_NEXT=1 bash "$src/install.sh" ${pass[@]+"${pass[@]}"} "$target" || die "install.sh stopped with an error (see above). Nothing else was changed after that point." 1
+  SKILL_BOARD_QUIET_NEXT=1 bash "$src/install.sh" ${pass[@]+"${pass[@]}"} "$target" || die "install.sh stopped with an error (see above). Nothing else was changed after that point." 1
 
   # --- helper skills ----------------------------------------------------
   local helper_note
@@ -198,8 +198,8 @@ except Exception: print("")' 2>/dev/null || true)"
   # --- summary ----------------------------------------------------------
   say "🧠 helper skills: $helper_note"
   say "🔒 security-audit: $audit_note"
-  say "🎉 super-board $version is installed"
-  say "👉 next: open Claude Code here and run /super-board onboard"
+  say "🎉 skill-board $version is installed"
+  say "👉 next: open Claude Code here and run /skill-board onboard"
 }
 
 main "$@"

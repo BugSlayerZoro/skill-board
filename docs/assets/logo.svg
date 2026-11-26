@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="super-board kanban logo">
-  <title>super-board</title>
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="skill-board kanban logo">
+  <title>skill-board</title>
   <rect x="4" y="4" width="88" height="88" rx="20" fill="#0d1117"/>
   <!-- three columns -->
   <rect x="14" y="16" width="20" height="64" rx="5" fill="#ffffff" fill-opacity="0.08"/>

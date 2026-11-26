@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Project-owned Playwright and scenario; no dependencies installed by Super Board.
+// Project-owned Playwright and scenario; no dependencies installed by Skill Board.
 import {createRequire} from 'node:module';
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';

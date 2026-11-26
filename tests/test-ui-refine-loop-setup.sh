@@ -50,14 +50,14 @@ is "npm start, no flag"      '"npm run start"'                         "$(get de
 is "placeholder test dropped" '[]'                                     "$(get checks <<<"$OUT")"
 
 # 3 — vite via npm gets `-- --port`; no checks → verify_commands from config.
-C="$WORK/c"; mkdir -p "$C/.claude/super-board/configs"; cd "$C"
+C="$WORK/c"; mkdir -p "$C/.claude/skill-board/configs"; cd "$C"
 echo '{"scripts":{"dev":"vite"}}' > package.json
-echo '{"version":1,"verify_commands":["make check"]}' > .claude/super-board/configs/app.json
-echo app > .claude/super-board/active
+echo '{"version":1,"verify_commands":["make check"]}' > .claude/skill-board/configs/app.json
+echo app > .claude/skill-board/active
 OUT=$(HOME="$WORK/nohome" bash "$SETUP" detect 2>/dev/null)
 is "npm vite port"           '"npm run dev -- --port $PORT"'          "$(get devCommand <<<"$OUT")"
 is "verify_commands fallback" '["make check"]'                        "$(get checks <<<"$OUT")"
-is "active config found"     '".claude/super-board/configs/app.json"'  "$(get config <<<"$OUT")"
+is "active config found"     '".claude/skill-board/configs/app.json"'  "$(get config <<<"$OUT")"
 
 # 4 — the refine block wins over detection; impeccable (v4.4 launcher layout) found under ~; commented config parses.
 D="$WORK/d"; mkdir -p "$D" "$WORK/home/.claude/skills/impeccable/scripts"; cd "$D"
@@ -102,12 +102,12 @@ is "found in parent dir"     '"impeccable"'                            "$(get cr
 touch "$N/.agents/skills/impeccable/scripts/impeccable"
 is "launcher preferred"      '"launcher"'                              "$(HOME="$WORK/nohome" bash "$SETUP" detect 2>/dev/null | get impeccable.layout)"
 rm "$N/.agents/skills/impeccable/scripts/impeccable"
-mkdir -p .claude/super-board/configs; echo app > .claude/super-board/active
-echo "{\"refine\":{\"impeccable\":\"$N/.agents/skills/impeccable/scripts/detect.mjs\"}}" > .claude/super-board/configs/app.json
+mkdir -p .claude/skill-board/configs; echo app > .claude/skill-board/active
+echo "{\"refine\":{\"impeccable\":\"$N/.agents/skills/impeccable/scripts/detect.mjs\"}}" > .claude/skill-board/configs/app.json
 is "refine.impeccable → script file" '"node"'                         "$(HOME="$WORK/nohome" bash "$SETUP" detect 2>/dev/null | get impeccable.layout)"
 
 # 4d — refine.impeccable pointing at nothing warns loudly, then falls back to search.
-echo '{"refine":{"impeccable":"/nope/impeccable"}}' > .claude/super-board/configs/app.json
+echo '{"refine":{"impeccable":"/nope/impeccable"}}' > .claude/skill-board/configs/app.json
 OUT=$(HOME="$WORK/nohome" bash "$SETUP" detect 2>"$WORK/d.err")
 is "bad refine.impeccable warns" 'true'                               "$(node -e 'const j=JSON.parse(require("fs").readFileSync(0,"utf8"));console.log(j.warnings.some(w=>/is not an Impeccable install/.test(w)))' <<<"$OUT")"
 grep -q 'WARNING: refine.impeccable' "$WORK/d.err" && ok "bad refine.impeccable banner" || bad "bad refine.impeccable banner" "banner" "$(cat "$WORK/d.err")"

@@ -99,8 +99,8 @@ jq -n --arg prior "$PRIOR" --arg base "$BASE_SHA" '{
   files: [{path: "src/cart.py"}, {path: "tests/test_cart.py"}],
   reviewThreads: [],
   comments: [
-    {author: {login: "super-board-bot"}, body: $prior, createdAt: "2026-10-01T10:00:00Z"},
-    {author: {login: "super-board-bot"}, body: "[builder] Rebuild done: R1 fixed (empty-cart guard), R2 thread resolved.\nLocal tests: python3 -m unittest -q", createdAt: "2026-10-01T12:00:00Z"}
+    {author: {login: "skill-board-bot"}, body: $prior, createdAt: "2026-10-01T10:00:00Z"},
+    {author: {login: "skill-board-bot"}, body: "[builder] Rebuild done: R1 fixed (empty-cart guard), R2 thread resolved.\nLocal tests: python3 -m unittest -q", createdAt: "2026-10-01T12:00:00Z"}
   ]
 }' > "$FX/pr.json"
 : > .gh-log

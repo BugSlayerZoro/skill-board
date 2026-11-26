@@ -22,7 +22,7 @@ not merely repeat a reminder or patch another call site.
 
 ## Propose proof, then verify delivery
 
-Keep the [ticket sections](../../super-board/references/ticket-format.md). Context names the
+Keep the [ticket sections](../../skill-board/references/ticket-format.md). Context names the
 boundary and failing input/action; Evidence cites the prior PR/comment/finding and retained
 witness source. Fix states intended prevention in 1–3 lines. A behavioral AC requires:
 
@@ -45,5 +45,5 @@ Apply the same correction preference to a completed run's bounded lessons. Produ
 in ownership, types, schemas, guards or tests remain proposals for ordinary verified,
 curated Backlog intake. Calibration may edit only its explicit existing canonical SKILL.md
 allowlist using current-run evidence. Follow the host's
-[calibration scope](../../super-board/references/calibration.md#delegate-the-installed-skill)
+[calibration scope](../../skill-board/references/calibration.md#delegate-the-installed-skill)
 and diff inspection; a stronger product mechanism does not expand edit authority.

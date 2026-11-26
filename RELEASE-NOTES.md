@@ -12,14 +12,14 @@ The security check moves to QA, and `/super-collect` hands its findings to Matt 
 - ♻️ **super-review no longer runs the security step.** The rest of the Review lane is unchanged.
 - ✨ **`/super-collect` → findings doc → `/to-spec` → `/to-tickets`.** After the fresh verifier,
   super-collect writes one findings doc grouped by root cause at
-  `docs/super-board/findings/collect-<YYYY-MM-DD>.md`, then hands it to `/to-spec` and
-  `/to-tickets`. Build fork: 1–5 tickets → `/implement-spec`; 6+ → super-board Backlog.
+  `docs/skill-board/findings/collect-<YYYY-MM-DD>.md`, then hands it to `/to-spec` and
+  `/to-tickets`. Build fork: 1–5 tickets → `/implement-spec`; 6+ → skill-board Backlog.
   Dry-run stays the default. No `/to-spec` or `/to-tickets` installed, or `--direct`, files
   straight into Backlog as before and prints why. Scheduled intake uses `--direct`.
 - ✨ `skills/super-collect/scripts/collect_handoff.py` (`route`, `doc`, `fork`); `implement-spec`
   joins the registry's Matt Pocock aliases.
-- 📝 **Routing rule in plain words**: [`docs/super-board/routing.md`](docs/super-board/routing.md),
-  linked from the README and the super-board skill.
+- 📝 **Routing rule in plain words**: [`docs/skill-board/routing.md`](docs/skill-board/routing.md),
+  linked from the README and the skill-board skill.
 - 🧪 `test_collect_handoff.py` (route, findings doc, fork boundaries) and
   `test_skills_readiness.py` (security check required in QA, not in Review).
 - 👷 **The public site shows the repo `VERSION`.** Pages carry a `data-sb-version` placeholder
@@ -29,8 +29,8 @@ The security check moves to QA, and `/super-collect` hands its findings to Matt 
 - ✨ **Non-Claude hosts merge by hand unless auto is set** (#47). With config `host` `codex` or
   `opencode` and no `merge_policy.default`, the merge gate stops at the human gate (exit 7).
   Setup's migration no longer writes an auto merge policy for a non-Claude host.
-- ♻️ **One lane launcher, `scripts/super-board-lane.sh --backend`.** Each worker host is one
-  backend (Codex today); `super-board-codex-lane.sh` is now a one-line wrapper around
+- ♻️ **One lane launcher, `scripts/skill-board-lane.sh --backend`.** Each worker host is one
+  backend (Codex today); `skill-board-codex-lane.sh` is now a one-line wrapper around
   `--backend codex`. A missing or unknown `--backend` exits 64 and names the valid ones.
 - 🐛 **Back-to-back setup fixes no longer crash on the backup folder.** The backup stamp has
   seconds, and an existing folder gets a `-2`, `-3` … suffix, so a second fix in the same
@@ -39,7 +39,7 @@ The security check moves to QA, and `/super-collect` hands its findings to Matt 
 Ported from the SanjeevOS vendored fork, each in its own PR:
 
 - 🐛 **Submodules keep their own board state** (#88). `halt_path()` and the card cache use
-  `<git-common-dir>/super-board/` when the common dir is not `<root>/.git`, so sibling
+  `<git-common-dir>/skill-board/` when the common dir is not `<root>/.git`, so sibling
   submodules no longer share a halt or cache. Normal repos and worktrees are unchanged.
 - 🐛 **A malformed agent read fails its call, not the run** (#89). `--kind diff` with no
   `--meta`, a diff/meta mismatch, and short `prs-open`/`merge-state`/`issues` reads exit 64
@@ -83,7 +83,7 @@ Every PR gets a security pass, and every install gets a whole-repo security audi
   `super-qa-file-bug.sh --check-body`, which validates and exits without calling `gh`.
 - 🐛 **Unreachable is `unavailable`.** A DNS failure, refused connection or timeout crashed the
   Sentry and PostHog fetchers; they now print `{"status":"unavailable"}` and exit 2.
-- 🐛 **The gh guard sources from zsh.** `super-board-gh-guard.sh` found its own path only
+- 🐛 **The gh guard sources from zsh.** `skill-board-gh-guard.sh` found its own path only
   through `BASH_SOURCE`.
 - 📝 **A bare `--title`.** SKILL.md tells the agent to leave out the `🐛 [bug] …:` prefix the
   filers add, so it no longer appears twice.
@@ -94,36 +94,36 @@ Every PR gets a security pass, and every install gets a whole-repo security audi
 
 ## v3.1.1 — 2026-10-04
 
-`/super-board run` inside a Codex session runs on Codex instead of failing.
+`/skill-board run` inside a Codex session runs on Codex instead of failing.
 
 - ✨ **A Codex host means `--codex`.** With no Workflow tool, or when the new
-  `scripts/super-board-host.sh` prints `codex`, a plain `run` takes the Codex ladder; `--low`,
+  `scripts/skill-board-host.sh` prints `codex`, a plain `run` takes the Codex ladder; `--low`,
   `--high` and `--codex=<model>` still apply. The check reads `CODEX_THREAD_ID` /
   `CODEX_SESSION_ID`, which codex-cli 0.160.0 sets in every shell it runs.
-- 📝 **How Codex finds the skill.** Codex has no `/super-board` command: it reads skills from
-  `.agents/skills/` and is invoked as `$super-board run`.
+- 📝 **How Codex finds the skill.** Codex has no `/skill-board` command: it reads skills from
+  `.agents/skills/` and is invoked as `$skill-board run`.
 
 ## v3.1.0 — 2026-10-04
 
 The board spends about a twentieth of the GitHub budget it did, can run every lane on Codex,
 and steps itself down when it hits the hourly limit anyway.
 
-- ⚡ **About 20x fewer GraphQL points.** A new `scripts/super-board-card.sh` moves and reads
+- ⚡ **About 20x fewer GraphQL points.** A new `scripts/skill-board-card.sh` moves and reads
   cards with cached project and field ids — 1 point a move, where `gh project item-list`
   plus `field-list` cost ~300 on a 131-card board. Comments, labels and PR reads go over
   REST. Measured before: a 3-card wave spent ~2,850 of 5,000 points/hr.
 - 📏 **An honest quota reading.** `gh api rate_limit` misreports the GraphQL bucket (REST
-  said used=2 while GraphQL said used=930). `sb_gh_quota_merge` in `super-board-gh-guard.sh`
+  said used=2 while GraphQL said used=930). `sb_gh_quota_merge` in `skill-board-gh-guard.sh`
   takes GraphQL's own `rateLimit` numbers; the guard and the summary use it.
 - 🤖 **Second account onboarding.** Onboard offers a robot GitHub account so the board gets
   its own 5,000 points/hr (`references/second-account.md`).
 - ✨ **`run --codex[=<model>] [--low|--high]`.** Every lane runs on headless Codex
-  (`super-board-codex-wave.sh` → `super-board-codex-lane.sh`), cards in parallel under
+  (`skill-board-codex-wave.sh` → `skill-board-codex-lane.sh`), cards in parallel under
   `max_workers`. Ladders: Sol/Sol/Astra by default, Luna/Sol/Sol on `--low`, Astra on
   `--high`; a Luna router grades each Ready card. `--codex=<model>` or `codex.model` pins one.
   Review and merge on Codex need the explicit flag; the usage fallback
   (`usage_fallback: "codex"`, now required) builds and tests only.
-- 🐢 **Throttle.** `super-board-throttle.sh` lowers `max_workers` after a wave that hit the
+- 🐢 **Throttle.** `skill-board-throttle.sh` lowers `max_workers` after a wave that hit the
   hourly limit — unlimited → 3 → 2 → 1 — and writes it to the config.
 - 🧭 **Preflight sequences overlapping peers.** Two Ready cards naming the same files, with
   no open PR, go one at a time: the lower number builds, the other waits behind it. Before,
@@ -141,7 +141,7 @@ Migrating a board no longer leaves its cards with no status.
   without restoring, so a live board's cards all fell to "No status". The restore now runs
   after any rewrite, whatever triggered it.
 - 💾 **Snapshot on disk first.** Before the first rewrite, every card's status is saved to
-  `.claude/super-board/backup/board-<number>-<ts>.json` (path in `status_backup`), so a run
+  `.claude/skill-board/backup/board-<number>-<ts>.json` (path in `status_backup`), so a run
   that dies mid-way can still be put back.
 - 🔎 **Snapshot that cannot be empty by accident.** When `gh project item-list` surfaces no
   `status` key on any card, statuses are read over GraphQL instead; item reads now go past
@@ -182,15 +182,15 @@ Source links that work away from a checkout.
 - 📝 **README rewrite.** Kanban logo and pitch "Add tasks, walk away, get merged PRs with proof.",
   true counts (7 skills: 4 you type, 3 the board runs · 8 commands · 6 guard hooks), the skill map
   as the hero image, a link to the live site, install by one-liner or plugin, a three-step quick
-  start and a commands cheat sheet. The old Setup notes moved to `docs/super-board/README.md`.
+  start and a commands cheat sheet. The old Setup notes moved to `docs/skill-board/README.md`.
 - 🌐 **GitHub Pages site.** `.github/workflows/pages.yml` publishes only the public pages: a
   landing page (`/`) with the live skill map, a one-card board walkthrough, the 7 skills and the
   install tabs; `/skill-map/`; `/onboarding/`, a step-by-step setup simulator for the 3.0.2
   install and 8-step onboard; `/impeccable/`; and `/writing-standard/`, a read-only reference
   built from the chosen formats. Pick-a-design pages stay out of the site.
-- ♻️ **Skill groups.** `skills/families.json` now groups skills as "You type" (super-board,
+- ♻️ **Skill groups.** `skills/families.json` now groups skills as "You type" (skill-board,
   super-collect, ui-refine-loop, visual) and "The board runs" (super-build, super-qa,
-  super-review). `super-board-readme-sync.py` keeps every "N skills (N you type, N the board
+  super-review). `skill-board-readme-sync.py` keeps every "N skills (N you type, N the board
   runs)" count and the family titles in step.
 - ✨ **`/visual render --source-base URL [--source-root DIR]`.** Node sources under the source root
   become links to the hosted file (`:12-20` → `#L12-L20`); others show as text. The skill-map
@@ -205,7 +205,7 @@ Fixes the red Linux CI on v3.0.0 and stops diagram pages from publishing local m
 - 🐛 **CI on Ubuntu.** `tests/test-setup.sh` hid `gh` with `PATH=/usr/bin:/bin`, but GitHub's
   ubuntu runners ship `gh` in `/usr/bin`. The test now runs the check on a curated PATH (git and
   the package manager only), so a missing `gh` is reported on every OS.
-- 🐛 **Merge gate on bash 4+.** `super-board-merge-gate.sh` used `${#VERIFY[@]:-0}`, a bad
+- 🐛 **Merge gate on bash 4+.** `skill-board-merge-gate.sh` used `${#VERIFY[@]:-0}`, a bad
   substitution on bash 4+ (Linux), so every merge with a matching head failed. Now `${#VERIFY[@]}`.
 - 🔒 **Repo-relative diagram sources.** `/visual` wrote absolute paths (home folder, worktrees,
   plugin cache) into map pages. Sources are now repo-relative (`~/…` outside the repo), the page
@@ -225,8 +225,8 @@ URL-only boards are gone; commits, tickets, PR bodies and comments follow the wr
   no longer know Skipped.
 - **Labels route cards, not `variant`.** Three labels: `qa` (Ready → QA → Review → Done, skips
   Building), `bug` and `feature` (built first). No label is built too, and the haiku classifier
-  adds `feature` or `bug` — never `qa`. `super-board-wave-plan.sh` puts `lane` and `labels` on
-  every card; `super-board-wave.js` and the legacy runner route on them. A config that still says
+  adds `feature` or `bug` — never `qa`. `skill-board-wave-plan.sh` puts `lane` and `labels` on
+  every card; `skill-board-wave.js` and the legacy runner route on them. A config that still says
   `variant: "qa-only"` is refused (exit 65) until onboard upgrades it.
 - **No goal question, no URL-only board.** Onboard always sets up a repo board. Testing a live
   site alone is `/super-qa <url>`.
@@ -241,7 +241,7 @@ URL-only boards are gone; commits, tickets, PR bodies and comments follow the wr
 `N of 8 · <emoji> <Name> — <why>`; the start screen lists the steps; a re-run shows the saved
 answers and continues.
 
-**Checks fixes, it doesn't ask.** `scripts/super-board-setup.py fix` installs or refreshes skills,
+**Checks fixes, it doesn't ask.** `scripts/skill-board-setup.py fix` installs or refreshes skills,
 scripts, workflows, guard hooks and their settings entries, removes the super-refine / cleanup-wt
 / arch-loop folders, migrates config keys, runs `git init` and adds Matt Pocock's skills — backed
 up first, listed under "Fixed for you". Only a system tool install (the exact brew / apt / dnf /
@@ -275,21 +275,21 @@ them through the same verifier and filer (`--source custom`).
 
 `get.sh` and `install.sh` print grouped lines with emojis (🧩 🔍 📦 🔧 🧠 🎉 👉) instead of one line
 per file; failures still name the file. `install.sh` records an older install in
-`.claude/super-board/upgrade.json` for onboard.
+`.claude/skill-board/upgrade.json` for onboard.
 
 ### Upgrading from 2.x
 
 > [!WARNING]
 > `board-migrate` (step 2's board changes) is tested only against a stubbed `gh`, never a live
 > GitHub project. Try it on a throwaway board first: copy your project, run
-> `python3 .claude/bin/super-board-setup.py board-migrate --owner <o> --number <copy> --repo <r> --dry-run`,
+> `python3 .claude/bin/skill-board-setup.py board-migrate --owner <o> --number <copy> --repo <r> --dry-run`,
 > then without `--dry-run`, and check the columns, labels and card statuses before you run
 > onboard on the real board.
 
 1. Install over the old copy: `curl -fsSL https://raw.githubusercontent.com/BugSlayerZoro/skill-board/main/get.sh | bash`
    (or `./install.sh <project>`). It records the version you came from.
-2. Run `/super-board onboard`. Step 1 upgrades with no question and lists it under
-   "Upgraded for you" (backup in `.claude/super-board/backup/<ts>/`):
+2. Run `/skill-board onboard`. Step 1 upgrades with no question and lists it under
+   "Upgraded for you" (backup in `.claude/skill-board/backup/<ts>/`):
    - removes `.claude/skills/super-refine`, `cleanup-wt`, `arch-loop`;
    - config: drops `variant` (a "qa-only" board's cards get the `qa` label), sets the seven
      `columns`, turns a URL-only `target` into a repo target, replaces the old `collect` keys
@@ -360,7 +360,7 @@ are now read-only refactor tickets in Backlog instead of an implement loop.
 **Protected-branch push guard (opt-in).** `hooks/guard-protected-push.py` denies direct and force
 pushes (`-f`, `--force`, `--force-with-lease`, `+ref`, `--delete`, `--all`/`--mirror`) to main,
 master and the config's `base_branch`; force pushes to feature branches stay allowed.
-`super-board onboard` asks once (step 9b) and `install.sh --protect-main` wires it
+`skill-board onboard` asks once (step 9b) and `install.sh --protect-main` wires it
 (`hooks/settings-protect-main.json`).
 
 **Skill-eval gate (pack and SanjeevOS only).** `hooks/dev/gate-skill-evals.py`, a Stop hook adapted
@@ -386,7 +386,7 @@ The `gh` stub now serves a per-case `issue.json` for `gh issue view`.
 
 ### Stale docs swept
 
-- **Telegram** is gone from every lane and reference: super-board sends no messages of its own.
+- **Telegram** is gone from every lane and reference: skill-board sends no messages of its own.
   `notifications.channel` is now `"session"` and `chat_id` is reserved (config-schema, onboard
   step 10, run.md block-rate alert, run-workflow.md wave report, super-build, super-qa, super-review).
 - **super-qa standalone loop** no longer calls `scripts/super-qa-dispatch.sh`, which never shipped:
@@ -395,42 +395,42 @@ The `gh` stub now serves a per-case `issue.json` for `gh issue view`.
   "phone-only via Telegram".
 - **super-ux** (never a skill) → `ui-refine-loop` as a suggested owner in super-qa, its preamble and
   `super-qa-file-bug.sh --suggested-skill`.
-- **super-board SKILL.md** said `run` is headless via `super-board-run.sh`; it is in-session by
-  default. Removed every pointer to `docs/specs/2026-05-21-super-board-design.md`, which does not
+- **skill-board SKILL.md** said `run` is headless via `skill-board-run.sh`; it is in-session by
+  default. Removed every pointer to `docs/specs/2026-05-21-skill-board-design.md`, which does not
   ship (SKILL.md, onboard, lint, status, stop, run, block-template, config-schema), and the
   `super-work-trader` line. run.md now says it holds the lane lifecycles plus the legacy runner.
 - **super-build** dispatcher path is `.claude/skills/super-build/scripts/super-build-dispatch.sh`;
-  removed the `Fitbox Admin` example. super-review is "the super-board reviewer", not SanjeevOS's.
+  removed the `Fitbox Admin` example. super-review is "the skill-board reviewer", not SanjeevOS's.
 - **CLAUDE.md**: eight skills, not nine; product work goes to workflow lane agents, not only
   `claude -p`; the install contract matches what `install.sh` copies; script paths are `.claude/bin/`.
-- Version 2.6.0 in `VERSION`, `skills/super-board/VERSION`, `plugin.json` and the README badge.
+- Version 2.6.0 in `VERSION`, `skills/skill-board/VERSION`, `plugin.json` and the README badge.
 
 ### Also
 
 **Onboarding rebuilt (16 gaps).** Install and workflow-runtime checks run first (step 2), so a
-missing `super-board-wave.js` halts before any question; a plugin install (`/super-board:super-board
+missing `skill-board-wave.js` halts before any question; a plugin install (`/skill-board:skill-board
 onboard`) detects the missing bin scripts, workflows, hooks and Matt Pocock's skills and installs
 them from the plugin's own copy. Every question leads with a `(Recommended)` option. Answers save
-to `.claude/super-board/onboard-answers.json` as they come: a halt resumes where it stopped, and a
+to `.claude/skill-board/onboard-answers.json` as they come: a halt resumes where it stopped, and a
 re-run offers keep all (check and repair) or edit which. Merge policy, protect main (asked once;
 with `--no-hooks` it is never wired to a missing script) and migration envs share one Policies
 screen with "Accept all recommended". The allowlist (merge gate, `gh pr merge`, migrate commands)
 is offered as a diff up front. Collect sources are pinged before one review screen, and the config
 is written once. URL-only boards skip git; option D is check and repair; the ticket format lives
-once, in `docs/agents/issue-tracker.md`. `install.sh` ends with one line: run `/super-board onboard`.
+once, in `docs/agents/issue-tracker.md`. `install.sh` ends with one line: run `/skill-board onboard`.
 
 **AGENTS.md as the source of truth.** Onboard asks to merge CLAUDE.md into AGENTS.md (backup
 first; rule units, duplicates once, conflicts asked one by one quoting both lines, every unit
 mapped to a line, diff and approve) and leaves CLAUDE.md as `@AGENTS.md` plus any Claude-only
-rules. A managed super-board section (tables, terse, NEVER/DON'T in caps, which skill when) sits
-between `<!-- super-board:begin -->` / `<!-- super-board:end -->`; re-install rewrites only that
+rules. A managed skill-board section (tables, terse, NEVER/DON'T in caps, which skill when) sits
+between `<!-- skill-board:begin -->` / `<!-- skill-board:end -->`; re-install rewrites only that
 block, and a CLAUDE.md that is no longer a pointer gets the merge offered again. Deterministic
-parts in `scripts/super-board-agents-md.py` (detect, backup, block, pointer, units, coverage,
+parts in `scripts/skill-board-agents-md.py` (detect, backup, block, pointer, units, coverage,
 check, atomic writes).
 
 **Merge policy.** New `merge_policy`: normal changes auto-merge; money, auth and destructive schema
 (labels, path globs, added-line keywords, all configurable) and diffs over `auto_max_lines` always
-go to a human. The merge gate decides (`scripts/super-board-merge-policy.py`) and exits 7; the card
+go to a human. The merge gate decides (`scripts/skill-board-merge-policy.py`) and exits 7; the card
 goes to Blocked with 🙋, and the human merges it or comments `done` to approve.
 `auto_max_lines` defaults to 400 changed lines (additions + deletions; `0` turns it off); lockfiles,
 generated files and snapshots (`size_exclude`, configurable) and migration SQL (reported
@@ -454,8 +454,8 @@ the gate re-verifies and merges.
 **🙋 Needs you** reason tag in `block-template.md`, for any step only a human may run. There is no
 extra column: Blocked + 🙋 + the `needs-you` label.
 
-**Helpers.** `scripts/super-board-env-check.sh` prints present / empty / missing per env key and
-never a value; `guard-secrets.py` allows a plain call to it. `scripts/super-board-settings.py`
+**Helpers.** `scripts/skill-board-env-check.sh` prints present / empty / missing per env key and
+never a value; `guard-secrets.py` allows a plain call to it. `scripts/skill-board-settings.py`
 merges hooks and permission rules into settings.json (backup, atomic, `--dry-run` diff);
 `install.sh` uses it, and `--no-hooks --protect-main` now installs only the push guard.
 
@@ -495,7 +495,7 @@ Gap / Bug / Verification miss / Scope drift / Over-engineering. Checks that held
 findings are unchanged.
 
 **Merge pinned to the reviewed head.** The Reviewer records `headRefOid` when review passes and
-passes it to `super-board-merge-gate.sh --expect-head`. The gate verifies that commit and merges
+passes it to `skill-board-merge-gate.sh --expect-head`. The gate verifies that commit and merges
 with `--match-head-commit`. A push after review, or during verify, exits 6: the evidence is void
 and the card stays in Review. Tests 8-11 in `tests/test-merge-gate.sh`.
 
@@ -536,7 +536,7 @@ comments. The legacy dispatcher does the same once at start (`reclaim_stranded_b
 Builder step 2 continues on an existing branch. Tests: scenarios 16-17 in `test-wave-plan.sh`, six
 checks in `test-run-gates.sh`.
 
-**Usage guard before each wave.** New `scripts/super-board-usage.sh`. Claude Code exposes plan
+**Usage guard before each wave.** New `scripts/skill-board-usage.sh`. Claude Code exposes plan
 usage only in the `rate_limits` JSON it pipes to the status line: `record` saves it from your
 status-line command, and `check` compares the 5-hour and weekly windows against `usage_pause_pct`
 (default 95). At or over it, no new wave launches, the running one finishes, a resume note is
@@ -576,12 +576,12 @@ once, the file backed up first, invalid JSON left untouched. `--no-hooks` skips 
 `tests/test-install.sh` grows to 9 scenarios. `plugin.json` lists the full pack.
 
 **README.** Rewritten as a short front door; the long material moved to
-`docs/super-board/README.md`. Every skill has a README. `scripts/super-board-readme-sync.py`
+`docs/skill-board/README.md`. Every skill has a README. `scripts/skill-board-readme-sync.py`
 regenerates the skill tables and counts from SKILL.md frontmatter and `skills/families.json`
 (`--check` exits 1 when stale), run by a git pre-commit hook (`hooks/pre-commit-readme.sh`) and a
 Claude Code PostToolUse hook (`.claude/settings.json`). Test: `tests/test-readme-sync.sh`.
 
-**Versions.** `skills/super-board/VERSION` was stale at 2.0.0; `VERSION`, `skills/super-board/VERSION`
+**Versions.** `skills/skill-board/VERSION` was stale at 2.0.0; `VERSION`, `skills/skill-board/VERSION`
 and `plugin.json` all read 2.5.0.
 
 ## v2.4.0 — 2026-08-20
@@ -591,7 +591,7 @@ The `Blocked` column stops being a dead end, and nothing merges on GitHub's word
 Everything here came out of one real run in which five cards sat in `Blocked` long after their
 blockers had merged, and two PRs that GitHub called mergeable would have turned the base branch red.
 
-**Waves are sized by the dependency graph.** `super-board-wave-plan.sh` now dispatches every Ready
+**Waves are sized by the dependency graph.** `skill-board-wave-plan.sh` now dispatches every Ready
 card whose `## Blocked by` issues have all closed, plus whatever is already in flight. `max_workers`
 is demoted to an optional throttle — absent or `0` is unlimited, which is the new default. A fixed
 cap sized waves badly: on a board where 23 of 32 Ready cards were waiting on an open blocker, it
@@ -601,21 +601,21 @@ spent its slots on cards that would hit their own preflight and park.
 and the orchestrator moves them back to `Ready` before launching, so they join that same wave. Cards
 gated on a person (`blocked-by: -`) are never swept.
 
-**New: `super-board-deps.sh`.** The dependency primitive. Reads the last `blocked-by:` line from a
+**New: `skill-board-deps.sh`.** The dependency primitive. Reads the last `blocked-by:` line from a
 card's Block comments, falling back to the body's `## Blocked by` section, and answers
 `runnable` / `humanGated` / `parseable` per issue. It is deliberately fail-safe: three shapes that
 look like "no blockers" but are not — a missing section, an empty one, and `- None — but #26 must
 merge first` — are reported unreadable and flagged rather than guessed at. That third shape is
 produced by following the `to-tickets` template, so it is common.
 
-**New: `super-board-merge-gate.sh`.** Takes an atomic `mkdir` merge lock, merges the CURRENT base
+**New: `skill-board-merge-gate.sh`.** Takes an atomic `mkdir` merge lock, merges the CURRENT base
 into a scratch worktree, runs `config.verify_commands`, and only then squash-merges. Exit codes
 route the caller: `2` and `5` mean a rebase pass for the Builder, `3` is a real human block, `4` is
 just "someone else is merging". `mergeable: CLEAN` answers only "does the text conflict"; it says
 nothing about whether the result compiles.
 
 **The Review lane is no longer serialised.** The promise-chain mutex around the whole Review lane is
-gone from `super-board-wave.js`. It guarded the right thing in the wrong place — reading the diff,
+gone from `skill-board-wave.js`. It guarded the right thing in the wrong place — reading the diff,
 rerunning the suite and the truth-check never touch the base branch. The mutex now sits at the merge
 step alone, where the race actually is, and is visible across processes and machines.
 
@@ -637,7 +637,7 @@ offers to file it.
   also refuses any destination not named after the skill, and `test-install.sh` plants decoy
   directories that must survive — because an earlier draft of this resolution deleted 190 of them
   (`cd ""` succeeds in bash, so an empty `readlink` silently resolved to the parent).
-- `install.sh` never shipped `super-board-stop.sh`, so a fresh install had a broken `stop` verb.
+- `install.sh` never shipped `skill-board-stop.sh`, so a fresh install had a broken `stop` verb.
 - README claimed `bash 4+`. Every script here is bash-3.2 clean, which is what stock macOS has.
 - README listed the `mattpocock/skills` pack under Credits rather than Requirements, though the lane
   skills reference twelve of them by name and fail without them.
@@ -750,7 +750,7 @@ which is inline reasoning wearing a costume.
   question. Replaces "poll five roles, take the majority, tie → smallest blast
   radius" with the tiebreak that was doing the work anyway.
 - **`grilling`, `shape`, and `clarify` are now worker-forbidden** and documented
-  as `super-board lint`-only. Reaching for one inside a lane is itself a human
+  as `skill-board lint`-only. Reaching for one inside a lane is itself a human
   gate — it means the ticket should have been caught upstream, while a human was
   still at the keyboard.
 - **`code-review` survives, with a fixed point.** It runs once against the
@@ -944,7 +944,7 @@ silently produced the zero-merge night.
 
 Workers were spawned with `>/dev/null`, so a 13-minute worker left no trace in
 the run log. Output now lands in
-`docs/super-board/runs/<date>-<slug>-workers/worker-<lane>-<issue>.log`.
+`docs/skill-board/runs/<date>-<slug>-workers/worker-<lane>-<issue>.log`.
 The MSYS-vs-Windows PID namespace trap is documented in the script header —
 `kill -0` in Git Bash and PowerShell's `Get-Process` disagree about the same
 process, which is what made a live worker look dead during that incident.
@@ -954,7 +954,7 @@ process, which is what made a live worker look dead during that incident.
 `tests/test-run-gates.sh` — 28 assertions, deterministic, stubbed `gh`, no
 network. Covers the landed-work signal, the halt gate's independence from lane
 state, the dispatch ceiling, the closed-issue guard at both the selection and
-dispatch choke points, and by-name status-option resolution. `super-board-run.sh`
+dispatch choke points, and by-name status-option resolution. `skill-board-run.sh`
 is now sourceable via `SB_LIB_ONLY=1` for gate testing.
 
 ## v1.7.1 — 2026-06-11
@@ -967,9 +967,9 @@ dying at the args guard. Found live on the magnetgate board.
 
 ## v1.7.0 — 2026-06-11
 
-### Model-tier flags for `super-board run`
+### Model-tier flags for `skill-board run`
 
-`super-board run` now takes a model ladder: `--low` (haiku/sonnet/opus by card
+`skill-board run` now takes a model ladder: `--low` (haiku/sonnet/opus by card
 complexity), default medium (sonnet/opus/session model), `--high` (opus floor,
 session model above). Config key `model_tier` sets the default; the flag wins.
 The classify router stays on haiku except on `--high` runs (sonnet). Haiku
@@ -979,7 +979,7 @@ never does lane work outside an explicit `--low` run.
 
 ### Workflow backend is now the default; claude-p is explicit opt-in
 
-`"worker_backend"` now defaults to `"workflow"` — `/super-board run <slug>` drains the board in-session via the `super-board-wave` dynamic workflow unless the config explicitly sets `"claude-p"`. The legacy dispatcher (`super-board-run.sh`) refuses to run (exit 78) for any config that doesn't opt in, so a stale habit or old script can't silently spawn headless `claude -p` workers.
+`"worker_backend"` now defaults to `"workflow"` — `/skill-board run <slug>` drains the board in-session via the `skill-board-wave` dynamic workflow unless the config explicitly sets `"claude-p"`. The legacy dispatcher (`skill-board-run.sh`) refuses to run (exit 78) for any config that doesn't opt in, so a stale habit or old script can't silently spawn headless `claude -p` workers.
 
 ### Hardened mutual exclusion, claims, and crash recovery (PR #3 review findings)
 
@@ -994,21 +994,21 @@ never does lane work outside an explicit `--low` run.
 
 ### Dynamic-workflow worker backend
 
-New `worker_backend` config key selects how cards get worked: `"claude-p"` (default, unchanged — headless workers via `super-board-run.sh`) or `"workflow"` (opt-in — waves drained in-session via the `workflows/super-board-wave.js` dynamic workflow).
+New `worker_backend` config key selects how cards get worked: `"claude-p"` (default, unchanged — headless workers via `skill-board-run.sh`) or `"workflow"` (opt-in — waves drained in-session via the `workflows/skill-board-wave.js` dynamic workflow).
 
-- **In-session waves** — `workflows/super-board-wave.js` runs a classify → build → qa → review pipeline per card. Lane lifecycles, branch/PR model, and Block templates are unchanged from `references/run.md`; only the dispatcher differs. See `skills/super-board/references/run-workflow.md`.
-- **Backlog-aware wave selection** — `scripts/super-board-wave-plan.sh` picks one card per non-empty column downstream-first (Review → QA → Ready), then fills the remaining `max_workers` slots from the most backlogged column. Extra Review slots are unlocked only when `human_approves_merge: true`.
+- **In-session waves** — `workflows/skill-board-wave.js` runs a classify → build → qa → review pipeline per card. Lane lifecycles, branch/PR model, and Block templates are unchanged from `references/run.md`; only the dispatcher differs. See `skills/skill-board/references/run-workflow.md`.
+- **Backlog-aware wave selection** — `scripts/skill-board-wave-plan.sh` picks one card per non-empty column downstream-first (Review → QA → Ready), then fills the remaining `max_workers` slots from the most backlogged column. Extra Review slots are unlocked only when `human_approves_merge: true`.
 - **Review-lane mutex** — on auto-merge boards the workflow serializes Review-lane agents, so concurrent merges can't race.
-- **Backend mutual exclusion** — the workflow backend writes `.claude/super-board/inflight/workflow-wave.lock`; the legacy dispatcher refuses to start while it exists (exit 74).
+- **Backend mutual exclusion** — the workflow backend writes `.claude/skill-board/inflight/workflow-wave.lock`; the legacy dispatcher refuses to start while it exists (exit 74).
 - **Tests** — 6-scenario suite at `tests/test-wave-plan.sh` pins the wave planner's selection logic against fixtures, no `gh` calls.
 
 Why: replaces `nohup claude -p` dispatch ahead of the June 15 Agent SDK billing split. The legacy `claude-p` backend remains the default — nothing changes unless you opt in.
 
 ## v1.4.0 — 2026-05-27
 
-### Pure-Python `super-board status` renderer (~50× faster)
+### Pure-Python `skill-board status` renderer (~50× faster)
 
-The status snapshot now renders via `.claude/bin/super-board-status.py` instead of being assembled token-by-token by the model. Same locked 80-column kanban template; ~1.3s instead of ~1min per invocation.
+The status snapshot now renders via `.claude/bin/skill-board-status.py` instead of being assembled token-by-token by the model. Same locked 80-column kanban template; ~1.3s instead of ~1min per invocation.
 
 Pure Python 3 stdlib + `gh` CLI. No bash, no jq. Works on macOS, Linux, and Windows.
 
@@ -1020,27 +1020,27 @@ Highlights:
 - Lane-handoff fix: clean Build → QA → Review handoffs no longer leave phantom in-flight entries from the prior lane.
 - Cross-platform CI (`.github/workflows/cross-platform.yml`): smoke matrix on ubuntu/macos/windows × py3.10/3.12, plus 22 parser fixture tests that pin the regexes against real dispatcher log lines.
 
-Agents that invoke the `super-board` skill will now prefer the script and print its stdout verbatim. The locked template spec in `references/status.md` is retained as fallback / change-control documentation.
+Agents that invoke the `skill-board` skill will now prefer the script and print its stdout verbatim. The locked template spec in `references/status.md` is retained as fallback / change-control documentation.
 
 Contributed by @LucariusWest (#2).
 
 ## v1.3.0 — 2026-05-24
 
-### New verb: `super-board stop`
+### New verb: `skill-board stop`
 
-Graceful shutdown of an in-flight run. One command, no manual `pkill` choreography, full context preserved on the board so the next `super-board run` resumes cleanly.
+Graceful shutdown of an in-flight run. One command, no manual `pkill` choreography, full context preserved on the board so the next `skill-board run` resumes cleanly.
 
 What it does, in order:
 
-1. Inventories in-flight workers from `.claude/super-board/inflight/<issue-N>` lock files.
-2. For each one, posts a `🛑 super-board · stopped mid-flight` comment on the issue **and** its PR, including lane, worker PID, UTC timestamp, last pushed commit (the "resume point"), and the literal resume command.
+1. Inventories in-flight workers from `.claude/skill-board/inflight/<issue-N>` lock files.
+2. For each one, posts a `🛑 skill-board · stopped mid-flight` comment on the issue **and** its PR, including lane, worker PID, UTC timestamp, last pushed commit (the "resume point"), and the literal resume command.
 3. Releases the GitHub assignee mutex on each claimed issue + clears `loop:in-build`/`loop:in-qa`/`loop:in-review` descriptive labels.
 4. SIGTERM → 1s → SIGKILL the worker PIDs.
-5. Sweeps any untracked `claude -p .*super-board` orphan workers (defense against crashed-dispatcher leftovers).
-6. Kills the dispatcher loop (`super-board-run.sh`).
+5. Sweeps any untracked `claude -p .*skill-board` orphan workers (defense against crashed-dispatcher leftovers).
+6. Kills the dispatcher loop (`skill-board-run.sh`).
 7. Removes in-flight lock files. Leaves worktrees, branches, and PRs in place.
 
-**Resume = run.** There is no separate `super-board resume` verb on purpose. The board is the state — cards sit in whichever column they were in when stopped, branches and PRs persist, and `super-board run <slug>` re-claims the same cards on its next tick. Each previously-in-flight card costs one extra lane cycle on resume.
+**Resume = run.** There is no separate `skill-board resume` verb on purpose. The board is the state — cards sit in whichever column they were in when stopped, branches and PRs persist, and `skill-board run <slug>` re-claims the same cards on its next tick. Each previously-in-flight card costs one extra lane cycle on resume.
 
 What stop does NOT do (deliberate):
 
@@ -1058,7 +1058,7 @@ LANE=qa
 STARTED=2026-05-24T18:42:11Z
 ```
 
-This lets `super-board stop` recover the lane name + dispatch time without an extra `gh` call. A new `read_lock` helper handles both v1.3.0+ and legacy single-line-PID formats, so an upgrade mid-run is safe — existing locks keep working until the dispatcher rewrites them on the next dispatch.
+This lets `skill-board stop` recover the lane name + dispatch time without an extra `gh` call. A new `read_lock` helper handles both v1.3.0+ and legacy single-line-PID formats, so an upgrade mid-run is safe — existing locks keep working until the dispatcher rewrites them on the next dispatch.
 
 ### Routing
 
@@ -1071,9 +1071,9 @@ First public release.
 ### Worker-storm fixes (post-incident #381, originally landed in Sanjeev/BookKeepingApp 2026-05-22)
 
 - **PID tracking + per-lane lockfile.** The dispatcher tracks `BUILD_PID`/`QA_PID`/`REVIEW_PID` and refuses to dispatch into a lane whose worker is still alive. Closes the 10–30s `claude -p` cold-start race that produced 7 racing workers on the very first run.
-- **In-flight lockfiles** at `.claude/super-board/inflight/<issue-N>` containing the worker PID. `top_card_in_column` skips any issue with a live lock even before the assignee write propagates. Reaped each tick via PID liveness check.
+- **In-flight lockfiles** at `.claude/skill-board/inflight/<issue-N>` containing the worker PID. `top_card_in_column` skips any issue with a live lock even before the assignee write propagates. Reaped each tick via PID liveness check.
 - **Atomic assignee claim BEFORE worker spawn.** `try_claim_assignee` runs in the dispatcher and only proceeds to `nohup claude -p` if it wins the assignee write.
-- **Orphan scan on startup.** Refuses to start if any `claude -p .*super-board run` worker is already alive from a prior crashed dispatcher run.
+- **Orphan scan on startup.** Refuses to start if any `claude -p .*skill-board run` worker is already alive from a prior crashed dispatcher run.
 
 ### Rate-limit fixes
 
@@ -1085,11 +1085,11 @@ First public release.
 ### QA evidence
 
 - **Mandatory inline screenshot embeds** on every QA exit (pass and fail) at standard viewports (1920×1080, 1024×768, 375×667). Screenshots committed to the issue branch BEFORE the GitHub comment is posted, so they render in-page.
-- **`docs/super-board/runs/**/*.{png,jpg,webp,html,log,patch,diff,zip,trace}` gitignored** by default. Keep `.md` and `.json` summaries tracked for audit trail; drop the heavy artifacts. Users adopting on existing repos: `git rm --cached docs/super-board/runs/**/*.png` etc. to untrack what's already in.
+- **`docs/skill-board/runs/**/*.{png,jpg,webp,html,log,patch,diff,zip,trace}` gitignored** by default. Keep `.md` and `.json` summaries tracked for audit trail; drop the heavy artifacts. Users adopting on existing repos: `git rm --cached docs/skill-board/runs/**/*.png` etc. to untrack what's already in.
 
 ### Documentation fixes
 
-- **Card-locking semantics corrected.** The original spec said the GitHub assignee write was the lock. In practice it doesn't hold up — assigning yourself something you already have is a no-op on a solo account, and GH issues accept multiple assignees, so it never blocked a second worker. The real lock is the local `.claude/super-board/inflight/<N>` lockfile + per-lane PID tracking. Docs updated throughout.
+- **Card-locking semantics corrected.** The original spec said the GitHub assignee write was the lock. In practice it doesn't hold up — assigning yourself something you already have is a no-op on a solo account, and GH issues accept multiple assignees, so it never blocked a second worker. The real lock is the local `.claude/skill-board/inflight/<N>` lockfile + per-lane PID tracking. Docs updated throughout.
 
 ### Other
 

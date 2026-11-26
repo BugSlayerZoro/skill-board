@@ -2,7 +2,7 @@ You are running UNATTENDED inside **Super Build**, dispatched to work on a singl
 
 ## Decision policy (mandatory)
 
-**Before worker writes or worktree creation:** follow [skill readiness](../../super-board/references/skills-readiness.md).
+**Before worker writes or worktree creation:** follow [skill readiness](../../skill-board/references/skills-readiness.md).
 Resolve this lane for the actual host, load the report's files/fallbacks, halt
 on missing requirements and recheck each conditional helper before use.
 
@@ -19,7 +19,7 @@ on missing requirements and recheck each conditional helper before use.
 
    There is no advisor panel and no vote. `mattpocock-skills:grilling` is
    **forbidden inside a worker** — its contract is to ask the user and wait, which
-   this run cannot do. Ambiguous tickets are `super-board lint`'s job, upstream of
+   this run cannot do. Ambiguous tickets are `skill-board lint`'s job, upstream of
    this loop; if you want to grill the ticket, that is a rule-3 human gate.
 
 2. **NEVER call `AskUserQuestion`. NEVER block waiting for the user.**

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Tests get.sh, the one-line installer, offline: the pack is served as a local
-# file:// tarball (SUPER_BOARD_TARBALL), and npx is a stub on PATH that logs its
+# file:// tarball (SKILL_BOARD_TARBALL), and npx is a stub on PATH that logs its
 # arguments instead of reaching the network. Each case installs into a fresh
 # temp target and checks what landed.
 set -euo pipefail
@@ -13,10 +13,10 @@ WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"' EXIT
 
 # A tarball shaped like GitHub's: one top-level folder holding the pack.
-mkdir -p "$WORK/src/super-board-test"
-tar -cf - --exclude ./.git --exclude ./evals --exclude ./docs . | tar -xf - -C "$WORK/src/super-board-test"
-tar -czf "$WORK/pack.tgz" -C "$WORK/src" super-board-test
-export SUPER_BOARD_TARBALL="file://$WORK/pack.tgz"
+mkdir -p "$WORK/src/skill-board-test"
+tar -cf - --exclude ./.git --exclude ./evals --exclude ./docs . | tar -xf - -C "$WORK/src/skill-board-test"
+tar -czf "$WORK/pack.tgz" -C "$WORK/src" skill-board-test
+export SKILL_BOARD_TARBALL="file://$WORK/pack.tgz"
 
 # Stubs: npx records its argv; gh and jq exist so no warnings fire.
 mkdir -p "$WORK/bin"
@@ -36,17 +36,17 @@ bash -n "$GET" || fail "get.sh has a syntax error"
 # 1 — default install into --target: pack lands, hooks wired, helper skills called.
 T="$WORK/t1"; mkdir -p "$T"; : > "$NPX_LOG"
 out=$(bash "$GET" --target "$T" 2>&1) || fail "default install exited non-zero: $out"
-for s in super-board super-build super-qa super-review super-collect visual git-sync ui-refine-loop pr-security-review; do
+for s in skill-board super-build super-qa super-review super-collect visual git-sync ui-refine-loop pr-security-review; do
   [ -f "$T/.claude/skills/$s/SKILL.md" ] || fail "skill $s not installed"
 done
-[ -x "$T/.claude/bin/super-board-run.sh" ] || fail "dispatcher script not installed"
-[ -f "$T/.claude/workflows/super-board-wave.js" ] || fail "workflow not installed"
+[ -x "$T/.claude/bin/skill-board-run.sh" ] || fail "dispatcher script not installed"
+[ -f "$T/.claude/workflows/skill-board-wave.js" ] || fail "workflow not installed"
 [ -f "$T/.claude/settings.json" ] || fail "hooks were not merged into settings.json"
 grep -q 'add mattpocock/skills' "$NPX_LOG" || fail "helper skills step not called (npx log: $(cat "$NPX_LOG"))"
 grep -q 'add cloudflare/security-audit-skill --skill security-audit -a claude-code -y' "$NPX_LOG" \
   || fail "security-audit step not called (npx log: $(cat "$NPX_LOG"))"
-echo "$out" | grep -q '/super-board onboard' || fail "summary is missing the next step"
-n=$(printf '%s\n' "$out" | grep -c '/super-board onboard' || true)
+echo "$out" | grep -q '/skill-board onboard' || fail "summary is missing the next step"
+n=$(printf '%s\n' "$out" | grep -c '/skill-board onboard' || true)
 [ "$n" -eq 1 ] || fail "the next step should be printed once, got $n times: $out"
 
 # 2 — flags pass through to install.sh, positional target works from piped stdin.
@@ -59,7 +59,7 @@ grep -q 'guard-protected-push' "$T/.claude/settings.json" || fail "--protect-mai
 T="$WORK/t3"; mkdir -p "$T"
 bash "$GET" --no-hooks --no-helper-skills --target "$T" >/dev/null 2>&1 || fail "--no-hooks install failed"
 [ ! -e "$T/.claude/settings.json" ] || fail "--no-hooks still wrote settings.json"
-[ -f "$T/.claude/skills/super-board/SKILL.md" ] || fail "--no-hooks install skipped the skills"
+[ -f "$T/.claude/skills/skill-board/SKILL.md" ] || fail "--no-hooks install skipped the skills"
 
 # 4 — helper skills already present (lock file lists them): npx is not called.
 T="$WORK/t4"; mkdir -p "$T"; : > "$NPX_LOG"
@@ -90,7 +90,7 @@ if bash "$GET" --bogus --no-helper-skills --target "$T" >/dev/null 2>&1; then fa
 # 7 — a bad tarball URL fails cleanly and leaves no temp folder behind.
 T="$WORK/t7"; mkdir -p "$T"
 mkdir -p "$WORK/tmp7"
-if TMPDIR="$WORK/tmp7" SUPER_BOARD_TARBALL="file://$WORK/nope.tgz" bash "$GET" --no-helper-skills --target "$T" >/dev/null 2>&1; then
+if TMPDIR="$WORK/tmp7" SKILL_BOARD_TARBALL="file://$WORK/nope.tgz" bash "$GET" --no-helper-skills --target "$T" >/dev/null 2>&1; then
   fail "missing tarball was accepted"
 fi
 [ -z "$(ls -A "$WORK/tmp7")" ] || fail "temp folder was left behind after a failed download"

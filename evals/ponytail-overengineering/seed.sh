@@ -144,8 +144,8 @@ jq -n --arg head "$HEAD_SHA" '{
   files: [{path: "config/formatters.json"}, {path: "src/formatting/__init__.py"}, {path: "src/formatting/base.py"}, {path: "src/formatting/dollar.py"}, {path: "src/formatting/factory.py"}, {path: "src/formatting/registry.py"}, {path: "src/pricing.py"}, {path: "tests/test_pricing.py"}],
   reviewThreads: [],
   comments: [
-    {author: {login: "super-board-bot"}, body: "[builder] Build done: format_price behind a pluggable formatter registry so other currencies can be added later. Both ACs tested.\nLocal tests: python3 -m unittest -q", createdAt: "2026-10-01T10:00:00Z"},
-    {author: {login: "super-board-bot"}, body: "🔍 QA pass: AC 1 and AC 2 green (tests/test_pricing.py:7, :10).\nLocal tests: python3 -m unittest -q", createdAt: "2026-10-01T11:00:00Z"}
+    {author: {login: "skill-board-bot"}, body: "[builder] Build done: format_price behind a pluggable formatter registry so other currencies can be added later. Both ACs tested.\nLocal tests: python3 -m unittest -q", createdAt: "2026-10-01T10:00:00Z"},
+    {author: {login: "skill-board-bot"}, body: "🔍 QA pass: AC 1 and AC 2 green (tests/test_pricing.py:7, :10).\nLocal tests: python3 -m unittest -q", createdAt: "2026-10-01T11:00:00Z"}
   ]
 }' > "$FX/pr.json"
 jq -n '{number: 11, title: "Format prices for display", body: "Show prices as dollars.\n\nAC 1: format_price(1234) returns \"$12.34\".\nAC 2: format_price(5) returns \"$0.05\".", labels: [], comments: []}' > "$FX/issue.json"

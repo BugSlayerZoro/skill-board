@@ -6,7 +6,7 @@ import subprocess
 import tempfile
 import unittest
 
-SCRIPT = pathlib.Path(__file__).resolve().parents[1] / 'scripts/super-board-calibration.py'
+SCRIPT = pathlib.Path(__file__).resolve().parents[1] / 'scripts/skill-board-calibration.py'
 
 
 class Calibration(unittest.TestCase):
@@ -26,7 +26,7 @@ class Calibration(unittest.TestCase):
         self.config = {'repo': {'path': '.'}, 'base_branch': 'main',
                        'calibration': {'enabled': True, 'mode': 'apply-existing',
                                        'allowed_skill_paths': [str(self.target)]}}
-        self.run = self.root / 'docs/super-board/runs/current-run'
+        self.run = self.root / 'docs/skill-board/runs/current-run'
         self.run.mkdir(parents=True)
         self.manifest = self.run / 'manifest.md'
         self.manifest.write_text('Current run: issue #1, PR #2 landed.\n')
@@ -146,17 +146,17 @@ class Calibration(unittest.TestCase):
             self.assertEqual(self.prepare(receipt=note)['status'], 'skipped')
 
     def test_existing_lane_state_blocks_a_caller_claim_of_zero_workers(self):
-        lock = self.root / '.claude/super-board/inflight/1'
+        lock = self.root / '.claude/skill-board/inflight/1'
         lock.parent.mkdir(parents=True)
         lock.write_text('PID=123\n')
         self.assertEqual(self.prepare()['reason'], 'unfinished-work')
         lock.unlink()
-        marker = self.root / '.claude/super-board/codex-wave.pid'
+        marker = self.root / '.claude/skill-board/codex-wave.pid'
         marker.write_text('123\n')
         self.assertEqual(self.prepare()['reason'], 'unfinished-work')
 
     def test_native_workflow_marker_blocks_calibration_until_completion_cleanup(self):
-        marker = self.root / '.claude/super-board/inflight/workflow-wave.lock'
+        marker = self.root / '.claude/skill-board/inflight/workflow-wave.lock'
         marker.parent.mkdir(parents=True)
         marker.write_text('SLUG=app\nSTARTED=now\n')
         self.assertEqual(self.prepare()['status'], 'skipped')

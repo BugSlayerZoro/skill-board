@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# super-board installer.
+# skill-board installer.
 # Copies skills/, scripts/, workflows/ and the guard hooks once into the target
 # project's shared .agents/ tree, links them into each agent host's folder, and
 # merges the hook settings into .claude/settings.json (backed up first, never duplicated).
@@ -11,22 +11,22 @@
 # guard that blocks direct and force pushes to main/master/base_branch; with
 # --no-hooks it installs that one guard alone. --hosts (or --hosts=…) adds host
 # folders to link; .claude/ is always linked. The installer asks nothing:
-# super-board onboard asks the questions (protect main is one of them).
+# skill-board onboard asks the questions (protect main is one of them).
 #
 # Layout: .agents/{skills/<skill>,bin,workflows,hooks} hold the files. Each host
 # folder (.claude/ always; .codex/ and .opencode/ when that folder already exists,
-# a config "host" key names it, super-board-host.sh reports it, or --hosts asks)
+# a config "host" key names it, skill-board-host.sh reports it, or --hosts asks)
 # gets one link per skill under skills/ and one link per file under bin/,
-# workflows/ and hooks/. Nothing that is not super-board's is touched. Where a
+# workflows/ and hooks/. Nothing that is not skill-board's is touched. Where a
 # link cannot be made (Windows without symlink rights) the file is copied.
-# Settings and run state (.claude/settings.json, .claude/super-board/) stay put.
+# Settings and run state (.claude/settings.json, .claude/skill-board/) stay put.
 #
 # Output is grouped with emojis, one line per group of files (failures still name
-# the file). Environment: SUPER_BOARD_QUIET_NEXT=1 prints only the "🔧 installing"
+# the file). Environment: SKILL_BOARD_QUIET_NEXT=1 prints only the "🔧 installing"
 # group — get.sh sets it and prints its own header and summary around it.
 #
-# An older super-board already in the target (a different skills/super-board/VERSION,
-# or one with no VERSION) is recorded in .claude/super-board/upgrade.json
+# An older skill-board already in the target (a different skills/skill-board/VERSION,
+# or one with no VERSION) is recorded in .claude/skill-board/upgrade.json
 # {from, to, added_skills}; onboard's 🔍 Checks finishes the upgrade and lists it.
 
 set -euo pipefail
@@ -55,7 +55,7 @@ TARGET="${TARGET:-$PWD}"
 # Primary: the board and its lanes. Secondary: standalone helpers the lanes
 # can call (visual, git-sync, ui-refine-loop, pr-security-review). Worktree cleanup (cleanup-wt) is a
 # hook, not a skill: it ships with the guard hooks below.
-PRIMARY_SKILLS="super-board super-build super-qa super-review super-collect"
+PRIMARY_SKILLS="skill-board super-build super-qa super-review super-collect"
 SECONDARY_SKILLS="visual git-sync ui-refine-loop pr-security-review"
 
 if [ ! -d "$TARGET" ]; then
@@ -73,7 +73,7 @@ for h in $(echo "$ASKED_HOSTS" | tr ',' ' '); do
   esac
 done
 for h in codex opencode; do [ ! -d "$TARGET/.$h" ] || add_host "$h"; done
-for h in $(python3 - "$TARGET/.claude/super-board/configs" <<'PY'
+for h in $(python3 - "$TARGET/.claude/skill-board/configs" <<'PY'
 import glob, json, os, sys
 for p in sorted(glob.glob(os.path.join(sys.argv[1], "*.json"))):
     try:
@@ -84,16 +84,16 @@ for p in sorted(glob.glob(os.path.join(sys.argv[1], "*.json"))):
         print(h)
 PY
 ); do add_host "$h"; done
-[ "$(bash "$REPO_ROOT/scripts/super-board-host.sh" 2>/dev/null || true)" != codex ] || add_host codex
+[ "$(bash "$REPO_ROOT/scripts/skill-board-host.sh" 2>/dev/null || true)" != codex ] || add_host codex
 
-QUIET="${SUPER_BOARD_QUIET_NEXT:-}"
+QUIET="${SKILL_BOARD_QUIET_NEXT:-}"
 PACK_VERSION="$(tr -d '[:space:]' < "$REPO_ROOT/VERSION" 2>/dev/null || echo '?')"
 SHARED="$TARGET/.agents"
 
 # Record an upgrade BEFORE the copy overwrites the old VERSION. An install made
-# before .agents/ existed keeps its VERSION under .claude/skills/super-board.
+# before .agents/ existed keeps its VERSION under .claude/skills/skill-board.
 PREV_VERSION=""
-for d in "$SHARED/skills/super-board" "$TARGET/.claude/skills/super-board"; do
+for d in "$SHARED/skills/skill-board" "$TARGET/.claude/skills/skill-board"; do
   if [ -d "$d" ]; then
     PREV_VERSION="$(tr -d '[:space:]' < "$d/VERSION" 2>/dev/null || echo 'older')"
     [ -n "$PREV_VERSION" ] || PREV_VERSION="older"
@@ -107,7 +107,7 @@ if [ -n "$PREV_VERSION" ]; then
   done
 fi
 
-[ -n "$QUIET" ] || echo "🧩 super-board $PACK_VERSION → $TARGET"
+[ -n "$QUIET" ] || echo "🧩 skill-board $PACK_VERSION → $TARGET"
 echo "🔧 installing"
 
 # Resolve all skill paths before replacing anything. A destination can contain
@@ -199,7 +199,7 @@ COPIED=0
 # Point <host>/<group>/<name> at .agents/<group>/<name>. Already resolving there
 # (a link, or a whole folder linked into .agents/) → nothing to do. A user's own
 # link elsewhere → keep it and write through it, as before .agents/ existed.
-# super-board's own real file or directory → replaced by the link.
+# skill-board's own real file or directory → replaced by the link.
 link_entry() {
   local host="$1" group="$2" name="$3" src_in_pack="$4" kind="$5" rel="$6"
   local shared="$SHARED/$group/$name" dest="$TARGET/.$host/$group/$name"
@@ -226,14 +226,14 @@ for skill in $PRIMARY_SKILLS $SECONDARY_SKILLS; do
   install_skill "$skill" "$SHARED/skills/$skill" || true
 done
 
-SCRIPTS="super-board-project-verifier.py super-board-skills-ready.py super-board-calibration.py super-board-verification-ready.py super-board-github-read.py super-board-collect-state.py super-board-run.sh super-board-gh-guard.sh super-board-card.sh super-board-status.py super-board-wave-plan.sh super-board-lane.sh super-board-codex-lane.sh super-board-codex-wave.sh super-board-deps.sh super-board-preflight.sh super-board-merge-gate.sh super-board-merge-policy.py super-board-approval.py super-board-env-check.sh super-board-agents-md.py super-board-settings.py super-board-setup.py super-board-usage.sh super-board-throttle.sh super-board-host.sh super-board-pr-body.sh super-review-file-refactor.sh super-qa-file-bug.sh super-board-stop.sh"
+SCRIPTS="skill-board-project-verifier.py skill-board-skills-ready.py skill-board-calibration.py skill-board-verification-ready.py skill-board-github-read.py skill-board-collect-state.py skill-board-run.sh skill-board-gh-guard.sh skill-board-card.sh skill-board-status.py skill-board-wave-plan.sh skill-board-lane.sh skill-board-codex-lane.sh skill-board-codex-wave.sh skill-board-deps.sh skill-board-preflight.sh skill-board-merge-gate.sh skill-board-merge-policy.py skill-board-approval.py skill-board-env-check.sh skill-board-agents-md.py skill-board-settings.py skill-board-setup.py skill-board-usage.sh skill-board-throttle.sh skill-board-host.sh skill-board-pr-body.sh super-review-file-refactor.sh super-qa-file-bug.sh skill-board-stop.sh"
 for script in $SCRIPTS; do
   if [ -f "$REPO_ROOT/scripts/$script" ]; then
     copy_file "$REPO_ROOT/scripts/$script" "$SHARED/bin/$script"
     chmod +x "$SHARED/bin/$script"
   fi
 done
-WORKFLOWS="super-board-wave.js ui-refine-loop.js"
+WORKFLOWS="skill-board-wave.js ui-refine-loop.js"
 for wf in $WORKFLOWS; do
   if [ -f "$REPO_ROOT/workflows/$wf" ]; then
     copy_file "$REPO_ROOT/workflows/$wf" "$SHARED/workflows/$wf"
@@ -278,8 +278,8 @@ else
   echo "   ✓ skills, scripts and workflows → .agents/ (linked from $LINKED)"
 fi
 
-SETTINGS_PY="$REPO_ROOT/scripts/super-board-settings.py"
-# Stdlib-only merge (scripts/super-board-settings.py): keeps every existing key
+SETTINGS_PY="$REPO_ROOT/scripts/skill-board-settings.py"
+# Stdlib-only merge (scripts/skill-board-settings.py): keeps every existing key
 # and hook, adds each guard command once per event + matcher, backs the file up
 # before writing, and leaves an invalid settings.json untouched (exit 2).
 # Prints one summary word for the settings line; the helper's own lines (an
@@ -308,14 +308,14 @@ else
   echo "   ⏭️  guard hooks skipped (--no-hooks)"
 fi
 
-# AGENTS.md: a re-install refreshes the managed super-board block and touches
+# AGENTS.md: a re-install refreshes the managed skill-board block and touches
 # nothing outside its markers. No block yet → onboard writes it (with consent).
-if [ -f "$TARGET/AGENTS.md" ] && grep -q '^<!-- super-board:begin' "$TARGET/AGENTS.md"; then
-  python3 "$REPO_ROOT/scripts/super-board-agents-md.py" block --root "$TARGET" \
-    --template "$REPO_ROOT/skills/super-board/references/agents-md-block.md" \
+if [ -f "$TARGET/AGENTS.md" ] && grep -q '^<!-- skill-board:begin' "$TARGET/AGENTS.md"; then
+  python3 "$REPO_ROOT/scripts/skill-board-agents-md.py" block --root "$TARGET" \
+    --template "$REPO_ROOT/skills/skill-board/references/agents-md-block.md" \
     --version "$PACK_VERSION" >/dev/null 2>&1 \
-    && echo "   📜 AGENTS.md: super-board block refreshed" \
-    || echo "   ! AGENTS.md: couldn't refresh the super-board block — onboard repairs it"
+    && echo "   📜 AGENTS.md: skill-board block refreshed" \
+    || echo "   ! AGENTS.md: couldn't refresh the skill-board block — onboard repairs it"
 fi
 if [ -f "$TARGET/CLAUDE.md" ] && ! grep -m1 -v '^[[:space:]]*$' "$TARGET/CLAUDE.md" | grep -qx '@AGENTS.md'; then
   echo "   ! CLAUDE.md holds its own rules — onboard offers a merge"
@@ -323,8 +323,8 @@ fi
 
 # Upgrade record for onboard's 🔍 Checks (it migrates config, labels, columns).
 if [ -n "$PREV_VERSION" ] && [ "$PREV_VERSION" != "$PACK_VERSION" ]; then
-  mkdir -p "$TARGET/.claude/super-board"
-  python3 - "$TARGET/.claude/super-board/upgrade.json" "$PREV_VERSION" "$PACK_VERSION" $ADDED_SKILLS <<'PY'
+  mkdir -p "$TARGET/.claude/skill-board"
+  python3 - "$TARGET/.claude/skill-board/upgrade.json" "$PREV_VERSION" "$PACK_VERSION" $ADDED_SKILLS <<'PY'
 import json, sys, time
 path, frm, to, added = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4:]
 try:
@@ -339,6 +339,6 @@ PY
 fi
 
 if [ -z "$QUIET" ]; then
-  echo "🎉 super-board $PACK_VERSION is installed"
-  echo "👉 next: open Claude Code here and run /super-board onboard"
+  echo "🎉 skill-board $PACK_VERSION is installed"
+  echo "👉 next: open Claude Code here and run /skill-board onboard"
 fi

@@ -11,7 +11,7 @@ description: >-
 ---
 
 
-**For a board worker, before writes or worktree creation:** follow [skill readiness](../super-board/references/skills-readiness.md).
+**For a board worker, before writes or worktree creation:** follow [skill readiness](../skill-board/references/skills-readiness.md).
 Resolve this lane for the actual host, load the report's files/fallbacks, halt
 on missing requirements and recheck each conditional helper before use.
 
@@ -480,7 +480,7 @@ These run in Phase 1 regression alongside `e2e/paths/`.
 
 ## Test-gap check (after build)
 
-Issue-scoped mode only (super-board Tester, or any run handed a finished diff). The
+Issue-scoped mode only (skill-board Tester, or any run handed a finished diff). The
 Builder's tests answer "does it do what I built?"; this answers "what breaks silently?".
 Scope is the diff: `git diff --name-only $(git merge-base HEAD origin/<base>)...HEAD`.
 On auth, money, data-loss or security changes, hand steps 1-3 to a read-only sub-agent
@@ -637,16 +637,16 @@ Independent of this skill — they share no state. Run `/super-build` to make
 forward progress; run `/super-qa` to grow the spec suite + harden
 shipped code.
 
-## super-board integration
+## skill-board integration
 
-When invoked by super-board (env `SUPER_BOARD_RUN=1` or invocation contains "super-board run"):
+When invoked by skill-board (env `SKILL_BOARD_RUN=1` or invocation contains "skill-board run"):
 
-- **GitHub budget** — every "move card" is `.claude/bin/super-board-card.sh --config <cfg> move <N> <Status>` (1 GraphQL point; `gh project item-list` / `field-list` cost ~100–200). Comments, labels and PR reads go over REST; [rate-limit-etiquette.md](../super-board/references/rate-limit-etiquette.md) → "Price list" has the calls.
+- **GitHub budget** — every "move card" is `.claude/bin/skill-board-card.sh --config <cfg> move <N> <Status>` (1 GraphQL point; `gh project item-list` / `field-list` cost ~100–200). Comments, labels and PR reads go over REST; [rate-limit-etiquette.md](../skill-board/references/rate-limit-etiquette.md) → "Price list" has the calls.
 
 ### State protocol (same as super-build)
 - Read from issue + PR comments + PR review threads.
 - Respect handed-down worktree + branch.
-- After pushing tests, evidence or fixes to a PR, refresh [PR author notes](../super-board/references/pr-author-notes.md) before the handoff. Keep file summaries current and explain critical changed sections on the PR.
+- After pushing tests, evidence or fixes to a PR, refresh [PR author notes](../skill-board/references/pr-author-notes.md) before the handoff. Keep file summaries current and explain critical changed sections on the PR.
 
 ### Card types
 - **Built card (`feature`, `bug`, no label):** worktree at `.claude/worktrees/issue-<N>-qa/` checked out at Builder's branch tip.
@@ -654,7 +654,7 @@ When invoked by super-board (env `SUPER_BOARD_RUN=1` or invocation contains "sup
 - **A live URL with no repo** is not a board card: `/super-qa <url>` runs standalone.
 
 ### Lifecycle (Tester, first pass)
-See `.claude/skills/super-board/references/run.md` → Tester (first pass — repo-backed). Summary:
+See `.claude/skills/skill-board/references/run.md` → Tester (first pass — repo-backed). Summary:
 1. Pull latest of base; checkout `issue-<N>-<slug>` into worktree (a `qa` card: create it from the base).
 2. Read issue + PR + Builder's handoff.
 3. Build issue-scoped test plan: ONE observable test per AC.
@@ -662,9 +662,9 @@ See `.claude/skills/super-board/references/run.md` → Tester (first pass — re
 for affected selection, host readiness, real assertions and fresh proof.
 3b. Run the **Test-gap check** (above) against the Builder's diff; its High gaps join the plan.
 3c. Run the **Security pass** (above) on the PR's diff. Any kept finding → Fail (step 7).
-4. Run tests. Capture evidence to `docs/super-board/runs/issue-<N>-qa-v<N>/`. **For any UI-affecting issue, capture at least one screenshot per AC** (Playwright `page.screenshot` or `browse --screenshot`). Save with descriptive names: `ac1-<short-desc>.png`, not `screenshot1.png`.
-5. **Commit the evidence directory** to the issue branch alongside test files (`git add docs/super-board/runs/issue-<N>-qa-v<N>/ && git commit && git push`). This is non-optional — without it, the inline image markdown in the issue comment won't render on GitHub.
-6. **Pass** → tick the PR's `ac` block with proof lines, write `visual` for UI, append a `history` row, rewrite `status` (`super-board-pr-body.sh`) → `[qa] [report] ✅` PR comment with results + evidence path → **issue comment with screenshot evidence** (see "Issue-comment evidence format" below) → move QA → Review. Clean up worktree.
+4. Run tests. Capture evidence to `docs/skill-board/runs/issue-<N>-qa-v<N>/`. **For any UI-affecting issue, capture at least one screenshot per AC** (Playwright `page.screenshot` or `browse --screenshot`). Save with descriptive names: `ac1-<short-desc>.png`, not `screenshot1.png`.
+5. **Commit the evidence directory** to the issue branch alongside test files (`git add docs/skill-board/runs/issue-<N>-qa-v<N>/ && git commit && git push`). This is non-optional — without it, the inline image markdown in the issue comment won't render on GitHub.
+6. **Pass** → tick the PR's `ac` block with proof lines, write `visual` for UI, append a `history` row, rewrite `status` (`skill-board-pr-body.sh`) → `[qa] [report] ✅` PR comment with results + evidence path → **issue comment with screenshot evidence** (see "Issue-comment evidence format" below) → move QA → Review. Clean up worktree.
 7. **Fail** → leave failing ACs unchecked with the reason, append a `history` row, rewrite `status` → `[qa] [report] ❌` PR comment with per-AC expected/actual + repro file:line + evidence path + "what fixed should look like" → issue comment with the failure screenshots → increment rebuild counter → move QA → Ready (label `loop:rebuild-N`). Clean up worktree.
 
 ### Optional project feature verifier
@@ -696,7 +696,7 @@ This is non-optional. Reviewer re-runs this command; red → bounce back to QA.
 
 The Tester's issue comment is the user's primary visibility into "is this actually fixed." A bare directory path is not sufficient — the user wants to *see* the proof on the issue page.
 
-**The canonical template lives in `.claude/skills/super-board/references/run.md` → "Screenshot embed format" (right after Tester first pass).** Do not duplicate it here; both lanes (super-board Tester + standalone super-qa) follow that exact format. Summary of rules workers must obey:
+**The canonical template lives in `.claude/skills/skill-board/references/run.md` → "Screenshot embed format" (right after Tester first pass).** Do not duplicate it here; both lanes (skill-board Tester + standalone super-qa) follow that exact format. Summary of rules workers must obey:
 
 - Capture screenshots at the standard viewports for UI ACs: **desktop 1920×1080, tablet 1024×768, mobile 375×667**.
 - Commit the screenshots to the issue branch and push *before* writing the comment — inline image URLs won't render unless the file is on GitHub.

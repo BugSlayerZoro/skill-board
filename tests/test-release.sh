@@ -51,7 +51,7 @@ for mode in lightweight annotated; do
 import pathlib, sys
 args = pathlib.Path(sys.argv[1]).read_text().splitlines()
 assert args == ['release', 'create', 'v3.0.2', '--verify-tag', '--target', sys.argv[2],
-                '--title', 'super-board v3.0.2', '--generate-notes'], args
+                '--title', 'skill-board v3.0.2', '--generate-notes'], args
 PY
 done
 for mode in moved missing unavailable; do

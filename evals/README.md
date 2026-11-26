@@ -5,7 +5,7 @@ repo, runs a real Claude agent with the plugin loaded, and grades what it did.
 
 ## Run
 
-From the pack root (`_skills/vendor/super-board/`):
+From the pack root (`_skills/vendor/skill-board/`):
 
 ```bash
 PATH=$PWD/evals/_stubs/bin:$PATH claude plugin eval . \
@@ -44,7 +44,7 @@ Offline regression tests for the same skill (no model, no cost) run in `tests/ru
   `tests/fixtures/collect/fixture_http.py`; any URL without a fixture fails, nothing leaves the
   machine. The same payloads drive `tests/test_collect_baseline.py`.
 - `collect-seed.sh` — the shared scaffold for the `collect-*` cases: a small shop app repo,
-  a super-board config with a `collect` block, the pack's scripts in `.claude/`, fake tokens.
+  a skill-board config with a `collect` block, the pack's scripts in `.claude/`, fake tokens.
 - `git`, `python3` → `_real` — macOS's `/usr/bin` copies are xcrun shims that need a cache
   file the eval sandbox forbids; this execs the real binary instead.
 
