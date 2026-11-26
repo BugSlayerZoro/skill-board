@@ -6,7 +6,7 @@ Date-only strings (`2026-09-01`) are parsed as UTC midnight and read back with l
 - **Boundary:** both callers convert a date-only value through UTC midnight and local month getters. Each PR fixed its own call site; the conversion remains available to the next caller.
 
 ## Evidence
-- PR #21 · super-review R1 `src/reports/monthly.ts:42` · thread by eric (America/Vancouver)
+- PR #21 · super-review R1 `src/reports/monthly.ts:42` · thread by sanjeev (America/Vancouver)
 - PR #24 · super-review R1 `src/budgets/alerts.ts:18` · coderabbitai thread
 
 ## Fix

@@ -1,7 +1,7 @@
 {
   "name": "super-board",
-  "description": "Eric Tech's super-board pack: an autonomous GitHub Project board runner and its lane skills.",
-  "owner": { "name": "Eric Tech", "url": "https://github.com/EricTechPro" },
+  "description": "Sanjeev's super-board pack: an autonomous GitHub Project board runner and its lane skills.",
+  "owner": { "name": "Sanjeev", "url": "https://github.com/BugSlayerZoro" },
   "plugins": [
     {
       "name": "super-board",

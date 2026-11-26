@@ -41,7 +41,7 @@ cat > "$FX/merged.json" <<'J'
   {"number":32,"title":"Webhook backoff","body":"fingerprint: err|sentry|991","url":"u32"} ]
 J
 cat > "$FX/open.json" <<'J'
-[ {"number":40,"title":"Dark mode toggle in settings page","body":"wip","url":"u40","headRefName":"eric/dark-mode",
+[ {"number":40,"title":"Dark mode toggle in settings page","body":"wip","url":"u40","headRefName":"sanjeev/dark-mode",
    "files":[{"path":"src/settings/theme.ts"}]},
   {"number":41,"title":"Session timeout banner","body":"Resolves #50","url":"u41","headRefName":"issue-50-session-timeout",
    "files":[{"path":"src/auth/login.ts"},{"path":"src/ui/banner.tsx"}]},
@@ -60,7 +60,7 @@ get 20 '.verdict == "hold" and .tag == "done"' || fail "#20 is already merged in
 get 20 '.evidence | any(test("#31"))'          || fail "#20's hold must name PR #31"
 
 # 2 — open PR, same feature, different branch → hold. Another agent (or a human)
-#     is already building dark mode on eric/dark-mode.
+#     is already building dark mode on sanjeev/dark-mode.
 get 21 '.verdict == "hold" and .tag == "in-progress"' || fail "#21 is in flight in #40: $(echo "$OUT" | jq -c '.["21"]')"
 get 21 '.evidence | any(test("#40"))'                 || fail "#21's hold must name PR #40"
 

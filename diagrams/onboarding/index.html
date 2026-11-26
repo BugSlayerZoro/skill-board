@@ -100,9 +100,9 @@ h1{font-size:26px;margin:0 0 4px;letter-spacing:-.01em}
   <div class="term">
     <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="tt" id="ttl"></span></div>
 
-<div class="screen" data-id="install" data-n="Install" data-e="📦" data-w="t"><span class="zp">eric@mac <i>my-app</i> %</span> curl -fsSL https://raw.githubusercontent.com/BugSlayerZoro/super-board/main/get.sh | bash
+<div class="screen" data-id="install" data-n="Install" data-e="📦" data-w="t"><span class="zp">sanjeev@mac <i>my-app</i> %</span> curl -fsSL https://raw.githubusercontent.com/BugSlayerZoro/super-board/main/get.sh | bash
 🧩 super-board installer
-   target: /Users/eric/code/my-app
+   target: /Users/sanjeev/code/my-app
 🔍 checking what you need
    <span class="ok">✓</span> curl · tar · python3 · gh · jq · node
 📦 downloading BugSlayerZoro/super-board@<span data-sb-version="v">dev</span>
@@ -114,14 +114,14 @@ h1{font-size:26px;margin:0 0 4px;letter-spacing:-.01em}
 🔒 security-audit: installed
 🎉 super-board <span data-sb-version>dev</span> is installed
 👉 next: open Claude Code here and run /super-board onboard
-<span class="zp">eric@mac <i>my-app</i> %</span> <span class="cursor">&nbsp;</span></div>
+<span class="zp">sanjeev@mac <i>my-app</i> %</span> <span class="cursor">&nbsp;</span></div>
 
-<div class="screen" data-id="start" data-n="Start" data-e="🚀" data-w="c"><span class="zp">eric@mac <i>my-app</i> %</span> claude
+<div class="screen" data-id="start" data-n="Start" data-e="🚀" data-w="c"><span class="zp">sanjeev@mac <i>my-app</i> %</span> claude
 <div class="welcome"><span class="cl">✻</span> Welcome to <span class="b">Claude Code</span>!
 
   <span class="dim">/help for help, /status for your current setup</span>
 
-  <span class="dim">cwd: /Users/eric/code/my-app</span></div><div class="um">&gt; <b>/super-board onboard</b></div><div class="msg"><span class="g">⏺</span><span><span class="b">Skill</span><span class="dim">(super-board)</span></span></div><div class="tres">⎿  Successfully loaded skill</div><div class="msg"><span>⏺</span><span><span class="b">super-board setup — 8 steps.</span> Enter takes the recommended answer.
+  <span class="dim">cwd: /Users/sanjeev/code/my-app</span></div><div class="um">&gt; <b>/super-board onboard</b></div><div class="msg"><span class="g">⏺</span><span><span class="b">Skill</span><span class="dim">(super-board)</span></span></div><div class="tres">⎿  Successfully loaded skill</div><div class="msg"><span>⏺</span><span><span class="b">super-board setup — 8 steps.</span> Enter takes the recommended answer.
   1 🔍 Checks       install or update what the board needs
   2 🔑 GitHub       sign in so I can manage boards
   3 🗂️ Board        pick or create your project board
@@ -140,11 +140,11 @@ h1{font-size:26px;margin:0 0 4px;letter-spacing:-.01em}
   <span class="ok">✓</span> git repo found
   <span class="ok">✓</span> Matt Pocock's coding skills (tests, code review, debugging) present</span></div><div class="msg"><span class="g">⏺</span><span><span class="b">Bash</span><span class="dim">(node --check .claude/workflows/super-board-wave.js)</span></span></div><div class="tres">⎿  <span class="ok">ok</span> <span class="dim">· dynamic workflows must be ON in /config</span></div></div>
 
-<div class="screen" data-id="github" data-n="GitHub" data-e="🔑" data-w="c" data-why="sign in so I can manage boards."><div class="msg"><span class="g">⏺</span><span><span class="b">Bash</span><span class="dim">(gh auth status)</span></span></div><div class="tres">⎿  <span class="ok">signed in as erictech · project, read:project, repo</span></div><div class="msg"><span class="g">⏺</span><span><span class="b">Bash</span><span class="dim">(git remote get-url origin)</span></span></div><div class="tres">⎿  <span class="ok">github.com/erictech/my-app</span></div><div class="msg"><span>⏺</span><span><span class="ok">✓ GitHub connected.</span></span></div><div class="tres faint">⎿  saved to .claude/super-board/onboard-answers.json</div></div>
+<div class="screen" data-id="github" data-n="GitHub" data-e="🔑" data-w="c" data-why="sign in so I can manage boards."><div class="msg"><span class="g">⏺</span><span><span class="b">Bash</span><span class="dim">(gh auth status)</span></span></div><div class="tres">⎿  <span class="ok">signed in as sanjeev · project, read:project, repo</span></div><div class="msg"><span class="g">⏺</span><span><span class="b">Bash</span><span class="dim">(git remote get-url origin)</span></span></div><div class="tres">⎿  <span class="ok">github.com/sanjeev/my-app</span></div><div class="msg"><span>⏺</span><span><span class="ok">✓ GitHub connected.</span></span></div><div class="tres faint">⎿  saved to .claude/super-board/onboard-answers.json</div></div>
 
 <div class="screen" data-id="board" data-n="Board" data-e="🗂️" data-w="c" data-why="the robot takes tickets from here."><div class="msg"><span>⏺</span><span>Columns: <span class="ok">✓</span> Backlog <span class="ok">✓</span> Ready <span class="ok">✓</span> Building <span class="ok">✓</span> QA <span class="ok">✓</span> Review <span class="ok">✓</span> Blocked <span class="ok">✓</span> Done
 <span class="dim">Labels: feature · bug · qa (qa skips Building; no label = feature)</span></span></div><div class="msg"><span>⏺</span><span class="ansr">User answered Claude's questions:
-  ⎿  · Which board? → <b>Use Ledgerly Roadmap (#4) — 5 of 7 columns match, I'll add QA, Blocked</b></span></div><div class="msg"><span class="g">⏺</span><span><span class="b">Bash</span><span class="dim">(python3 .claude/bin/super-board-setup.py board-migrate --owner erictech --number 4)</span></span></div><div class="tres">⎿  <span class="ok">Ledgerly Roadmap ready · added QA, Blocked · labels qa, bug, feature</span></div><div class="tres faint">⎿  saved to .claude/super-board/onboard-answers.json</div></div>
+  ⎿  · Which board? → <b>Use Ledgerly Roadmap (#4) — 5 of 7 columns match, I'll add QA, Blocked</b></span></div><div class="msg"><span class="g">⏺</span><span><span class="b">Bash</span><span class="dim">(python3 .claude/bin/super-board-setup.py board-migrate --owner sanjeev --number 4)</span></span></div><div class="tres">⎿  <span class="ok">Ledgerly Roadmap ready · added QA, Blocked · labels qa, bug, feature</span></div><div class="tres faint">⎿  saved to .claude/super-board/onboard-answers.json</div></div>
 
 <div class="screen" data-id="branch" data-n="Branch" data-e="🌿" data-w="c" data-why="where finished work merges."><div class="msg"><span>⏺</span><span>Found: main (deploys to production via Vercel), no staging.</span></div><div class="msg"><span>⏺</span><span class="ansr">User answered Claude's questions:
   ⎿  · Where should finished work merge? → <b>Create staging from main</b> <span class="faint">(nothing goes live until you move it to main)</span></span></div><div class="msg"><span class="g">⏺</span><span><span class="b">Bash</span><span class="dim">(git push origin main:staging)</span></span></div><div class="tres">⎿  <span class="ok">* [new branch] main -> staging</span></div><div class="tres faint">⎿  saved to .claude/super-board/onboard-answers.json</div></div>
@@ -169,7 +169,7 @@ h1{font-size:26px;margin:0 0 4px;letter-spacing:-.01em}
   ⎿  · Write everything? → <b>Write everything</b></span></div><div class="msg"><span class="g">⏺</span><span><span class="b">Bash</span><span class="dim">(write config · .gitignore · settings.json · AGENTS.md · CLAUDE.md · docs)</span></span></div><div class="tres">⎿  <span class="ok">done (backups first) · PROJECT.md drafted</span></div></div>
 
 <div class="screen" data-id="done" data-n="Done" data-e="🎉" data-w="c"><div class="msg"><span class="g">⏺</span><span><span class="b">Bash</span><span class="dim">(self-check)</span></span></div><div class="tres">⎿  <span class="ok">all good</span></div><div class="msg"><span>⏺</span><span><span class="ok b">🎉 Onboard complete.</span>
-📋 Board: github.com/users/erictech/projects/4 (Ledgerly Roadmap)
+📋 Board: github.com/users/sanjeev/projects/4 (Ledgerly Roadmap)
 🧹 Next: <span class="info">/super-board lint</span> — checks every ticket has clear success criteria.
 🤖 Then: <span class="info">/super-board run</span>.</span></div></div>
 
@@ -207,7 +207,7 @@ h1{font-size:26px;margin:0 0 4px;letter-spacing:-.01em}
     stepper.children[i].scrollIntoView({block:'nearest',inline:'center'});
     document.getElementById('count').textContent=w>=0?'Step '+(w+1)+' of '+WIZ.length:s.dataset.id==='install'?'Before the wizard':s.dataset.id==='start'?'Wizard start':'Finished';
     document.getElementById('where').textContent=s.dataset.w==='t'?'💻 Your terminal':'✻ Inside Claude Code';
-    document.getElementById('ttl').textContent=s.dataset.w==='t'?'eric — zsh — ~/code/my-app':'eric — claude — ~/code/my-app';
+    document.getElementById('ttl').textContent=s.dataset.w==='t'?'sanjeev — zsh — ~/code/my-app':'sanjeev — claude — ~/code/my-app';
     document.getElementById('back').disabled=i===0;
     document.getElementById('next').disabled=i===screens.length-1;
     try{history.replaceState(null,'','#'+s.dataset.id);}catch(e){}

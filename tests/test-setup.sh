@@ -49,12 +49,12 @@ git -C "$T" init -q
 echo "1.8.2" > "$T/.claude/skills/super-board/VERSION"
 for d in super-refine cleanup-wt arch-loop; do mkdir -p "$T/.claude/skills/$d"; echo x > "$T/.claude/skills/$d/SKILL.md"; done
 cat > "$T/.claude/super-board/configs/books.json" <<'JSON'
-{"version":1,"variant":"qa-only","project":{"owner":"eric","number":2},
+{"version":1,"variant":"qa-only","project":{"owner":"sanjeev","number":2},
  "columns":["Ready","QA","Review","Done","Blocked","Skipped"],
- "repo":{"path":".","remote":"https://github.com/eric/books.git"},
+ "repo":{"path":".","remote":"https://github.com/sanjeev/books.git"},
  "collect":{"window_days":14,"errors":"auto","feedback_paths":["docs/feedback"],"lookback_runs":10},
  "refine":{"rounds":10,"qa_hook_rounds":3},"human_approves_merge":true,
- "notifications":{"channel":"telegram","chat_id":"auto","bot_identity":"eric"}}
+ "notifications":{"channel":"telegram","chat_id":"auto","bot_identity":"sanjeev"}}
 JSON
 OUT=$(python3 "$SETUP" check --root "$T" || true)
 echo "$OUT" | q '.upgrade == true and .from == "1.8.2" and .old_dirs == ["super-refine","cleanup-wt","arch-loop"]' \
@@ -127,7 +127,7 @@ def node(it):
     status = None if it.get("status") is None else {"name": it["status"], "optionId": next(o["id"] for o in st["options"]["2"] if o["name"] == it["status"])}
     n = it["content"]["number"]
     return {"id": it["id"], "updatedAt": it.get("updatedAt", "t0"), "type": "ISSUE", "status": status,
-            "content": {"__typename": "Issue", "id": "ISS"+str(n), "number": n, "repository": {"nameWithOwner": "eric/books"},
+            "content": {"__typename": "Issue", "id": "ISS"+str(n), "number": n, "repository": {"nameWithOwner": "sanjeev/books"},
                         "labels": page([{"name": n} for n in it.get("labels", [])])}}
 if a[:2] == ["project", "list"]:
     print(json.dumps({"projects": st["projects"]}))
@@ -136,7 +136,7 @@ elif a[:2] == ["project", "field-list"]:
     print(json.dumps({"fields": [{"id": "F" + n, "name": "Status", "type": "ProjectV2SingleSelectField",
                                   "options": [{"id": o["id"], "name": o["name"]} for o in st["options"].get(n, [])]}]}))
 elif a[:2] == ["project", "view"]:
-    print(json.dumps({"id": "P" + a[2], "url": "https://github.com/users/eric/projects/" + a[2]}))
+    print(json.dumps({"id": "P" + a[2], "url": "https://github.com/users/sanjeev/projects/" + a[2]}))
 elif a[:2] == ["project", "item-list"]:
     items = st["items"]
     if st.get("hide_status"):  # a gh that does not surface the Status column
@@ -204,12 +204,12 @@ cat > "$GH_STATE" <<'JSON'
                  {"id":"4","name":"Review"},{"id":"5","name":"Blocked"},{"id":"6","name":"Done"}]},
  "items":[],"labels":[]}
 JSON
-OUT=$(PATH="$WORK/bin:$PATH" python3 "$SETUP" board-rank --owner eric)
+OUT=$(PATH="$WORK/bin:$PATH" python3 "$SETUP" board-rank --owner sanjeev)
 echo "$OUT" | q '.recommend == 4 and .boards[0].number == 4 and .boards[0].matches == 6 and .boards[0].missing == ["QA"]' \
   || fail "best board should be #4 with QA missing: $OUT"
 echo "$OUT" | q '[.boards[].number] | index(7) | not' || fail "closed boards are not offered: $OUT"
 jq '.projects = [.projects[0]]' "$GH_STATE" > "$WORK/s" && mv "$WORK/s" "$GH_STATE"
-PATH="$WORK/bin:$PATH" python3 "$SETUP" board-rank --owner eric | q '.recommend == null' \
+PATH="$WORK/bin:$PATH" python3 "$SETUP" board-rank --owner sanjeev | q '.recommend == null' \
   || fail "a board with 1 of 7 columns should not be recommended"
 
 # 8 — board-migrate: adds missing columns, creates the three labels, maps old labels,
@@ -227,13 +227,13 @@ cat > "$GH_STATE" <<'JSON'
 JSON
 : > "$GH_LOG"
 CFG="$WORK/books.json"
-echo '{"project":{"owner":"eric","number":2},"repo":{"remote":"https://github.com/eric/books.git"},"_qa_all":true}' > "$CFG"
+echo '{"project":{"owner":"sanjeev","number":2},"repo":{"remote":"https://github.com/sanjeev/books.git"},"_qa_all":true}' > "$CFG"
 OUT=$(PATH="$WORK/bin:$PATH" python3 "$SETUP" board-migrate --root "$WORK/board8" --config "$CFG")
 echo "$OUT" | q '.added_columns == ["Backlog","Building"] and .labels_created == ["qa","feature"]' || fail "columns/labels wrong: $OUT"
 echo "$OUT" | q '.labels_mapped == 1 and .qa_labelled == 1 and .skipped_moved == 1 and .skipped_removed == true' \
   || fail "mapping / qa-all / Skipped counts wrong: $OUT"
-grep -q -- "issue edit 2 --repo eric/books --add-label feature --remove-label build" "$GH_LOG" || fail "build should map to feature"
-grep -q -- "issue edit 3 --repo eric/books --add-label qa" "$GH_LOG" || fail "an unlabelled card on a qa-only board gets qa"
+grep -q -- "issue edit 2 --repo sanjeev/books --add-label feature --remove-label build" "$GH_LOG" || fail "build should map to feature"
+grep -q -- "issue edit 3 --repo sanjeev/books --add-label qa" "$GH_LOG" || fail "an unlabelled card on a qa-only board gets qa"
 q '[.options["2"][].name] == ["Backlog","Ready","Building","QA","Review","Blocked","Done"]' "$GH_STATE" \
   || fail "options should be the v3 seven, Skipped gone: $(jq -c '.options["2"]' "$GH_STATE")"
 q '[.items[] | {(.id): .status}] | add == {"I1":"Done","I2":"Ready","I3":"Ready","I4":"Review"}' "$GH_STATE" \
@@ -249,7 +249,7 @@ cat > "$GH_STATE" <<'JSON'
  "options":{"2":[{"id":"t","name":"Todo","color":"GRAY","description":""},{"id":"p","name":"In Progress","color":"YELLOW","description":""},
                  {"id":"d","name":"Done","color":"GREEN","description":""}]},"items":[]}
 JSON
-OUT=$(PATH="$WORK/bin:$PATH" python3 "$SETUP" board-migrate --root "$WORK/board9" --owner eric --number 2 --repo eric/books --prune-empty)
+OUT=$(PATH="$WORK/bin:$PATH" python3 "$SETUP" board-migrate --root "$WORK/board9" --owner sanjeev --number 2 --repo sanjeev/books --prune-empty)
 q '[.options["2"][].name] == ["Backlog","Ready","Building","QA","Review","Blocked","Done"]' "$GH_STATE" \
   || fail "a new board should end with exactly the seven: $(jq -c '.options["2"]' "$GH_STATE")"
 echo "$OUT" | q '.labels_created == []' || fail "existing labels are not created again: $OUT"
@@ -269,7 +269,7 @@ cat > "$GH_STATE" <<'JSON'
           {"id":"I4","status":null,"content":{"type":"Issue","number":4}}]}
 JSON
 : > "$GH_LOG"
-OUT=$(PATH="$WORK/bin:$PATH" python3 "$SETUP" board-migrate --owner eric --number 2 --repo eric/books --prune-empty --root "$WORK")
+OUT=$(PATH="$WORK/bin:$PATH" python3 "$SETUP" board-migrate --owner sanjeev --number 2 --repo sanjeev/books --prune-empty --root "$WORK")
 q '[.options["2"][].name] == ["Backlog","Ready","Building","QA","Review","Blocked","Done"]' "$GH_STATE" \
   || fail "the unused Todo should be pruned: $(jq -c '.options["2"]' "$GH_STATE")"
 q '[.items[] | {(.id): .status}] | add == {"I1":"Done","I2":"Building","I3":"Review","I4":null}' "$GH_STATE" \
@@ -283,7 +283,7 @@ q '. == {"I1":"Done","I2":"Building","I3":"Review","I4":null}' "$BK" || fail "ba
 #      fieldValueByName("Status"), so the restore still has something to restore.
 jq '.items = [{"id":"I1","status":"Done","content":{"type":"Issue","number":1}},{"id":"I2","status":"Building","content":{"type":"Issue","number":2}}] | .hide_status = true
     | .options["2"] += [{"id":"t","name":"Todo","color":"GRAY","description":""}]' "$GH_STATE" > "$WORK/s" && mv "$WORK/s" "$GH_STATE"
-OUT=$(PATH="$WORK/bin:$PATH" python3 "$SETUP" board-migrate --owner eric --number 2 --repo eric/books --prune-empty --root "$WORK")
+OUT=$(PATH="$WORK/bin:$PATH" python3 "$SETUP" board-migrate --owner sanjeev --number 2 --repo sanjeev/books --prune-empty --root "$WORK")
 q '[.items[] | {(.id): .status}] | add == {"I1":"Done","I2":"Building"}' "$GH_STATE" \
   || fail "statuses read over GraphQL must be restored: $(jq -c .items "$GH_STATE") $OUT"
 echo "$OUT" | q '.restored == 2' || fail "two cards restored via the GraphQL snapshot: $OUT"
@@ -295,7 +295,7 @@ jq '.items = [{"id":"I1","status":"Skipped","content":{"type":"Issue","number":1
     | .options["2"] = [{"id":"r","name":"Ready","color":"BLUE","description":""},{"id":"s","name":"Skipped","color":"GRAY","description":""}]' \
   "$GH_STATE" > "$WORK/s" && mv "$WORK/s" "$GH_STATE"
 cp "$GH_STATE" "$WORK/before.json"; : > "$GH_LOG"; rm -rf "$WORK/dry"; mkdir -p "$WORK/dry"
-OUT=$(PATH="$WORK/bin:$PATH" python3 "$SETUP" board-migrate --owner eric --number 2 --repo eric/books --prune-empty --qa-all --dry-run --root "$WORK/dry")
+OUT=$(PATH="$WORK/bin:$PATH" python3 "$SETUP" board-migrate --owner sanjeev --number 2 --repo sanjeev/books --prune-empty --qa-all --dry-run --root "$WORK/dry")
 cmp -s "$GH_STATE" "$WORK/before.json" || fail "dry-run changed board state: $(cat "$GH_STATE")"
 ! grep -Eq '^(project item-edit|label create|issue edit)' "$GH_LOG" || fail "dry-run made a write: $(cat "$GH_LOG")"
 [ "$(grep -c '^api graphql' "$GH_LOG")" = 2 ] || fail "dry-run should only read options and the complete card snapshot over GraphQL: $(cat "$GH_LOG")"

@@ -36,7 +36,7 @@ The security check moves to QA, and `/super-collect` hands its findings to Matt 
   seconds, and an existing folder gets a `-2`, `-3` … suffix, so a second fix in the same
   minute migrates the config instead of failing with `EEXIST`.
 
-Ported from the EricOS vendored fork, each in its own PR:
+Ported from the SanjeevOS vendored fork, each in its own PR:
 
 - 🐛 **Submodules keep their own board state** (#88). `halt_path()` and the card cache use
   `<git-common-dir>/super-board/` when the common dir is not `<root>/.git`, so sibling
@@ -176,7 +176,7 @@ the source pack through symlinks.
 
 ## v3.0.2 — 2026-10-02
 
-A rewritten README, a GitHub Pages site at https://erictechpro.github.io/super-board/, and map
+A rewritten README, a GitHub Pages site at https://bugslayerzoro.github.io/super-board/, and map
 Source links that work away from a checkout.
 
 - 📝 **README rewrite.** Kanban logo and pitch "Add tasks, walk away, get merged PRs with proof.",
@@ -363,7 +363,7 @@ master and the config's `base_branch`; force pushes to feature branches stay all
 `super-board onboard` asks once (step 9b) and `install.sh --protect-main` wires it
 (`hooks/settings-protect-main.json`).
 
-**Skill-eval gate (pack and EricOS only).** `hooks/dev/gate-skill-evals.py`, a Stop hook adapted
+**Skill-eval gate (pack and SanjeevOS only).** `hooks/dev/gate-skill-evals.py`, a Stop hook adapted
 from the starter kit's `gate-skill-evals.sh`: a skill changed this session (uncommitted or
 unpushed) with no newer `claude plugin eval` result blocks the stop and names the command. A changed
 reference or workflow counts only for a skill with an eval case; a `SKILL.md` with no case only
@@ -400,7 +400,7 @@ The `gh` stub now serves a per-case `issue.json` for `gh issue view`.
   ship (SKILL.md, onboard, lint, status, stop, run, block-template, config-schema), and the
   `super-work-trader` line. run.md now says it holds the lane lifecycles plus the legacy runner.
 - **super-build** dispatcher path is `.claude/skills/super-build/scripts/super-build-dispatch.sh`;
-  removed the `Fitbox Admin` example. super-review is "the super-board reviewer", not EricTechOS's.
+  removed the `Fitbox Admin` example. super-review is "the super-board reviewer", not SanjeevOS's.
 - **CLAUDE.md**: eight skills, not nine; product work goes to workflow lane agents, not only
   `claude -p`; the install contract matches what `install.sh` copies; script paths are `.claude/bin/`.
 - Version 2.6.0 in `VERSION`, `skills/super-board/VERSION`, `plugin.json` and the README badge.
@@ -1068,7 +1068,7 @@ This lets `super-board stop` recover the lane name + dispatch time without an ex
 
 First public release.
 
-### Worker-storm fixes (post-incident #381, originally landed in EricTechPro/BookKeepingApp 2026-05-22)
+### Worker-storm fixes (post-incident #381, originally landed in Sanjeev/BookKeepingApp 2026-05-22)
 
 - **PID tracking + per-lane lockfile.** The dispatcher tracks `BUILD_PID`/`QA_PID`/`REVIEW_PID` and refuses to dispatch into a lane whose worker is still alive. Closes the 10–30s `claude -p` cold-start race that produced 7 racing workers on the very first run.
 - **In-flight lockfiles** at `.claude/super-board/inflight/<issue-N>` containing the worker PID. `top_card_in_column` skips any issue with a live lock even before the assignee write propagates. Reaped each tick via PID liveness check.

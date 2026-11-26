@@ -309,12 +309,12 @@ class PRs(unittest.TestCase):
 
     def pr(self, n, comments=()):
         return {"number": n, "title": f"PR {n}", "url": f"u/{n}", "mergedAt": "2026-09-30T00:00:00Z",
-                "author": {"login": "eric", "__typename": "User"},
+                "author": {"login": "sanjeev", "__typename": "User"},
                 "comments": {"nodes": list(comments)},
                 "reviews": {"nodes": [{"author": {"login": "coderabbitai", "__typename": "Bot"},
                                        "state": "COMMENTED", "body": "nit"}]},
                 "reviewThreads": {"nodes": [{"path": "a.ts", "isResolved": False,
-                                             "comments": {"nodes": [{"author": {"login": "eric"}, "body": "why?"}]}}]}}
+                                             "comments": {"nodes": [{"author": {"login": "sanjeev"}, "body": "why?"}]}}]}}
 
     def test_paginates_and_marks_super_review_and_bots(self):
         pages = [self.page([self.pr(1, [{"author": {"login": "sb[bot]", "__typename": "Bot"},

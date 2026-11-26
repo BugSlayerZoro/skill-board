@@ -6,10 +6,10 @@
     "body": "<!-- super-review:report -->\nReviewer — bounced\nRound: 1\nFindings:\n  • R1 [builder] src/reports/monthly.ts:42 — groups rows with `new Date(row.date).getMonth()`; `row.date` is a date-only string (`2026-09-01`), parsed as UTC midnight, so west of UTC the 1st lands in the previous month (AC 2)\nNext: Ready"},
    {"author": {"login": "super-board-bot", "__typename": "Bot"}, "createdAt": "{{ago:12d}}",
     "body": "<!-- super-review:report -->\nReviewer — merge-ready\nRound: 2\nPrior findings:\n  • R1 fixed — src/reports/monthly.ts:42 now uses getUTCMonth()\nNext: Done"}]},
-  "reviews": {"nodes": [{"author": {"login": "eric", "__typename": "User"}, "state": "APPROVED", "body": "LGTM after the UTC fix."}]},
+  "reviews": {"nodes": [{"author": {"login": "sanjeev", "__typename": "User"}, "state": "APPROVED", "body": "LGTM after the UTC fix."}]},
   "reviewThreads": {"nodes": [
    {"path": "src/reports/monthly.ts", "isResolved": true, "comments": {"nodes": [
-     {"author": {"login": "eric", "__typename": "User"}, "body": "`new Date('2026-09-01')` is UTC midnight; `.getMonth()` reads local time, so for me (America/Vancouver) Sep 1 rows land in August."},
+     {"author": {"login": "sanjeev", "__typename": "User"}, "body": "`new Date('2026-09-01')` is UTC midnight; `.getMonth()` reads local time, so for me (America/Vancouver) Sep 1 rows land in August."},
      {"author": {"login": "dana", "__typename": "User"}, "body": "Switched this call site to getUTCMonth()."}]}}]}},
  {"number": 24, "title": "Budget alerts per calendar month", "url": "https://github.com/example/shop/pull/24",
   "mergedAt": "{{ago:6d}}", "author": {"login": "sam", "__typename": "User"},
@@ -29,9 +29,9 @@
   "comments": {"nodes": [
    {"author": {"login": "super-board-bot", "__typename": "Bot"}, "createdAt": "{{ago:3d}}",
     "body": "<!-- super-review:report -->\nReviewer — merge-ready\nRound: 1\nFindings: none\nNext: Done"}]},
-  "reviews": {"nodes": [{"author": {"login": "eric", "__typename": "User"}, "state": "APPROVED", "body": "nit: 'Recieve' -> 'Receive' in the toggle label. Otherwise good."}]},
+  "reviews": {"nodes": [{"author": {"login": "sanjeev", "__typename": "User"}, "state": "APPROVED", "body": "nit: 'Recieve' -> 'Receive' in the toggle label. Otherwise good."}]},
   "reviewThreads": {"nodes": [
    {"path": "src/settings/NotificationForm.tsx", "isResolved": true, "comments": {"nodes": [
-     {"author": {"login": "eric", "__typename": "User"}, "body": "Missing `await` on saveSettings() — the toast shows before the save finishes."},
+     {"author": {"login": "sanjeev", "__typename": "User"}, "body": "Missing `await` on saveSettings() — the toast shows before the save finishes."},
      {"author": {"login": "dana", "__typename": "User"}, "body": "Good catch, awaited."}]}}]}}
 ]}}}

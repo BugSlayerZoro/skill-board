@@ -95,7 +95,7 @@ the question:
 ⏺ Bash(cat .claude/super-board/onboard-answers.json)
   ⎿  saved 2 Oct, 18:40 · stopped at Policies & permissions
 ⏺ 💾 Found your answers from last time:
-  ✓ GitHub: erictech        ✓ board: Ledgerly Roadmap
+  ✓ GitHub: sanjeev        ✓ board: Ledgerly Roadmap
   ✓ base: staging           ✓ AGENTS.md: merged
   → stopped at 🛡️ Policies & permissions
 ```
@@ -118,8 +118,8 @@ the step-8 table, then "Onboard found an existing setup. What now?" [Keep all �
 
 ```json
 { "version": 2, "updated": "<iso>", "last_step": "policies",
-  "answers": { "github": {"login": "erictech", "remote": "github.com/erictech/my-app"},
-               "board": {"owner": "erictech", "number": 4, "title": "Ledgerly Roadmap", "reused": true},
+  "answers": { "github": {"login": "sanjeev", "remote": "github.com/sanjeev/my-app"},
+               "board": {"owner": "sanjeev", "number": 4, "title": "Ledgerly Roadmap", "reused": true},
                "base_branch": "staging", "agents": "merged",
                "policies": {"merge_default": "auto", "protect_main": true, "allowed_envs": ["test", "staging"]},
                "permissions": "add", "collect": ["sentry", "github", "prs", "architecture", "linear"],
