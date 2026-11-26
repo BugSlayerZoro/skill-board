@@ -33,7 +33,7 @@
       ],
       "sublabel": "onboard · lint · status · run · stop",
       "opensView": "super-board",
-      "author": "Sanjeev"
+      "author": "BugSlayerZoro"
     },
     {
       "id": "super-collect",
@@ -55,7 +55,7 @@
       ],
       "sublabel": "sentry · posthog · github · prs · architecture · custom",
       "opensView": "super-collect",
-      "author": "Sanjeev"
+      "author": "BugSlayerZoro"
     },
     {
       "id": "ui-refine-loop",
@@ -74,7 +74,7 @@
       ],
       "sublabel": "grill · check · fix · draft PR",
       "opensView": "ui-refine-loop",
-      "author": "Sanjeev"
+      "author": "BugSlayerZoro"
     },
     {
       "id": "visual",
@@ -93,7 +93,7 @@
       ],
       "sublabel": "recap · plan · explore",
       "opensView": "visual",
-      "author": "Sanjeev",
+      "author": "BugSlayerZoro",
       "credits": [
         "BuilderIO",
         "tt-a1i"
@@ -140,7 +140,7 @@
         "_skills/vendor/super-board/skills/super-board/references/onboard.md",
         "_skills/vendor/super-board/scripts/super-board-setup.py"
       ],
-      "author": "Sanjeev",
+      "author": "BugSlayerZoro",
       "opensView": "sb-onboard"
     },
     {
@@ -154,7 +154,7 @@
         "_skills/vendor/super-board/skills/super-board/references/lint.md"
       ],
       "opensView": "sb-lint",
-      "author": "Sanjeev"
+      "author": "BugSlayerZoro"
     },
     {
       "id": "sb-status",
@@ -167,7 +167,7 @@
         "_skills/vendor/super-board/skills/super-board/references/status.md",
         "_skills/vendor/super-board/scripts/super-board-status.py"
       ],
-      "author": "Sanjeev"
+      "author": "BugSlayerZoro"
     },
     {
       "id": "sb-run",
@@ -185,7 +185,7 @@
         "--high"
       ],
       "opensView": "super-board-run",
-      "author": "Sanjeev"
+      "author": "BugSlayerZoro"
     },
     {
       "id": "sb-stop",
@@ -198,7 +198,7 @@
         "_skills/vendor/super-board/skills/super-board/references/stop.md",
         "_skills/vendor/super-board/scripts/super-board-stop.sh"
       ],
-      "author": "Sanjeev"
+      "author": "BugSlayerZoro"
     },
     {
       "id": "super-build",
@@ -214,7 +214,7 @@
         "_skills/vendor/super-board/skills/super-board/references/run.md"
       ],
       "opensView": "super-build",
-      "author": "Sanjeev"
+      "author": "BugSlayerZoro"
     },
     {
       "id": "super-qa",
@@ -229,7 +229,7 @@
         "_skills/vendor/super-board/skills/super-board/references/run.md"
       ],
       "opensView": "super-qa",
-      "author": "Sanjeev"
+      "author": "BugSlayerZoro"
     },
     {
       "id": "super-review",
@@ -242,7 +242,7 @@
         "_skills/vendor/super-board/skills/super-review/SKILL.md"
       ],
       "opensView": "super-review",
-      "author": "Sanjeev"
+      "author": "BugSlayerZoro"
     },
     {
       "id": "super-deploy",
@@ -253,7 +253,7 @@
       "when": "It would start **after a merge**, once super-review lands a PR. It is ==not built yet==.",
       "how": "The plan is to **watch the deploy**, then smoke-test the live site. On a failure it would ==roll back==. Last, it would check **Sentry** and **PostHog** for new errors.",
       "source": [],
-      "author": "Sanjeev",
+      "author": "BugSlayerZoro",
       "examples": [
         {
           "title": "Plan",
@@ -689,7 +689,7 @@
       "external": true,
       "origin": "SanjeevOS local skill",
       "opensView": "tdd-v2",
-      "author": "Sanjeev"
+      "author": "BugSlayerZoro"
     },
     {
       "id": "implement",
@@ -1004,7 +1004,7 @@
       "external": true,
       "origin": "sanjeev-skills (override of mattpocock grill-with-docs)",
       "opensView": "grill-with-docs",
-      "author": "Sanjeev"
+      "author": "BugSlayerZoro"
     },
     {
       "id": "prototype",
@@ -1572,7 +1572,7 @@
       ],
       "sublabel": "commit · pull · push",
       "opensView": "git-sync",
-      "author": "Sanjeev"
+      "author": "BugSlayerZoro"
     },
     {
       "id": "pr-security-review",
@@ -5870,7 +5870,7 @@
     "Unchanged from v2: ui-refine-loop is standalone, now stated in super-review and super-qa as 'file a UI ticket; a human can run /ui-refine-loop'. cleanup-wt still runs at SessionStart and post-merge. qa-test-planner, testing-strategy, vitest and playwright-best-practices are still not installed in SanjeevOS."
   ],
   "authors": {
-    "Sanjeev": {
+    "BugSlayerZoro": {
       "name": "Sanjeev",
       "url": "https://github.com/BugSlayerZoro"
     },
