@@ -18,7 +18,7 @@
 
 <p><a href="https://bugslayerzoro.github.io/super-board/"><strong>🌐 Live site: bugslayerzoro.github.io/super-board</strong></a></p>
 
-<p>⭐ Star this repo if it helps · <a href="https://www.skool.com/erictech">Join the builders using this → weekly live calls, setup help</a> · <a href="https://youtu.be/aggJvNZxfKA">▶ Watch the walkthrough</a></p>
+<p>⭐ Star this repo if it helps · <a href="https://youtu.be/aggJvNZxfKA">▶ Watch the walkthrough</a></p>
 
 <p><a href="#install">Install</a> · <a href="#quick-start">Quick start</a> · <a href="#how-it-works">How it works</a> · <a href="#skills">Skills</a> · <a href="#commands">Commands</a> · <a href="#guards--hooks">Guards</a></p>
 

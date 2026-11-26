@@ -6,4 +6,4 @@ at commit `d0b7d5a`, used under its MIT License (see `LICENSE`, © 2026 Eric Tec
 Changes from the original: the repository URL (`EricTechPro/super-board` → `BugSlayerZoro/super-board`)
 and the name "Eric" / "EricTechPro" / "EricOS" / sample usernames were replaced with "Sanjeev" /
 "SanjeevOS" in the copied text files. `LICENSE` is untouched. The upstream test suite has not been
-re-run after these edits. One README link to the original author's community page was left as is.
+re-run after these edits. The original author's community link was removed from the README.
