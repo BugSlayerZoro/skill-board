@@ -98,9 +98,6 @@ Add cards to `Ready`. The board drains on its own.
 
 **Which path?** Clear idea, foggy idea or bugs: [the routing rule](docs/skill-board/routing.md) says what to run, and when 1–5 tickets go to `/implement-spec` instead of the board.
 
-<p align="center"><a href="https://youtu.be/aggJvNZxfKA"><img src="https://i.ytimg.com/vi/aggJvNZxfKA/maxresdefault.jpg" alt="Watch I Built a Self-Improving Software Factory by Sanjeev on YouTube" width="100%"></a></p>
-<p align="center"><a href="https://youtu.be/aggJvNZxfKA"><strong>▶ Watch on YouTube: I Built a Self-Improving Software Factory</strong></a></p>
-
 ## Skills
 
 **9 skills (5 you type, 4 the board runs).** Uses [Matt Pocock skills](https://github.com/mattpocock/skills), ponytail, impeccable, humanizer, [Anthropic's security review](https://github.com/anthropics/claude-code-security-review) and [Cloudflare's security-audit](https://github.com/cloudflare/security-audit-skill).
@@ -208,8 +205,7 @@ MIT © Sanjeev ([LICENSE](LICENSE)). Built on [obra/superpowers](https://github.
 <a href="https://bugslayerzoro.github.io/skill-board/pstack/">pstack map</a> ·
 <a href="https://bugslayerzoro.github.io/skill-board/security-audit/">Security audit map</a> ·
 <a href="RELEASE-NOTES.md">Release notes</a> ·
-<a href="RELEASING.md">Release checks</a> ·
-<a href="https://youtu.be/nX_bGyIOFM4">YouTube walkthrough</a>
+<a href="RELEASING.md">Release checks</a>
 </p>
 <p align="center"><sub>Made by Sanjeev</sub></p>
 

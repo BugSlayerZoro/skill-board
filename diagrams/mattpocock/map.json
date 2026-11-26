@@ -25,10 +25,6 @@
    {
     "label": "Docs pages",
     "url": "https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/docs/engineering/ask-matt.md"
-   },
-   {
-    "label": "Gary Chen: 1.3 update breakdown (YouTube, zh-TW)",
-    "url": "https://youtu.be/QqhyqMvdx5Q"
    }
   ],
   "countNote": "27 skills in the plugin.json manifest (20 engineering + 7 productivity). Skipped: skills/misc/*, skills/in-progress/* (not in the manifest; the misc ones are frozen per .out-of-scope/frozen-misc-skills.md).",
@@ -1870,10 +1866,6 @@
     {
      "label": "ask-matt SKILL.md (main flow step 3)",
      "url": "https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md"
-    },
-    {
-     "label": "Gary Chen: 1.3 update breakdown (YouTube, zh-TW)",
-     "url": "https://youtu.be/QqhyqMvdx5Q"
     }
    ],
    "kind": "skill",
@@ -2131,10 +2123,6 @@
     {
      "label": "ask-matt SKILL.md (main flow step 3)",
      "url": "https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md"
-    },
-    {
-     "label": "Gary Chen: 1.3 update breakdown (YouTube, zh-TW)",
-     "url": "https://youtu.be/QqhyqMvdx5Q"
     }
    ],
    "kind": "skill",
@@ -2257,10 +2245,6 @@
     {
      "label": "ask-matt SKILL.md (main flow step 4)",
      "url": "https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/ask-matt/SKILL.md"
-    },
-    {
-     "label": "Gary Chen: 1.3 update breakdown (YouTube, zh-TW)",
-     "url": "https://youtu.be/QqhyqMvdx5Q"
     }
    ],
    "kind": "skill",
